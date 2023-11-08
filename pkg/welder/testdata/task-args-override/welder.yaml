@@ -1,0 +1,28 @@
+schemaVersion: "1.5.0"
+projectName: default-profile-task-override
+default:
+  build:
+    args:
+      test-arg: from-default
+profiles:
+  test-profile:
+    build:
+      args:
+        test-arg: from-profile
+modules:
+  - name: module-no-arg
+  - name: module-with-arg
+    build:
+      args:
+        test-arg: from-module
+tasks:
+  task-no-arg:
+    runOn: host
+    script:
+      - echo ${arg:test-arg} > output
+  task-with-arg:
+    runOn: host
+    args:
+      test-arg: from-task
+    script:
+      - echo ${arg:test-arg} > output

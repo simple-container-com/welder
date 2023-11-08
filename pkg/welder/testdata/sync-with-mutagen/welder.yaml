@@ -1,0 +1,12 @@
+schemaVersion: "1.5.0"
+projectName: sync-with-mutagen
+tasks:
+  test-task:
+    image: alpine:latest
+    script:
+      - |-
+      - cat /etc/os-release >> ${project:root}/output
+      - cat ${project:root}/subdir/.gitignore >> ${project:root}/output
+      - ls -la >> ${project:root}/output
+      - cat some-file >> ${project:root}/output
+      - echo 'create-file' > ${project:root}/create-file

@@ -1,0 +1,55 @@
+schemaVersion: "1.2.0"
+projectName: conditional
+profiles:
+  bamboo:
+    activation:
+      bamboo: true
+modules:
+  - name: some-conditional-module
+    build:
+      steps:
+        - step:
+            runOn: host
+            runIf: "${profile:bamboo.active}"
+            script:
+              - echo "I am a step and running because bamboo is active" >> output
+        - step:
+            runOn: host
+            runIf: "!${profile:bamboo.active}"
+            script:
+              - echo "I am a step and running because bamboo is not active" >> output
+        - step:
+            runOn: host
+            runIf: "'${arg:expected-arg:-}' == 'run'"
+            script:
+              - echo "I am a step and running because arg is specified" >> output
+        - step:
+            runOn: host
+            runIf: "'${arg:expected-arg:-}' == '-'"
+            script:
+              - echo "I am a step and running because arg is not specified" >> output
+        - task: only-on-bamboo
+        - task: only-not-on-bamboo
+        - task: when-arg-specified
+        - task: when-arg-not-specified
+tasks:
+  only-on-bamboo:
+    runOn: host
+    runIf: "${profile:bamboo.active}"
+    script:
+      - echo "I am a task and running because bamboo is active" >> output
+  only-not-on-bamboo:
+    runOn: host
+    runIf: "!${profile:bamboo.active}"
+    script:
+      - echo "I am a task and running because bamboo is not active" >> output
+  when-arg-specified:
+    runOn: host
+    runIf: "'${arg:expected-arg:-}' == 'run'"
+    script:
+      - echo "I am a task and running because arg is specified" >> output
+  when-arg-not-specified:
+    runOn: host
+    runIf: "'${arg:expected-arg:-}' == '-'"
+    script:
+      - echo "I am a task and running because arg is not specified" >> output

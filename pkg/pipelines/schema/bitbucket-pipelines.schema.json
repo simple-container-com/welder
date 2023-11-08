@@ -1,0 +1,474 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://bitbucket.org/pipelines.json",
+  "definitions": {
+    "image_name": {
+      "type": "string",
+      "description": "Name of the Docker image which may or may not include registry URL, tag, and digest value",
+      "default": "atlassian/default-image:latest"
+    },
+    "complex_image": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "$ref": "#/definitions/image_name"
+        },
+        "run-as-user": {
+          "type": "number",
+          "description": "Overrides image's default user, specified user UID must be an existing user in the image with a valid home directory"
+        }
+      },
+      "required": [
+        "name"
+      ]
+    },
+    "complex_image_with_username_password": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/complex_image"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "username": {
+              "type": "string",
+              "description": "Username to use to fetch the Docker image"
+            },
+            "password": {
+              "type": "string",
+              "description": "Password to use to fetch the Docker image"
+            },
+            "email": {
+              "type": "string",
+              "description": "Email to use to fetch the Docker image"
+            }
+          }
+        }
+      ]
+    },
+    "complex_image_with_aws_credentials": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/complex_image"
+        },
+        {
+          "type": "object",
+          "aws": {
+            "type": "object",
+            "properties": {
+              "access-key": {
+                "type": "string"
+              },
+              "secret-key": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "access-key",
+              "secret-key"
+            ]
+          }
+        }
+      ]
+    },
+    "image": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/image_name"
+        },
+        {
+          "$ref": "#/definitions/complex_image"
+        },
+        {
+          "$ref": "#/definitions/complex_image_with_username_password"
+        },
+        {
+          "$ref": "#/definitions/complex_image_with_aws_credentials"
+        }
+      ]
+    },
+    "max_time": {
+      "type": "number",
+      "description": "Maximum amount of minutes a step can execute",
+      "exclusiveMinimum": true,
+      "minimum": 0,
+      "maximum": 120,
+      "default": 120
+    },
+    "size": {
+      "type": "string",
+      "description": "Multiplier of the resources allocated to a pipeline step",
+      "enum": [
+        "1x",
+        "2x"
+      ],
+      "default": "1x"
+    },
+    "clone_properties": {
+      "type": "object",
+      "description": "Contains settings to clone the repository into a container",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Enables cloning of the repository before a step in a pipeline",
+          "default": true
+        },
+        "lfs": {
+          "type": "boolean",
+          "description": "Enables the download of LFS files in the clone (supported only for Git repositories)",
+          "default": false
+        },
+        "depth": {
+          "description": "Depth of Git clone (supported only for Git repositories)",
+          "oneOf": [
+            {
+              "type": "number",
+              "exclusiveMinimum": true,
+              "minimum": 0
+            },
+            {
+              "const": "full"
+            }
+          ],
+          "default": 50
+        }
+      }
+    },
+    "artifact_list": {
+      "type": "array",
+      "description": "Files produced by a step to share with a following step",
+      "items": {
+        "type": "string",
+        "description": "Glob pattern for the path to the artifacts"
+      },
+      "minItems": 1
+    },
+    "complex_artifacts": {
+      "type": "object",
+      "properties": {
+        "download": {
+          "type": "boolean",
+          "description": "Enables downloading of all available artifacts at the start of a step",
+          "default": true
+        },
+        "paths": {
+          "$ref": "#/definitions/artifact_list"
+        }
+      }
+    },
+    "step_condition": {
+      "type": "object",
+      "description": "Condition to execute a step",
+      "properties": {
+        "changesets": {
+          "type": "object",
+          "description": "Condition on the changesets involved in a pipeline",
+          "properties": {
+            "includePaths": {
+              "type": "array",
+              "description": "Condition which executes a step only if any of the modified files matches any of the defined patterns",
+              "items": {
+                "type": "string",
+                "description": "Glob pattern to match the file path"
+              },
+              "minItems": 1
+            }
+          },
+          "required": [
+            "includePaths"
+          ]
+        }
+      },
+      "required": [
+        "changesets"
+      ]
+    },
+    "step": {
+      "type": "object",
+      "properties": {
+        "step": {
+          "type": "object",
+          "description": "Build execution unit",
+          "properties": {
+            "after-script": {
+              "$ref": "#/definitions/script",
+              "description": "Commands to execute after the step succeeds or fails"
+            },
+            "artifacts": {
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/artifact_list"
+                },
+                {
+                  "$ref": "#/definitions/complex_artifacts"
+                }
+              ]
+            },
+            "caches": {
+              "type": "array",
+              "description": "Caches enabled for the step",
+              "items": {
+                "type": "string",
+                "description": "Name of the cache"
+              },
+              "minItems": 1
+            },
+            "clone": {
+              "$ref": "#/definitions/clone_properties"
+            },
+            "condition": {
+              "$ref": "#/definitions/step_condition"
+            },
+            "deployment": {
+              "type": "string",
+              "description": "Type of environment for the deployment step, used in the Deployments dashboard"
+            },
+            "image": {
+              "$ref": "#/definitions/image"
+            },
+            "name": {
+              "type": "string",
+              "description": "Name of the step"
+            },
+            "script": {
+              "$ref": "#/definitions/script",
+              "description": "Commands to execute in the step"
+            },
+            "services": {
+              "type": "array",
+              "description": "Services enabled for the step",
+              "items": {
+                "type": "string",
+                "description": "Name of the service"
+              },
+              "minItems": 1,
+              "maxItems": 5
+            },
+            "size": {
+              "$ref": "#/definitions/size"
+            },
+            "trigger": {
+              "type": "string",
+              "description": "Specifies if a step runs automatically or only after someone manually triggers it",
+              "enum": [
+                "automatic",
+                "manual"
+              ],
+              "default": "automatic"
+            }
+          },
+          "required": [
+            "script"
+          ]
+        }
+      }
+    },
+    "steps_or_parallel_item": {
+      "oneOf": [
+        {
+          "$ref": "#/definitions/step"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "parallel": {
+              "type": "array",
+              "description": "Set of steps to run concurrently",
+              "items": {
+                "$ref": "#/definitions/step"
+              },
+              "minItems": 2
+            }
+          }
+        }
+      ]
+    },
+    "steps_or_parallel": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/steps_or_parallel_item"
+      },
+      "minItems": 1
+    },
+    "named_pipelines": {
+      "type": "object",
+      "patternProperties": {
+        "^.*$": {
+          "$ref": "#/definitions/steps_or_parallel"
+        }
+      }
+    },
+    "script": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "string",
+            "description": "Command to execute"
+          },
+          {
+            "$ref": "#/definitions/pipe"
+          }
+        ]
+      },
+      "minItems": 1
+    },
+    "pipe": {
+      "type": "object",
+      "description": "Pipe to execute",
+      "properties": {
+        "pipe": {
+          "type": "string",
+          "description": "Pipe identifier"
+        },
+        "variables": {
+          "type": "object",
+          "description": "Environment variables passed to the pipe",
+          "patternProperties": {
+            "^.*$": {
+              "type": "string"
+            }
+          },
+          "minProperties": 1
+        }
+      },
+      "required": [
+        "pipe"
+      ]
+    }
+  },
+  "type": "object",
+  "properties": {
+    "clone": {
+      "$ref": "#/definitions/clone_properties"
+    },
+    "definitions": {
+      "type": "object",
+      "description": "Defines resources used elsewhere in the pipeline configuration",
+      "properties": {
+        "caches": {
+          "type": "object",
+          "description": "Defines custom caches to be used by pipelines",
+          "patternProperties": {
+            "^[a-z0-9]([-a-z0-9]{0,48}[a-z0-9])?$": {
+              "type": "string",
+              "description": "Path to the directory to be cached, can be absolute or relative to the clone directory"
+            }
+          },
+          "not": {
+            "required": [
+              "docker"
+            ]
+          }
+        },
+        "services": {
+          "type": "object",
+          "description": "Defines services that run in separate Docker containers",
+          "patternProperties": {
+            "^.*$": {
+              "type": "object",
+              "properties": {
+                "image": {
+                  "$ref": "#/definitions/image"
+                },
+                "memory": {
+                  "type": "number",
+                  "description": "Memory limit for the service container, in megabytes",
+                  "minimum": 128,
+                  "default": 1024
+                },
+                "variables": {
+                  "type": "object",
+                  "description": "Environment variables passed to the service container",
+                  "patternProperties": {
+                    "^.*$": {
+                      "type": "string"
+                    }
+                  },
+                  "minProperties": 1
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "image": {
+      "$ref": "#/definitions/image"
+    },
+    "options": {
+      "type": "object",
+      "properties": {
+        "docker": {
+          "type": "boolean",
+          "description": "A flag to add Docker to all build steps in all pipelines"
+        },
+        "max-time": {
+          "$ref": "#/definitions/max_time"
+        },
+        "size": {
+          "$ref": "#/definitions/size"
+        }
+      }
+    },
+    "pipelines": {
+      "type": "object",
+      "properties": {
+        "default": {
+          "$ref": "#/definitions/steps_or_parallel"
+        },
+        "branches": {
+          "$ref": "#/definitions/named_pipelines",
+          "description": "Branch-specific build pipelines"
+        },
+        "custom": {
+          "type": "object",
+          "description": "Pipelines that can only be triggered manually or scheduled from the Bitbucket Cloud interface",
+          "patternProperties": {
+            "^.*$": {
+              "type": "array",
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "variables": {
+                        "type": "array",
+                        "description": "List of variables for the custom pipeline",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "type": "string",
+                              "description": "Name of a variable for the custom pipeline"
+                            }
+                          }
+                        },
+                        "minItems": 1
+                      }
+                    }
+                  },
+                  {
+                    "$ref": "#/definitions/steps_or_parallel_item"
+                  }
+                ]
+              },
+              "minItems": 1
+            }
+          }
+        },
+        "pull-requests": {
+          "$ref": "#/definitions/named_pipelines",
+          "description": "Pull-request-specific build pipelines"
+        },
+        "tags": {
+          "$ref": "#/definitions/named_pipelines",
+          "description": "Tag-specific build pipelines"
+        }
+      }
+    }
+  },
+  "required": [
+    "pipelines"
+  ]
+}

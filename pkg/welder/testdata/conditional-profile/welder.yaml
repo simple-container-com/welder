@@ -1,0 +1,7 @@
+schemaVersion: "1.5.0"
+projectName: conditional-profile
+profiles:
+  another: {}
+  some-profile:
+    activation:
+      if: "${profile:another.active}"

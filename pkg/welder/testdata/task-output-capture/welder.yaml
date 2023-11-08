@@ -1,0 +1,22 @@
+schemaVersion: "1.2.0"
+projectName: task-output-capture
+version: ${task:get-version-on-host.trim}
+tasks:
+  get-version-on-host:
+    runOn: host
+    script:
+      - echo "1.0"
+      - ""
+  output-from-docker:
+    image: alpine:latest
+    script:
+      - uname -o
+  test-capture-output:
+    runOn: host
+    script:
+      - 'echo "Output from alpine: ${task:output-from-docker.raw}" > output'
+  recursion:
+    image: alpine:latest
+    script:
+      - echo 'output of recursion is "${task:recursion.success}"' > output; echo "OK"
+

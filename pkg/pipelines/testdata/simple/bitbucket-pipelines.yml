@@ -1,0 +1,9 @@
+image: alpine
+pipelines:
+  default:
+    - step:
+        name: Print Hello
+        script:
+          - echo hello > output
+          - echo world >> output
+          - pipe: smecsia/bitbucket-empty-pipe:v1

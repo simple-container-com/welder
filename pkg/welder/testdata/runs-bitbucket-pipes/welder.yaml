@@ -1,0 +1,17 @@
+schemaVersion: "1.3.0"
+projectName: runs-bitbucket-pipes
+modules:
+  - name: run-pipe
+    build:
+      steps:
+        - name: echo-something
+          step:
+            runOn: host
+            script:
+              - echo "Now we'll execute a pipe"
+        - pipe: smecsia/bitbucket-empty-pipe:v1
+        - name: echo-something-else
+          step:
+            runOn: host
+            script:
+              - echo "Executed pipe"

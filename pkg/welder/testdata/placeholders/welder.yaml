@@ -1,0 +1,51 @@
+schemaVersion: "1.2.0"
+projectName: placeholders
+version: 1.0
+default:
+  build:
+    env:
+      MODULE: ${project:module.name}
+profiles:
+  sox:
+    activation:
+      sox: true
+  skip-tests:
+    activation:
+      skip-tests: true
+  bamboo:
+    activation:
+      bamboo: true
+  pipelines:
+    activation:
+      pipelines: true
+  custom:
+modules:
+  - name: placeholders-module
+    build:
+      steps:
+        - step:
+            runOn: host
+            script:
+              - echo "mode-bamboo=${mode:bamboo}" >> output
+              - echo "mode-pipelines=${mode:pipelines}" >> output
+              - echo "mode-ci=${mode:ci}" >> output
+              - echo "mode-sox=${mode:sox}" >> output
+              - echo "mode-skip-tests=${mode:skip-tests}" >> output
+              - echo "mode-verbose=${mode:verbose}" >> output
+              - echo "mode-no-cache=${mode:no-cache}" >> output
+              - echo "mode-on-host=${mode:on-host}" >> output
+              - echo "mode-sync-mode=${mode:sync-mode}" >> output
+              - echo "profile-bamboo=${profile:bamboo.active}" >> output
+              - echo "profile-pipelines=${profile:pipelines.active}" >> output
+              - echo "profile-sox=${profile:sox.active}" >> output
+              - echo "profile-skip-tests=${profile:skip-tests.active}" >> output
+              - echo "profile-custom=${profile:custom.active}" >> output
+  - name: another-module
+tasks:
+  some-task:
+    runOn: host
+    script:
+      - echo "project:root=${project:root}" >> output
+      - echo "project:version=${project:version}" >> output
+      - echo "profile:bamboo.active=${profile:bamboo.active}" >> output
+      - echo "project:module.name=${MODULE}" >> output

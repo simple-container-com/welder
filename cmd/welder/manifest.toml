@@ -1,0 +1,6 @@
+owners = [ "tcinel", "isadykov", "tyu"]
+description = "Allows to easily build service configured with welder descriptor"
+tags = [ "build",]
+summary = "Software Build plugin"
+name = "build"
+

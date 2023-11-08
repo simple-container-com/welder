@@ -1,0 +1,25 @@
+apiVersion: composition.voyager.simple-container.com/v1
+kind: ServiceDescriptor
+metadata:
+  name: example
+spec:
+  locations:
+    - account: "18732"
+      envType: dev
+      name: dev-1-apse2
+      region: ap-southeast-2
+    - account: "123443"
+      envType: prod
+      name: prod-useast1
+      region: us-east-1
+  resourceGroups:
+    - name: default
+      locations:
+        - dev-1-apse2
+      resources:
+        - name: messages
+          type: CloudFormation
+        - name: module1
+          type: EC2Compute
+        - name: module2
+          type: EC2Compute

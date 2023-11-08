@@ -1,0 +1,55 @@
+schemaVersion: "1.3.0"
+projectName: custom-image
+modules:
+  - name: custom-image-with-task
+    build:
+      steps:
+        - task: task-custom-image
+  - name: custom-image-steps
+    build:
+      steps:
+        - step:
+            customImage:
+              inlineDockerFile: |-
+                FROM alpine:latest
+                ARG module=default
+                USER root
+                RUN mkdir -p /build && \
+                    echo "module=${module}; user=$(whoami); project=${project:name}" > /build/created-in-dockerfile && \
+                    chmod -R a+r /build
+              build:
+                args:
+                  - name: module
+                    value: ${project:module.name}
+            script:
+              - pwd && cat /build/created-in-dockerfile > output
+              - ls -la
+        - step:
+            customImage:
+              dockerFile: ${project:root}/Dockerfile
+              build:
+                args:
+                  - name: module
+                    value: ${project:module.name}
+            script:
+              - pwd && cat /build/created-in-dockerfile >> output
+              - ls -la
+    dockerImages:
+      - name: default
+        inlineDockerFile: |-
+          FROM alpine:latest
+        tags:
+          - custom-docker-image:latest
+tasks:
+  task-custom-image:
+    customImage:
+      inlineDockerFile: |-
+        FROM alpine:latest
+        RUN mkdir -p /build && \
+            echo "module=${project:module.name}; user=$(whoami); project=${project:name}" > /build/created-in-dockerfile-via-task && \
+            chmod -R a+r /build
+    description: Verifies custom image can be used with task
+    script:
+      - pwd && cat /build/created-in-dockerfile-via-task > output
+      - ls -la
+

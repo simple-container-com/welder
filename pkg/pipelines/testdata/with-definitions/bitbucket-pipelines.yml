@@ -1,0 +1,111 @@
+definitions:
+  services:
+    docker:
+      memory: 3072
+
+  welder: &welder
+    size: 2x
+    trigger: automatic
+    image:
+      name: docker-proxy.services.atlassian.com/sox/deng/welder-pbc:latest
+      username: buildeng
+      password: $PIPELINES_JWT_TOKEN
+    caches:     # welder: manual-change
+      - gradle  # welder: manual-change
+    services:
+      - docker
+    artifacts:
+      - "**/build/distributions/**" # welder: manual-change (no .welder-out/**)
+  artifactory-pipe: &artifactory-pipe
+    pipe: atlassian/artifactory-sidekick:v1
+  artifactory-pipe-sox: &artifactory-pipe-sox
+    <<: *artifactory-pipe
+    variables:
+      COMPLIANT: "true"
+  artifactory-init: &artifactory-init source .artifactory/activate.sh
+
+pipelines:
+  default:
+    - parallel: &build
+      - step:
+          <<: *welder
+          name: Build random-wait-plugin
+          script:
+            - *artifactory-pipe
+            - *artifactory-init
+            - welder make --timestamps -m random-wait-plugin
+      - step:
+          <<: *welder
+          name: Build micros-operations-plugin
+          script:
+            - *artifactory-pipe
+            - *artifactory-init
+            - welder make --timestamps -m micros-operations-plugin
+      - step:
+          <<: *welder
+          name: Build atlassian-kube-plugin
+          script:
+            - *artifactory-pipe
+            - *artifactory-init
+            - welder make --timestamps -m atlassian-kube-plugin
+      - step:
+          <<: *welder
+          name: Build atlassian-functions-plugin
+          script:
+            - *artifactory-pipe
+            - *artifactory-init
+            - welder make --timestamps -m atlassian-functions-plugin
+      - step:
+          <<: *welder
+          name: Build atlassian-default-pipelines-plugin
+          script:
+            - *artifactory-pipe
+            - *artifactory-init
+            - welder make --timestamps -m atlassian-default-pipelines-plugin
+      - step:
+          <<: *welder
+          name: Build brahmos-plugin
+          script:
+            - *artifactory-pipe
+            - *artifactory-init
+            - welder make --timestamps -m brahmos-plugin
+      - step:
+          <<: *welder
+          name: Build atlassian-dynamic-plugins-reloader-plugin
+          script:
+            - *artifactory-pipe
+            - *artifactory-init
+            - welder make --timestamps -m atlassian-dynamic-plugins-reloader-plugin
+      - step:
+          <<: *welder
+          name: Build poco-plugin
+          script:
+            - *artifactory-pipe
+            - *artifactory-init
+            - welder make --timestamps -m poco-plugin
+    - step: &validate-bbp                                       # welder: manual-change
+        <<: *welder                                        # welder: manual-change
+        name: Validate BBP config was regenerated               # welder: manual-change
+        script:                                                 # welder: manual-change
+          - welder run validate-bbp-config --timestamps    # welder: manual-change
+    - step:
+        image:
+          name: alpine
+        name: Done
+        script:
+          - echo OK
+  branches:
+    main:                                                    # welder: manual-change
+      - parallel: *build
+      - step: *validate-bbp                                  # welder: manual-change
+      - parallel:                                            # welder: manual-change
+        - step:                                              # welder: manual-change
+            <<: *welder                                 # welder: manual-change
+            deployment: dev                                  # welder: manual-change
+            name: Publish plugins                            # welder: manual-change
+            trigger: automatic                               # welder: manual-change
+            script:                                          # welder: manual-change
+              - *artifactory-pipe-sox                        # welder: manual-change
+              - *artifactory-init                            # welder: manual-change
+              - welder deploy --timestamps -e dev --sox # welder: manual-change
+

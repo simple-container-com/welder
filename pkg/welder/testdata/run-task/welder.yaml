@@ -1,0 +1,22 @@
+schemaVersion: "1.3.0"
+projectName: run-task
+modules:
+  - name: some-module
+    build:
+      steps:
+        - task: some-first-step
+        - task: run-task
+tasks:
+  some-first-step:
+    customImage:
+      inlineDockerFile: |-
+        FROM ubuntu:latest
+    script:
+      - cat /etc/issue >> output
+  run-task:
+    customImage:
+      inlineDockerFile: |-
+        FROM alpine:latest
+    script:
+      - cat /etc/issue >> output
+

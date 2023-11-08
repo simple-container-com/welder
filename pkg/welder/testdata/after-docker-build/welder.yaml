@@ -1,0 +1,44 @@
+schemaVersion: "1.3.1"
+projectName: after-docker-build
+modules:
+  - name: after-docker-build
+    dockerImages:
+      - name: first
+        inlineDockerFile: |-
+          FROM scratch
+          LABEL scratch=true
+        tags:
+          - docker.simple-container.com/deng/test/after-docker-build-first:latest
+        runAfterBuild:
+          runOn: host
+          script:
+            - echo "build image=${docker:image}" >> output
+            - echo "build tags[0].tag=${docker:tags[0].tag}" >> output
+            - echo "build tags[0].image=${docker:tags[0].image}" >> output
+      - name: second
+        inlineDockerFile: |-
+          FROM scratch
+          LABEL scratch=true
+        tags:
+          - docker.simple-container.com/deng/test/after-docker-build:latest
+          - docker.simple-container.com/deng/test/after-docker-build-extra:latest-extra-tag
+        runAfterBuild:
+          runOn: host
+          script:
+            - echo "build image=${docker:image}" >> output
+            - echo "build tags[0].tag=${docker:tags[0].tag}" >> output
+            - echo "build tags[0].image=${docker:tags[0].image}" >> output
+            - echo "build tags[0].digest=${docker:tags[0].digest}" >> output
+            - echo "build tags[1].tag=${docker:tags[1].tag}" >> output
+            - echo "build tags[1].image=${docker:tags[1].image}" >> output
+            - echo "build tags[1].digest=${docker:tags[1].digest}" >> output
+        runAfterPush:
+          runOn: host
+          script:
+            - echo "push image=${docker:image}" >> output
+            - echo "push tags[0].tag=${docker:tags[0].tag}" >> output
+            - echo "push tags[0].image=${docker:tags[0].image}" >> output
+            - echo "push tags[0].digest=${docker:tags[0].digest}" >> output
+            - echo "push tags[1].tag=${docker:tags[1].tag}" >> output
+            - echo "push tags[1].image=${docker:tags[1].image}" >> output
+            - echo "push tags[1].digest=${docker:tags[1].digest}" >> output

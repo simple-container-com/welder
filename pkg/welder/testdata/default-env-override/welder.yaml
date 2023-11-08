@@ -1,0 +1,30 @@
+schemaVersion: "1.5.0"
+projectName: default-env-override
+version: 0.1.${arg:build-number:0}
+default:
+  build:
+    env:
+      VERSION: ${arg:arg-version:}
+    args:
+      arg-version: ${project:version}
+  deploy:
+    env:
+      ENV_VALUE: ${arg:some-arg}
+profiles:
+  pipelines:
+    build:
+      args:
+        build-number: 1-bpp
+modules:
+  - name: test
+    deploy:
+      env:
+        ENV_VALUE: ${arg:some-arg:module-default}
+      environments:
+        ddev: {}
+      steps:
+        - step:
+            runOn: host
+            script:
+              - echo ${ENV_VALUE} > output
+              - echo ${VERSION} >> output

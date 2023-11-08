@@ -1,0 +1,67 @@
+name: armory
+description: deployinator-armory
+organization: "Paas/Micros"
+buildNumber: '0.0.1'
+requiresAsap: true
+notifications:
+  email: delivery-engineering@atlassian.com
+
+environmentOverrides:
+  ddev:
+    config:
+      environmentVariables:
+        SLAUTH_LOG_LEVEL: debug
+  prod-east:
+    config:
+      environmentVariables:
+        SLAUTH_LOG_LEVEL: info
+
+links:
+  healthcheck:
+    uri: /heartbeat
+  source:
+    url: 'ssh://git@stash.atlassian.com:7997/dev/deployinator.git'
+
+resources:
+  - name: armory-names
+    type: dynamo-db
+    attributes:
+      HashKeyName: name
+      HashKeyType: S
+      ReadCapacityUnits: 6
+      WriteCapacityUnits: 1
+  - name: armory-artifacts
+    type: dynamo-db
+    attributes:
+      HashKeyName: namespace
+      HashKeyType: S
+      RangeKeyName: versionKey
+      RangeKeyType: S
+      ReadCapacityUnits: 6
+      WriteCapacityUnits: 1
+
+compose:
+  armory:
+    image: docker.simple-container.com/sox/deployinator/armory
+    digest: 'sha256:a7e775577fd09bc8a12644e721aa47cf9b55bcb6c8336a7b15620f72cd5253ce'
+    ports:
+      - 8081:8080
+  slauth:
+    image: docker.simple-container.com/sox/micros/slauth-sidecar
+    links:
+      - armory
+    ports:
+      - 8080:8080
+    tag: stable
+
+config:
+  environmentVariables:
+    ASAP_AUDIENCE: deployinator-armory
+    SLAUTH_BACKEND: http://armory:8081
+    SLAUTH_PLUGINS: bypass,slauthtoken,build,deny
+    SLAUTH_BYPASS_ROUTES: /heartbeat
+    SLAUTH_LISTEN: :8080
+
+scaling:
+  min: 1
+  instance: t2.medium

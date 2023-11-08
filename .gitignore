@@ -1,0 +1,17 @@
+.vscode/launch.json
+.env
+.DS_Store
+bin/
+.idea/
+.vscode/
+*.iml
+*.env
+*.pem
+vendor/**
+.credentials
+
+.welder-out/**
+coverage.txt
+.artifactory
+**/testdata/**/output
+.atlas-build-out

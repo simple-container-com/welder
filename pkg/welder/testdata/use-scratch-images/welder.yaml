@@ -1,0 +1,10 @@
+schemaVersion: "1.3.0"
+projectName: use-scratch-images
+tasks:
+  collect-output-of-echo-image:
+    runOn: host
+    script:
+      - |- 
+        echo "${task:run-echo-image.raw}" > output
+  run-echo-image:
+    image: hello-world

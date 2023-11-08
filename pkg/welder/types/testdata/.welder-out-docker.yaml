@@ -1,0 +1,22 @@
+schemaVersion: "1.0"
+modules:
+  - name: armory
+    dockerImages:
+      - name: service
+        digests:
+          - tag: 7473ba1
+            image: docker.simple-container.com/test/deng/sox/armory
+            digest: sha256:36d04b6c4164191d1b18445fc3282be2e8b89062168d3556db7da591df2858bb
+          - tag: docker.simple-container.com/test/deng/sox/armory:7473ba18330d8cca50705fe1dc8f3b9393d99e61
+            image: docker.simple-container.com/test/deng/sox/armory
+            digest: sha256:36d04b6c4164191d1b18445fc3282be2e8b89062168d3556db7da591df2858bb
+  - name: trebuchet
+    dockerImages:
+      - name: service
+        digests:
+          - tag: 36502d5
+            image: docker.simple-container.com/test/deng/sox/trebuchet
+            digest: sha256:d4dc1a72c54d4e35123e7044c3934ef30b57320b4815381dae88caa107dcfbbb
+          - tag: docker.simple-container.com/test/deng/sox/trebuchet:36502d5b068f0cad6f468a47bc4c2b5fd7003c26
+            image: docker.simple-container.com/test/deng/sox/trebuchet
+            digest: sha256:d4dc1a72c54d4e35123e7044c3934ef30b57320b4815381dae88caa107dcfbbb

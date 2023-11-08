@@ -1,0 +1,198 @@
+schemaVersion: "1.5.0"
+projectName: welder
+projectRoot: .
+version: 2.0.${env:BITBUCKET_BUILD_NUMBER:0}-${git:commit.short}${arg:release-suffix:}
+default:
+  build:
+    volumes:
+      - ".gitconfig:${container:home}/.gitconfig:ro"
+      - "~/.ssh:${container:home}/.ssh:ro"
+      - "${task:gomodcache.trim}:${container:home}/go/pkg/mod"
+    args:
+      namespace: dev
+      build-goals: build:build
+      build-via-welder: "false"
+      build-image: golang:1.22
+    env:
+      VERSION: ${project:version}
+      GOPRIVATE: "stash.atlassian.com,bitbucket.org"
+      BUILD_GOALS: ${arg:build-goals}
+      BUILD_VIA_WELDER: ${arg:build-via-welder}
+      GOMODCACHE: ${container:home}/go/pkg/mod
+      INSIDE_WELDER: "true"
+  deploy:
+    env:
+      STATLAS_URL: https://statlas.prod.simple-container.com
+    environments:
+      dev:
+        autoDeploy: true
+      sox: { }
+profiles:
+  single-test:
+    build:
+      args:
+        build-goals: build:build
+      env:
+        PLATFORMS: "linux-amd64"
+        TEST_TARGET: "./pkg/atlasbuild/... -run TestBuildWithCustomImage"
+  pipelines:
+    activation:
+      pipelines: true
+    build:
+      env:
+        PARALLEL: "false"
+    deploy:
+      env:
+        bamboo_JWT_TOKEN: ${env:PIPELINES_JWT_TOKEN}
+  sox:
+    activation:
+      sox: true
+    build:
+      args:
+        namespace: sox
+  bamboo:
+    activation:
+      bamboo: true
+    build:
+      args:
+        build-via-welder: "true"
+        build-goals: build:build build:bundles
+      env:
+        VERBOSE: "true"
+    deploy:
+      env:
+        bamboo_JWT_TOKEN: ${env:bamboo_JWT_TOKEN}
+  skip-tests:
+    activation:
+      skip-tests: true
+    build:
+      env:
+        SKIP_TESTS: "true"
+  alpha: # profile for publishing to alpha channel from CI
+    build: &alpha-build
+      args:
+        release-suffix: "-alpha"
+        build-goals: build:all
+      env: &alpha-env
+        RELEASE_CHANNEL: alpha
+        STATLAS_URL: https://statlas.prod.simple-container.com/dev
+  local: # profile to activate locally and for publishing to alpha channel
+    activation:
+      if: "!${mode:ci}"
+    build:
+      <<: *alpha-build
+      env:
+        <<: *alpha-env
+        SLAUTH_TOKEN: "${task:slauthtoken.trim}"
+  macosx:
+    activation:
+      if: ${os:type.darwin} && ${mode:on-host}
+    build:
+      env:
+        GOMODCACHE: ${user:home}/go/pkg/mod
+modules:
+  - name: docs
+    path: docs
+    build:
+      volumes:
+        - "~/.npm:${container:home}/.npm"
+        - "~/.npmrc:${container:home}/.npmrc:ro"
+        - "~/.ssh:${container:home}/.ssh:ro"
+      steps:
+        - task: build-docs
+    deploy:
+      environments:
+        dev:
+          autoDeploy: true
+      steps:
+        - task: deploy-docs
+  - name: welder
+    build:
+      steps:
+        - task: tools
+        - task: build
+    deploy:
+      steps:
+        - task: tools
+        - task: publish
+        - task: deploy-welder-schema
+    dockerImages:
+      - name: build-pbc
+        dockerFile: pbc/build/Dockerfile
+        tags:
+          - docker.simple-container.com/${arg:namespace}/deng/welder-pbc:latest
+          - docker.simple-container.com/${arg:namespace}/deng/welder-pbc:${project:version}
+        build:
+          contextPath: ${project:root}
+          args:
+            - name: version
+              value: ${project:version}
+        runAfterPush:
+          runOn: host
+          script:
+            - echo "push tags[0].image=${docker:tags[0].image}"
+            - echo "push tags[0].tag=${docker:tags[0].tag}"
+            - echo "push tags[0].digest=${docker:tags[0].digest}"
+            - echo "push tags[1].image=${docker:tags[1].image}"
+            - echo "push tags[1].tag=${docker:tags[1].tag}"
+            - echo "push tags[1].digest=${docker:tags[1].digest}"
+tasks:
+  tools:
+    customImage: &build-image
+      # the following is because build image requires docker CLI to be present
+      # this is used in some tests (e.g. the ones that use mutagen)
+      inlineDockerFile: |-
+        FROM ${arg:build-image}
+        ENV DOCKERVERSION=20.10.12
+        RUN curl -fsSLO https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKERVERSION}.tgz \
+          && tar xzvf docker-${DOCKERVERSION}.tgz --strip 1 \
+                         -C /usr/local/bin docker/docker \
+          && rm docker-${DOCKERVERSION}.tgz
+    description: Installs required tools
+    script:
+      - cat tools.go | grep _ | awk -F'"' '{print $2}' | xargs -tI % go get %
+      - go mod download
+      - go mod tidy
+  build:
+    customImage: *build-image
+    description: Compiles code and builds bundles
+    script:
+      - go run build.go ${BUILD_GOALS}
+  publish:
+    customImage: *build-image
+    description: Publish binaries to statlas
+    script:
+      - go run build.go publish:all
+  gomodcache:
+    runOn: host
+    description: Returns directory of go mod cache
+    script:
+      - |-
+        GOCACHEDIR="$( go env 2>/dev/null | grep GOMODCACHE | awk -F '=' '{print $2}' | sed 's/"//g' )"
+        if [ -z "$GOCACHEDIR" ]; then echo "/tmp/welder-modcache"; else echo "$GOCACHEDIR" ; fi
+  deploy-welder-schema:
+    runOn: host
+    description: Deploys the Welder Schema
+    script:
+      - atlas plugin installed | grep statlas > /dev/null || atlas plugin install -n statlas
+      - |-
+        atlas statlas put --auth-group delivery-engineering-dl-statlas --namespace=dev \
+          -s platform/json-schemas/welder.schema.json \
+          -f ${project:root}/bin/welder.schema.json
+  build-docs:
+    customImage: &docsImage
+      inlineDockerFile: |-
+        FROM node:alpine
+        RUN apk add git
+    workDir: ${project:root}/docs
+    script:
+      - yarn && yarn validate && yarn spellcheck && yarn link-check
+  deploy-docs:
+    customImage: *docsImage
+    workDir: ${project:root}/docs
+    script:
+      - git config --global user.email "build-agent@atlassian.com"
+      - git config --global user.name "Build Agent"
+      - yarn
+      - yarn version --new-version "${project:version}" -m "[npm] Release version %s"
+      - yarn publish

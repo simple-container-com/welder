@@ -1,0 +1,29 @@
+schemaVersion: "1.3.1"
+projectName: custom-image
+modules:
+  - name: env-in-step-override
+    build:
+      env:
+        SOME_ENV: "default"
+      workDir: ${project:root}
+      steps:
+        - name: default-env
+          step:
+            runOn: host
+            script:
+              - echo "default-env=${SOME_ENV}" >> ${project:root}/output
+              - echo `pwd` >> ${project:root}/dir
+        - name: override-default-env
+          env:
+            SOME_ENV: "override"
+          step:
+            runOn: host
+            script:
+              - echo "override-env=${SOME_ENV}" >> ${project:root}/output
+              - echo `pwd` >> ${project:root}/dir
+        - name: workdir-override
+          workDir: ${project:root}/subdir
+          step:
+            runOn: host
+            script:
+              - echo `pwd` >> ${project:root}/dir

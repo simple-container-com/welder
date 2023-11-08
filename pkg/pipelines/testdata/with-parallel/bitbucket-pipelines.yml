@@ -1,0 +1,12 @@
+image: ubuntu
+pipelines:
+  default:
+    - parallel:
+      - step:
+          name: parallel1
+          script:
+            - echo parallel1
+      - step:
+          name: parallel2
+          script:
+            - echo parallel2

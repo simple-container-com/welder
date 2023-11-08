@@ -1,0 +1,13 @@
+outDir: bin
+platforms:
+- os: linux
+  arch: amd64
+- os: darwin
+  arch: amd64
+- os: darwin
+  arch: arm64
+#- os: windows
+#  arch: amd64
+targets:
+- name: welder
+  path: cmd/welder/main.go

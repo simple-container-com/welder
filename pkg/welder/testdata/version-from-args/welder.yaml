@@ -1,0 +1,26 @@
+schemaVersion: "1.5.0"
+projectName: version-from-args
+version: 0.5.${arg:build-number:0}
+profiles:
+  pipelines:
+    build:
+      args:
+        build-number: ${env:_BITBUCKET_BUILD_NUMBER}
+  bamboo:
+    build:
+      args:
+        build-number: ${env:_bamboo_buildNumber}
+default:
+  build:
+    args:
+      version: ${project:env}-${project:version}
+modules:
+  - name: test
+    deploy:
+      environments:
+        ddev: {}
+      steps:
+        - step:
+            runOn: host
+            script:
+              - echo ${arg:version}

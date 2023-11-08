@@ -1,0 +1,17 @@
+image: ubuntu
+pipelines:
+  branches:
+    master:
+      - step:
+          image: alpine:latest
+          name: Print hello in branch
+          script:
+            - echo "HELLO master" > output
+            - cat /etc/os-release >> output
+  default:
+    - step:
+        name: Print Hello in default
+        script:
+          - pipe: smecsia/bitbucket-empty-pipe:v1
+          - echo "HELLO default" > output
+          - cat /etc/os-release >> output

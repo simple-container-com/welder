@@ -1,0 +1,53 @@
+name: trebuchet
+description: deployinator-trebuchet
+organization: "Paas/Micros"
+buildNumber: '0.0.1'
+requiresAsap: true
+notifications:
+  email: delivery-engineering@atlassian.com
+
+environmentOverrides:
+  ddev:
+    config:
+      environmentVariables:
+        SLAUTH_LOG_LEVEL: debug
+  prod-east:
+    config:
+      environmentVariables:
+        SLAUTH_LOG_LEVEL: info
+
+links:
+  healthcheck:
+    uri: /heartbeat
+  source:
+    url: 'ssh://git@stash.atlassian.com:7997/dev/deployinator.git'
+
+resources:
+  - name: trebuchet-db
+    type: postgres-db
+
+compose:
+  trebuchet:
+    image: docker.simple-container.com/sox/deployinator/trebuchet
+    digest: 'sha256:b7ea09215c8472b46621fc07d7edb4f454d82d88657f62c2f1faa49a3937cb15'
+    ports:
+      - 8081:8080
+  slauth:
+    image: docker.simple-container.com/sox/micros/slauth-sidecar
+    links:
+      - trebuchet
+    ports:
+      - 8080:8080
+    tag: stable
+
+config:
+  environmentVariables:
+    ASAP_AUDIENCE: deployinator-trebuchet
+    SLAUTH_BACKEND: http://trebuchet:8081
+    SLAUTH_PLUGINS: bypass,slauthtoken,build,deny
+    SLAUTH_BYPASS_ROUTES: /heartbeat
+    SLAUTH_LISTEN: :8080
+
+scaling:
+  min: 1
+  instance: t2.medium

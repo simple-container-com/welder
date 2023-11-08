@@ -1,0 +1,108 @@
+definitions:
+  services:
+    docker:
+      memory: 3072 # docker-in-docker-in-docker is resource-intensive
+  artifactory-pipe: &artifactory-pipe
+    pipe: atlassian/artifactory-sidekick:v1
+  artifactory-pipe-sox: &artifactory-pipe-sox
+    <<: *artifactory-pipe
+    variables:
+      COMPLIANT: "true"
+  artifactory-init: &artifactory-init source .artifactory/activate.sh
+  welder: &welder
+    size: 2x
+    trigger: automatic
+    image:
+      name: docker-proxy.services.atlassian.com/sox/deng/welder-pbc:latest
+      username: buildeng
+      password: $PIPELINES_JWT_TOKEN
+    services:
+      - docker
+    artifacts:
+      - "**.welder-out/**"
+      - "bin/**"
+  steps:
+    - step: &build
+        size: 2x
+        image: golang:1.19
+        name: Build new version of Welder
+        services:
+          - docker
+        caches:
+          - docker
+        script:
+          - *artifactory-pipe
+          - *artifactory-init
+          # Prepare git configuration
+          - git config --global url.ssh://git@stash.atlassian.com:7997/.insteadOf https://stash.atlassian.com/scm/
+          - git config --global url.git@bitbucket.org:.insteadOf https://bitbucket.org/
+          - git config --global url.git@github.com:.insteadOf https://github.com/
+          # Install tools
+          - cat tools.go | grep _ | awk -F'"' '{print $2}' | xargs -tI % go get %
+          # Build welder
+          - PARALLEL=false go run -mod=mod build.go build:all
+        artifacts:
+          - .welder-out/**
+          - bin/**
+    - step: &docker-build
+        <<: *build
+        name: Build Welder Docker images
+        script:
+          - *artifactory-pipe
+          - *artifactory-init
+          - ./bin/linux-amd64/build docker build --timestamps
+    - step: &build-docs
+        <<: *welder
+        name: Build Docs
+        script:
+          - *artifactory-pipe
+          - *artifactory-init
+          - welder make --timestamps -m docs
+    - step: &deploy-docs
+        <<: *welder
+        name: Deploy Docs
+        script:
+          - *artifactory-pipe
+          - *artifactory-init
+          - welder deploy --timestamps -m docs --env dev
+    - step: &publish-alpha
+        <<: *welder
+        name: Publish Welder to alpha repo
+        script:
+          - *artifactory-pipe
+          - *artifactory-init
+          - ./bin/linux-amd64/build deploy -e dev -p alpha
+pipelines:
+  default:
+    - parallel: &build-default
+      - step: *build
+      - step: *build-docs
+    - parallel:
+      - step: *docker-build
+      - step: *publish-alpha
+  branches:
+    master:
+      - parallel: *build-default
+      - parallel:
+        - step: *deploy-docs
+        - step:
+            <<: *build
+            name: Push docker image
+            image: ubuntu:latest
+            script:
+              - *artifactory-pipe-sox
+              - *artifactory-init
+              - ./bin/linux-amd64/build docker build --push --timestamps --sox
+      - step:
+          <<: *build
+          name: Validate PBC image and deploy
+          image:
+            name: docker-proxy.services.atlassian.com/dev/deng/welder-pbc:latest
+            username: buildeng
+            password: $PIPELINES_JWT_TOKEN
+          deployment: dev
+          trigger: automatic
+          script:
+            # Run a single test of welder via welder (make sure d-in-d works)
+            - welder make --timestamps -p single-test
+            - welder deploy --timestamps --env dev

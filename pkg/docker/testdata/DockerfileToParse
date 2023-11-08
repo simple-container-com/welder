@@ -1,0 +1,5 @@
+FROM ubuntu:latest
+ARG required_arg
+ARG optional_arg="val"
+
+RUN echo "OK: ${required_arg}: ${optional_arg}"

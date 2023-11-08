@@ -1,0 +1,200 @@
+schemaVersion: "1.0.1"
+projectName: deployinator
+version: 0.0.1-${git:commit.short}-${project:module.name}
+projectRoot: services # added into Docker container as a volume
+default:              # "default" is applied to all modules
+  mainVolume:
+    mode: delegated
+  deploy:
+    env:
+      SOME_DEPLOY_VAR: value
+    environments:
+      ddev:
+        autoDeploy: true
+        args:
+          some-env-var: dev
+  build:
+    containerWorkDir: /some/default/directory
+    injectEnv: # environment variable names (regexp) to pass from host to build container
+      - BUILD.*
+    env:       # environment variables with values to pass into the build container
+      BUILD_ARGS: ${env:BUILD_ARGS}
+      SOME_OTHER_VAR: value
+      ENV_WITH_DEFAULT_ARG: ${arg:not-existing-arg:defaultEnvValue}
+      ENV_FROM_ARG_WITH_DEFAULT: ${arg:arg-with-default:shouldNotBeTheValue}
+      MAVEN_OPTS: "-Xms512M -Xmx1024M -Xss2M -XX:MaxMetaspaceSize=1024M"
+    volumes:   # extra volumes to pass into build container
+      - ~/.m2/settings.xml:${container:home}/.m2/settings.xml:ro
+      - ~/.m2/settings-security.xml:${container:home}/.m2/settings-security.xml:ro
+    args:
+      namespace: docker.simple-container.com/test/deng
+      maven-version: 3.6-jdk-8-slim
+      arg-with-default: ${env:NOT_EXISTING_ENV_VAR:defaultArgValue}
+      project-version: ${project:version}
+  dockerImages:
+    - name: default
+      dockerFile: ./Dockerfile
+      tags:
+        - ${arg:namespace}/${project:module.name}:${git:commit.short}
+      build:
+        args:
+          - name: module
+            value: ${project:module.name}
+profiles: # override default behavior with handy "modes"
+  linux:
+    activation:
+      linux: true
+  blah:
+    build:
+      env:
+        BLAH: blah
+  skip-tests:
+    activation:
+      skip-tests: true
+    build:
+      env:
+        BUILD_ARGS: ${env:BUILD_ARGS} -DskipTests
+  bamboo:
+    activation:
+      bamboo: true
+    build:
+      env:
+        bamboo_JWT_TOKEN: ${env:bamboo_JWT_TOKEN}
+  sox:
+    activation:
+      sox: true
+    build:
+      args:
+        namespace: docker.simple-container.com/test/deng/sox
+    deploy:
+      args:
+        flags: --strict
+modules:
+  - name: armory
+    version: 0.0.2-${git:commit.full}
+    path: services/armory
+    build:
+      injectEnv:
+        - TEST.*
+      env:
+        BUILD_ARGS: -Dsome.other.var=blah
+        EXTRA_VAR: ${arg:extra}
+      containerWorkDir: /some/directory
+      steps:
+        # Here goes the Bitbucket Pipelines-compatible config
+        - step:
+            image: maven:${arg:maven-version}
+            script:
+              - env
+              - whoami
+              - 'echo "[INFO] Building jar: $(pwd)/armory/target/armory-1.0-SNAPSHOT.jar"'
+              - 'mkdir -p $(pwd)/armory/target && touch $(pwd)/armory/target/armory-1.0-SNAPSHOT.jar'
+              - echo ${BUILD_ARGS}
+    dockerImages:
+      - name: service
+        dockerFile: ./Dockerfile
+        tags:
+          - ${arg:namespace}/armory:${git:commit.short}
+          - ${arg:namespace}/armory:${git:commit.full}
+        build:
+          args:
+            - name: module
+              value: armory
+            - name: maven-version
+              value: ${arg:maven-version}
+  - name: trebuchet
+    path: services/trebuchet
+    build:
+      env:
+        PROJECT_VERSION: ${arg:project-version}
+      containerWorkDir: ${project:root}
+      steps:
+        - step:
+            image: maven:${arg:maven-version}
+            script:
+              - env
+              - 'echo "[INFO] Building jar: $(pwd)/trebuchet/target/trebuchet-1.0-SNAPSHOT.jar"'
+              - 'mkdir -p $(pwd)/trebuchet/target && touch $(pwd)/trebuchet/target/trebuchet-1.0-SNAPSHOT.jar'
+              - 'for i in 1 2 3 4 5 6 7 8 9; do printf "\r=======> $i"; sleep 0.1; done; printf "\n"'
+              - echo "${env:BUILD_ARGS}"
+        - task: do-echo
+        - step:
+            runOn: host
+            script:
+              - echo "i-am-on-host"
+    dockerImages:
+      - name: service
+        dockerFile: ./Dockerfile
+        tags:
+          - ${arg:namespace}/trebuchet:${git:commit.short}
+          - ${arg:namespace}/trebuchet:${git:commit.full}
+        build:
+          contextPath: ${project:root}/..
+          args:
+            - name: module
+              value: trebuchet
+            - name: maven-version
+              value: ${arg:maven-version}
+  - name: third
+    version: 1.0.0-beta
+    path: services
+    build:
+      workDir: armory
+      containerWorkDir: ${project:root}
+      steps:
+        - step:
+            image: maven:${arg:maven-version}
+            script:
+              - ls -la
+    deploy:
+      environments:
+        stg-west:
+          autoDeploy: true
+          args:
+            some-env-var: staging
+          env:
+            SOME_DEPLOY_VAR: staging-value
+      steps:
+        - step:
+            image: alpine
+            script:
+              - mkdir -p ${project:root}/armory/target
+              - echo '${project:version}' > ${project:root}/armory/target/deploy-version
+              - echo '${arg:flags} ${project:env}' > ${project:root}/armory/target/deploy-flags
+              - echo '${project:env}=${arg:some-env-var}' > ${project:root}/armory/target/deploy-env
+              - echo 'SOME_DEPLOY_VAR='${SOME_DEPLOY_VAR} >> ${project:root}/armory/target/deploy-env
+        - task: do-echo-on-host
+        - task: print-home-dir
+  - name: fourth
+    path: some-not-existing-path
+    build:
+      steps:
+        - task: print-home-dir
+tasks:
+  print-home-dir:
+    image: maven:${arg:maven-version}
+    volumes:
+      - ${project:root}/pom.xml:${container:home}/pom.xml
+    script:
+      - echo "home=${container:home}"
+      - cat ${HOME}/pom.xml | grep modelVersion
+  do-echo:
+    image: maven:${arg:maven-version}
+    description: Prints some senseless bullshit
+    args:
+      extra: something
+    env:
+      BUILD_ARGS: -Dsome.other.var=blah
+      EXTRA_VAR: ${arg:extra}
+    containerWorkDir: /some/directory
+    script:
+      - echo "${BUILD_ARGS} ${EXTRA_VAR}"
+  do-echo-on-host:
+    runOn: host
+    description: Prints some senseless bullshit, but on host
+    args:
+      extra: extra-arg-host
+    env:
+      BUILD_ARGS: -Dsome.host.arg=yay-host -Dproject.version=${arg:project-version}
+    script:
+      - echo "${BUILD_ARGS} ${arg:extra}"  > ${project:root}/armory/target/host-task

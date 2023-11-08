@@ -14,7 +14,7 @@ date: '2022-08-22'
 ## Installation
 
 ```bash
-on-host:~$ curl -s "https://welder.simple-container.com/get.sh" | bash
+on-host:~$ curl -s "https://welder.simple-container.com/welder.sh" | bash
 ```
 
 To initialize Welder for your project, you need to run the following command:

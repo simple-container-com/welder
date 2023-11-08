@@ -19,7 +19,7 @@ mkdir -p $BINDIR
 if [[ ! -f "$BINDIR/welder" ]]; then
   (
     cd $BINDIR &&
-    curl -fL "https://welder.simple-container.com/releases/latest/${PLATFORM}-${ARCH}.tar.gz" | tar -xzp welder  &&
+    curl -fL "https://welder.simple-container.com/releases/latest/welder-${PLATFORM}-${ARCH}.tar.gz" | tar -xzp welder  &&
     chmod +x welder &&
     export PATH="$PATH:$BINDIR" &&
     cd -

@@ -11,11 +11,11 @@ import (
 )
 
 type WelderMageBuild struct {
-	GoBuildContext     `yaml:",inline"`
-	BuildViaAtlasBuild bool   `yaml:"-" default:"false" env:"BUILD_VIA_WELDER"`
-	TestTarget         string `yaml:"-" default:"./..." env:"TEST_TARGET"`
-	TestTags           string `yaml:"-" default:"osusergo" env:"TEST_TAGS"`
-	atlasBuildCtx      *welder.BuildContext
+	GoBuildContext `yaml:",inline"`
+	BuildViaWelder bool   `yaml:"-" default:"false" env:"BUILD_VIA_WELDER"`
+	TestTarget     string `yaml:"-" default:"./..." env:"TEST_TARGET"`
+	TestTags       string `yaml:"-" default:"osusergo" env:"TEST_TAGS"`
+	atlasBuildCtx  *welder.BuildContext
 }
 
 func (mage *WelderMageBuild) Welder() *welder.BuildContext {

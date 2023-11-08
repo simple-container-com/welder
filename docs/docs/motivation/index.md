@@ -11,8 +11,8 @@ date: '2022-08-23'
 
 # Why Welder?
 
-### Bitbucket Pipelines and scripts
-Bitbucket Pipelines is the first choice for Atlassians to run their CI/CD pipelines. While it allows to easily configure
+### Github Actions, Gitlab CI, Bitbucket Pipelines and scripts
+CI config is the first choice for anyone to run their CI/CD pipelines. While it allows to easily configure
 your CI pipeline that is executed in the cloud using variety of containerized SDKs, it lacks the possibility of
 running individual steps locally. In addition, sometimes it is hard to figure out what is actually going on in the
 container running in the pipeline. And it becomes a little tricky to debug the pipeline itself.
@@ -34,6 +34,7 @@ pipelines:
           - ./scripts/build.sh
 ```
 There are a few issues with such approach:
+
 * It is declarative only when it comes to CI configuration. You need to actually review the code of `build.sh` to understand what's going to be built and when
 * It is not unified (i.e. each project may have different set of scripts that are not always easily locatable in the project). 
   This is especially important with projects implemented in different languages. Each language has its own build configurations and SDKs.
@@ -46,6 +47,7 @@ There are a few issues with such approach:
 ### Dockerfile/Buildkit is good enough?
 For some trivial services, Dockerfile provides the easy way of building and testing the build of a service locally.
 However, you face the following issues when you want to use Docker as the entry-point to your service's build:
+
 * Dockerfile allows to build a specific Docker image only, while your application may need to produce many
 * It is not easy to provide secrets to the Docker build, even using Buildkit. Normally you'd want to provide local
   Maven/Gradle/NPM configs to get access to internal repositories.

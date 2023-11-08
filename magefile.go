@@ -33,10 +33,10 @@ type Publish mg.Namespace
 var (
 	Ctx        = magebuild.InitBuild()
 	Generators = map[string]magebuild.Generator{
-		"templates":        nsGenerate.Templates,
-		"gofmt":            nsGenerate.Formatting,
-		"jsonschema":       nsGenerate.JsonSchema,
-		"pipelines-schema": nsGenerate.PipelinesSchema,
+		"templates":  nsGenerate.Templates,
+		"gofmt":      nsGenerate.Formatting,
+		"jsonschema": nsGenerate.JsonSchema,
+		//"pipelines-schema": nsGenerate.PipelinesSchema, // TODO
 	}
 )
 
@@ -87,7 +87,7 @@ func (b Build) Build() error {
 	if err := nsGenerate.All(); err != nil {
 		return err
 	}
-	if Ctx.BuildViaAtlasBuild {
+	if Ctx.BuildViaWelder {
 		return Ctx.Welder().Build()
 	}
 	if err := Ctx.ForAllTargets(func(target magebuild.Target) error {

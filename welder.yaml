@@ -12,7 +12,7 @@ default:
       namespace: dev
       build-goals: build:build
       build-via-welder: "false"
-      build-image: golang:1.22
+      build-image: golang:1.21
     env:
       VERSION: ${project:version}
       BUILD_GOALS: ${arg:build-goals}
@@ -33,7 +33,7 @@ profiles:
         build-goals: build:build
       env:
         PLATFORMS: "linux-amd64"
-        TEST_TARGET: "./pkg/atlasbuild/... -run TestBuildWithCustomImage"
+        TEST_TARGET: "./pkg/welder/... -run TestBuildWithCustomImage"
   skip-tests:
     activation:
       skip-tests: true
@@ -61,19 +61,20 @@ profiles:
       env:
         GOMODCACHE: ${user:home}/go/pkg/mod
 modules:
-  - name: docs
-    path: docs
+  - name: welder
     build:
       steps:
+        - task: tools
+        - task: build
         - task: build-docs
     dockerImages:
       - name: build-docs
-        dockerFile: ${project:root}/docs/Dockerfile
+        dockerFile: ${project:root}/Dockerfile
         tags:
           - docker.simple-container.com/${arg:namespace}/welder/welder-docs:latest
           - docker.simple-container.com/${arg:namespace}/welder/welder-docs:${project:version}
         build:
-          contextPath: ${project:root}/docs
+          contextPath: ${project:root}
           args:
             - name: version
               value: ${project:version}
@@ -84,36 +85,6 @@ modules:
               export VALUES="--set image.image=${docker:tags[0].image} --set image.tag=${docker:tags[0].tag}"
               export PROFILE=simple-container
               ${project:root}/charts/welder/deploy.sh welder welder
-  - name: welder
-    build:
-      steps:
-        - task: tools
-        - task: build
-    deploy:
-      steps:
-        - task: tools
-        - task: publish
-        - task: deploy-welder-schema
-    dockerImages:
-      - name: build-pbc
-        dockerFile: pbc/build/Dockerfile
-        tags:
-          - docker.simple-container.com/${arg:namespace}/deng/welder-pbc:latest
-          - docker.simple-container.com/${arg:namespace}/deng/welder-pbc:${project:version}
-        build:
-          contextPath: ${project:root}
-          args:
-            - name: version
-              value: ${project:version}
-        runAfterPush:
-          runOn: host
-          script:
-            - echo "push tags[0].image=${docker:tags[0].image}"
-            - echo "push tags[0].tag=${docker:tags[0].tag}"
-            - echo "push tags[0].digest=${docker:tags[0].digest}"
-            - echo "push tags[1].image=${docker:tags[1].image}"
-            - echo "push tags[1].tag=${docker:tags[1].tag}"
-            - echo "push tags[1].digest=${docker:tags[1].digest}"
 tasks:
   tools:
     customImage: &build-image
@@ -147,15 +118,8 @@ tasks:
     runOn: host
     description: Deploys the Welder Schema
     script:
-      - atlas plugin installed | grep statlas > /dev/null || atlas plugin install -n statlas
       - |-
         s3 put --namespace=dev -s platform/json-schemas/welder.schema.json -f ${project:root}/bin/welder.schema.json
-  deploy-docs:
-    image: dtzar/helm-kubectl:3.13
-    env:
-      PROFILE: simple-container
-    script:
-      - ${project:root}/charts/welder/deploy.sh welder welder
   build-docs:
     image: python:3.9.18
     workDir: ${project:root}/docs

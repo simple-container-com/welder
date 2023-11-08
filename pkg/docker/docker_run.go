@@ -37,8 +37,8 @@ import (
 )
 
 const (
-	LabelNameContainerID     = "AtlasBuildContainerID"
-	LabelNameConfigHash      = "AtlasBuildConfigHash"
+	LabelNameContainerID     = "WelderBuildContainerID"
+	LabelNameConfigHash      = "WelderBuildContainerConfigHash"
 	HostSystemHostname       = "host.docker.internal" // hostname to access host machine (as of https://docs.docker.com/docker-for-mac/networking/)
 	GatewayHostname          = "gateway"              // hostname to access gateway (in Linux it'd be the same as host machine, in Mac it'd be a host of Docker VM)
 	DefaultContainerCommand  = "sleep 100000"

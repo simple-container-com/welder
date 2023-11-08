@@ -28,8 +28,7 @@ welder bitbucket-pipelines generate
 
 This will generate directory `bitbucket-pipelines.yml` file according to definitions from `welder.yaml` file.
 
-{{% note %}}
-Generated CI/CD configurations will still run Welder under the hood. You may still want to make some manual changes 
-to the generated files or extend them with your own customizations.
-{{% /note %}}
+!!! note
+    Generated CI/CD configurations will still run Welder under the hood. You may still want to make some manual changes 
+    to the generated files or extend them with your own customizations.
 

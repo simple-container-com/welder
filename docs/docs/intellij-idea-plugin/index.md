@@ -13,7 +13,7 @@ date: '2022-08-22'
 
 ## Installation
 
-Download the plugin from [here](https://statlas.prod.simple-container.com/dev/platform/idea-plugin.zip).
+Download the plugin from [here](https://welder.simple-container.com/get-idea-plugin).
 
 To install within IntelliJ IDEA, open `File -> Settings -> Plugins -> ⚙️ -> Install plugin from Disk` and select the downloaded file.
 
@@ -23,4 +23,4 @@ To install within IntelliJ IDEA, open `File -> Settings -> Plugins -> ⚙️ -> 
 Plugin provides a set of actions that can be used to write Welder descriptor files. It validates the descriptor and
 provides easy navigation and auto-completion when you make changes to it.
 
-![Auto-complete example in IntelliJ plugin](/platform/tool/welder/images/idea-auto-complete.png)
+![Auto-complete example in IntelliJ plugin](/images/idea-auto-complete.png)

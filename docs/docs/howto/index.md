@@ -20,7 +20,7 @@ runs build and then builds and pushes Docker images.
 ## Running Bitbucket Pipelines
 
 Unsure if you'd use an additional build configuration? You can still use Welder for simply running
-your existing [Bitbucket Pipelines](/platform/tool/welder/howto/running-bitbucket-pipelines/) configuration locally. 
+your existing [Bitbucket Pipelines](/howto/running-bitbucket-pipelines/) configuration locally. 
 Just navigate to your project's directory and invoke: 
 
 ```bash
@@ -36,7 +36,7 @@ BBP environment and run the pipeline locally. Note: this feature is currently ex
 
 ## Containerized tasks
 
-As described in [Simple usage](/platform/tool/welder/howto/simple-usage/) section, you can use Welder to execute certain
+As described in [Simple usage](/howto/simple-usage/) section, you can use Welder to execute certain
 tasks within containers and have declarative configuration for that.
 
 ```yaml
@@ -58,7 +58,7 @@ and share them with your team.
 
 ## Declarative build for Docker image(s)
 
-Often you need to build [multiple Docker images](/platform/tool/welder/howto/build-and-test-service/#docker-images) 
+Often you need to build [multiple Docker images](/howto/build-and-test-service/#docker-images) 
 for a service. This can be done using scripts or it can be easily maintained within Welder configuration:
 
 ```yaml
@@ -76,7 +76,7 @@ Now you simply can run `welder docker build` and your docker image will be built
 
 ## Generating CI/CD pipelines
 
-Welder can [generate](/platform/tool/welder/howto/generating-ci-cd-pipelines) Bamboo and Bitbucket Pipelines 
+Welder can [generate](/howto/generating-ci-cd-pipelines) Bamboo and Bitbucket Pipelines 
 configurations based on `welder.yaml` file. This is a great way to get started with CI/CD after you've tested 
 and configured your build locally.
 
@@ -88,7 +88,7 @@ welder bitbucket-pipelines generate
 
 ## Multi-module builds and defaults
 
-When you have [multiple modules](/platform/tool/welder/howto/build-and-test-service/#multi-module-builds) in your 
+When you have [multiple modules](/howto/build-and-test-service/#multi-module-builds) in your 
 project, you can use Welder to build them separately. For example, if you build your modules into containers in 
 the same way and share the same Dockerfile, it's easy to configure Welder to build them individually:
 
@@ -109,7 +109,7 @@ Simple run of `welder docker build` will build docker images for both `service-a
 
 ## Seamless control over the version of your service
 
-You can use [supported expressions](/platform/tool/welder/howto/expressions) to control the version of your service. 
+You can use [supported expressions](/howto/expressions) to control the version of your service. 
 This allows you to easily template the version based on some parameter (e.g. environment variable) and then use it 
 everywhere in your build configuration.
 
@@ -125,7 +125,7 @@ default:
 
 ## Profiles and conditional customizations of the build configuration
 
-Welder allows to define [profiles](/platform/tool/welder/howto/profiles-and-modes) with different configurations for 
+Welder allows to define [profiles](/howto/profiles-and-modes) with different configurations for 
 different environments. For example, you can define a profile for production environment and another one for development.
 
 ```yaml

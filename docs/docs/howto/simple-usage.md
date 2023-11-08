@@ -66,4 +66,4 @@ tasks:
 When you invoke `welder make` it'll run the `build` task. It is clear that you can run multiple tasks as steps 
 within your build definition. Each task can use different image and script.
 
-For a more detailed description of the build lifecycle, please see [build and test service](/platform/tool/welder/howto/build-and-test-service).
+For a more detailed description of the build lifecycle, please see [build and test service](/howto/build-and-test-service).

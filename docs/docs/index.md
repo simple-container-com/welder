@@ -21,9 +21,9 @@ service, trying to make the following operations easier and more streamlined:
 * Build Docker images for the application
 * Deploy application with the chosen deploy strategy
 
-Please read [Motivation](/platform/tool/welder/motivation/) to understand where Welder fits in the development process.
+Please read [Motivation](/motivation/) to understand where Welder fits in the development process.
 
 
 ## Questions/Issues?
 
-If you have any issues or questions related to Welder, please reach out at [#welder](https://atlassian.slack.com/archives/C014L64J750).
+If you have any issues or questions related to Welder, please reach out at [support@simple-container.com](mailto:support@simple-container.com).

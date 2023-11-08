@@ -42,10 +42,9 @@ In the example above we assume that some zip archive is produced after the build
 [statlas](/platform/statlas/). Depending on which environment is provided to `welder deploy` command, the
 `--namespace` argument will be set to `development` or `production`.
 
-{{% note %}}
-`${project:env}` expression gets replaced with the actual value when you invoke a deployment command. For
-`welder deploy -e ddev` it will be replaced with `ddev`.
-{{% /note %}}
+!!! note
+    `${project:env}` expression gets replaced with the actual value when you invoke a deployment command. For
+    `welder deploy -e ddev` it will be replaced with `ddev`.
 
 ### Pushed images summary
 
@@ -137,10 +136,9 @@ modules:
 # ...
 ```
 
-{{% note %}}
-When pipe is invoked directly from `welder.yaml`, environment variables are set through `env` within `deploy` 
-section in contrast to `bitbucket-pipelines.yml` file where there is an additional `variables` section added to `pipe`.
-{{% /note %}}
+!!! note
+    When pipe is invoked directly from `welder.yaml`, environment variables are set through `env` within `deploy` 
+    section in contrast to `bitbucket-pipelines.yml` file where there is an additional `variables` section added to `pipe`.
 
 To allow running `spinnaker-deploy` pipe locally you will need to provide a valid `SLAUTH_OVERRIDE_TOKEN` environment
 variable, so that the pipe actually works from your local machine. This can be done using a `local` profile and a task

@@ -16,7 +16,7 @@ node_modules/
 package.json
 .gitignore
 .spelling
-content/platform/tool/welder/
+content/
     apis/
         index.md
         sample.md

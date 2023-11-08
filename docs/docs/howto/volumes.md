@@ -100,7 +100,6 @@ When you need to sign the built artifacts with GnuPG you may also want to share 
     volumes:
       - ~/.gnupg:${container:home}/.gnupg
 ```
-{{% note %}}
-This volume can be added conditionally, for example only when build is running on the compliant environment (sox).
-{{% /note %}}
+!!! note
+    This volume can be added conditionally, for example only when build is running on the compliant environment (sox).
 

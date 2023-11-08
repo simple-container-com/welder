@@ -70,8 +70,7 @@ tasks:
 In the above example we use `golang:1.18` image as a base and then install Docker CLI inside to allow docker commands
 to be used in tests. 
 
-{{% note %}}
-You can use any of the supported [expressions](/platform/tool/welder/howto/expressions) within inline
-dockerfile to parameterize it.
-{{% /note %}}
+!!! note
+    You can use any of the supported [expressions](/howto/expressions) within inline
+    dockerfile to parameterize it.
 

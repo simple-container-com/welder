@@ -89,7 +89,7 @@ tasks:
 In the example above we are setting the `MAVEN_OPTS` environment variable to `-Xmx2048m` if the `maven-opts` argument is not set. 
 This value as well as the build steps defined in the `build` section will be used by both `microservice1` and `microservice2`.
 
-By using [profiles](/platform/tool/welder/howto/profiles-and-modes) you can also specify environment variables, arguments
+By using [profiles](/howto/profiles-and-modes) you can also specify environment variables, arguments
 and steps. The inheritance of the values will be done in the following order: `default`, `profile`, `module`, `task`.
 
 ### Integration tests
@@ -213,6 +213,5 @@ modules:
 That is when your current directory is `microservice1` and you run `welder make` it will run only build steps for
 `microservice1` module. And the same applies to `microservice2`.
 
-{{% note %}}
-This only works when there is no conflicting paths between modules in which case this behavior is not guaranteed.
-{{% /note %}}
+!!! note
+    This only works when there is no conflicting paths between modules in which case this behavior is not guaranteed.

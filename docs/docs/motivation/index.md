@@ -60,4 +60,4 @@ tool. It can be used for similar purposes, but it is hard to use it because it i
 application and its dependencies and starting this whole stack, rather than building it and running tests.
 
 ## Use cases
-For the detailed use-cases of what you can do with Welder, please read [Howto](/platform/tool/welder/howto/) section.
+For the detailed use-cases of what you can do with Welder, please read [Howto](/howto/) section.

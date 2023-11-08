@@ -13,10 +13,8 @@ date: '2022-08-22'
 
 ## Installation
 
-You should already have [Atlas CLI](https://developer.atlassian.com/platform/atlas-cli/) installed. To install 
-Welder, you need to run the following command:
 ```bash
-on-host:~$ atlas plugin install -n build
+on-host:~$ curl -s "https://welder.simple-container.com/get.sh" | bash
 ```
 
 To initialize Welder for your project, you need to run the following command:
@@ -30,7 +28,7 @@ Follow the instructions to configure `welder.yaml` descriptor.
 
 ## IntelliJ Plugin
 
-It is strongly recommended to install the [Welder IntelliJ Plugin](/platform/tool/welder/intellij-idea-plugin) as well
+It is strongly recommended to install the [Welder IntelliJ Plugin](/intellij-idea-plugin) as well
 if you use IntelliJ IDEA as the main development IDE. The plugin adds validation, autocompletion and navigation within
 `welder.yaml` descriptors.
 
@@ -55,4 +53,4 @@ run [test] Linux 5b8ac2bbb2a6 5.4.0-122-generic #138-Ubuntu SMP Wed Jun 22 15:00
 run [test]  - Finished test in 5s
 ```
 
-Please see [Simple usage](/platform/tool/welder/howto/simple-usage/) for more information.
+Please see [Simple usage](/howto/simple-usage/) for more information.

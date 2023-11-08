@@ -15,8 +15,8 @@ date: '2022-08-22'
 
 | expression                        | description                                                                                                                 |
 |-----------------------------------|-----------------------------------------------------------------------------------------------------------------------------|
-| `${arg:<name>:<default>}`         | [Arguments](/platform/tool/welder/howto/arguments-and-environment) passed to the CLI                                   |
-| `${env:<name>:<default>}`         | [Environment variables](/platform/tool/welder/howto/arguments-and-environment) of the host environment                 |
+| `${arg:<name>:<default>}`         | [Arguments](/howto/arguments-and-environment) passed to the CLI                                   |
+| `${env:<name>:<default>}`         | [Environment variables](/howto/arguments-and-environment) of the host environment                 |
 | `${host:wd}`                      | Working directory on the host environment                                                                                   |
 | `${host:projectRoot}`             | Root of the project on the host environment                                                                                 |
 | `${container:home}`               | Home directory in the container (changes with the username)                                                                 |
@@ -42,7 +42,7 @@ date: '2022-08-22'
 | `${mode:on-host}`                 | Renders `true` whether the build is running with `on-host` mode                                                             |
 | `${mode:verbose}`                 | Renders `true` whether the build is running in verbose mode                                                                 |
 | `${mode:no-cache}`                | Renders `true` whether the build is running in `no-cache` mode                                                              |
-| `${mode:sync-mode}`               | Renders volumes sync mode (e.g. `bind,copy,external,volume,add`). [more info](/platform/tool/welder/howto/performance) |
+| `${mode:sync-mode}`               | Renders volumes sync mode (e.g. `bind,copy,external,volume,add`). [more info](/howto/performance) |
 | `${project:name}`                 | Prints project's name as specified in the descriptor                                                                        |
 | `${project:root}`                 | Prints path to root directory of the project                                                                                |
 | `${project:version}`              | Prints version of the project as configured in the descriptor                                                               |

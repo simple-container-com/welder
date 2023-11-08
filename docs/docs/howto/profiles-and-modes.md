@@ -48,7 +48,7 @@ Welder introduces a few modes that conditionally can activate profiles or can be
 mode is activated by either passing a flag to `welder` command or implicitly derived from host environment 
 build is running on.
 
-Each mode can either activate a certain profile or be used from an [expression](/platform/tool/welder/howto/expressions) 
+Each mode can either activate a certain profile or be used from an [expression](/howto/expressions) 
 to conditionally run a task.
 
 There are the following flags:
@@ -57,7 +57,7 @@ There are the following flags:
 * `--on-host` activates "on-host" mode which forces all steps and tasks to run on host environment instead of a Docker container
 * `--verbose` activates "verbose" mode that produces debug messages from Welder
 * `--no-cache` activates "no-cache" mode which disables caching of the built Docker images and forces them to be rebuilt every time
-* `--sync-mode=<value>` activates one of the supported [volume](/platform/tool/welder/howto/volumes) synchronization modes
+* `--sync-mode=<value>` activates one of the supported [volume](/howto/volumes) synchronization modes
 
 Modes derived from environment are:
 * `bamboo` activated whenever build is running on Bamboo

@@ -54,7 +54,7 @@ spec:
               name: http
           livenessProbe:
             httpGet:
-              path: /actuator/health
+              path: /
               port: {{ .Values.deployment.containerPort }}
             initialDelaySeconds: 90
             periodSeconds: 10

@@ -31,4 +31,4 @@ if [[ ! -f "$BINDIR/welder" ]]; then
   )
 fi
 
-$BINDIR/build $@
+$BINDIR/welder $@

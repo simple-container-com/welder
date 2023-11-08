@@ -125,7 +125,7 @@ default:
 
 ## Profiles and conditional customizations of the build configuration
 
-Atlas build allows to define [profiles](/platform/tool/welder/howto/profiles-and-modes) with different configurations for 
+Welder allows to define [profiles](/platform/tool/welder/howto/profiles-and-modes) with different configurations for 
 different environments. For example, you can define a profile for production environment and another one for development.
 
 ```yaml

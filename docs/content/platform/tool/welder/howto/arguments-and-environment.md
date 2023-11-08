@@ -52,7 +52,7 @@ run [hello]  - Finished hello in 0s
 
 ## Environment variables
 
-Atlas build allows to read environment variables from the host environment using `${env:<name>:<default>}` expression.
+Welder allows to read environment variables from the host environment using `${env:<name>:<default>}` expression.
 
 ```yaml
 schemaVersion: 1.8.0

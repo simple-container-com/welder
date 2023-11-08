@@ -14,7 +14,7 @@ date: '2022-10-10'
 ## Installation
 
 Download the plugin from [here](https://statlas.prod.simple-container.com/dev/platform/vscode-plugin.vsix).
-
+[index.md](index.md)
 To install from the terminal, run `code --install-extension vscode-plugin.vsix`
 
 You must also have the [Redhat YAML plugin](https://marketplace.visualstudio.com/items?itemName=redhat.vscode-yaml) to support YAML validation.
@@ -41,7 +41,7 @@ Currently supported files include:
 # Task Runner
 Simply open the "Welder Tasks" sidebar explorer to view the welder tasks in the current project.
 Click any to run them.
-![Atlas build tasks sidebar](/platform/tool/welder/images/vscode/welder-tasks.png)
+![Welder tasks sidebar](/platform/tool/welder/images/vscode/welder-tasks.png)
 
 
 # Status Bar

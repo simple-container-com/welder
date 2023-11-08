@@ -23,4 +23,4 @@ To install within IntelliJ IDEA, open `File -> Settings -> Plugins -> ⚙️ -> 
 Plugin provides a set of actions that can be used to write Welder descriptor files. It validates the descriptor and
 provides easy navigation and auto-completion when you make changes to it.
 
-![Auto-complete example in IntelliJ plugin](/images/idea-auto-complete.png)
+![Auto-complete example in IntelliJ plugin](../images/idea-auto-complete.png)

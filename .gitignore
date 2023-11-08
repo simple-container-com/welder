@@ -15,3 +15,5 @@ coverage.txt
 .artifactory
 **/testdata/**/output
 .atlas-build-out
+.gitsecret/keys/random_seed
+!*.secret

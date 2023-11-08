@@ -1,0 +1,95 @@
+{{- $root := . }}
+{{- $configMounts := $.Values.configMounts | default list }}
+{{- $secretMounts := $.Values.secretMounts | default list }}
+{{- $sidecars := $.Values.sidecars | default list }}
+{{- $pvcs := $.Values.pvcs | default list }}
+{{- $pvcmounts := $.Values.pvcmounts | default list }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "generator.name" $root }}
+  labels: {{- include "generator.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.deployment.replicaCount }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: {{ .Values.deployment.maxSurge }}
+      maxUnavailable: {{ .Values.deployment.maxUnavailable }}
+  selector:
+    matchLabels:
+      deployment: {{ template "generator.name" $root }}
+  template:
+    metadata:
+      labels:
+        deployment: {{ template "generator.name" $root }}
+      annotations:
+        {{- with .Values.podAnnotations -}}
+        {{- tpl (toYaml .) $ | nindent 8 -}}
+        {{- end }}
+    spec:
+      volumes:
+        {{- range $index, $pvc := $pvcs }}
+        - name: {{ $pvc.name }}
+          persistentVolumeClaim:
+            claimName: {{ $pvc.name }}
+        {{- end }}
+        - name: config
+          configMap:
+            name: "{{ template "generator.name" $root }}-config"
+        - name: secrets
+          secret:
+            secretName: "{{ template "generator.name" $root }}"
+      imagePullSecrets:
+        - name: {{ template "generator.name" $root }}-docker-config
+      containers:
+        - name: generator
+          image: {{ .Values.image.repo }}:{{ .Values.image.tag }}
+          imagePullPolicy: Always
+          args: {{ .Values.args | toYaml | nindent 12 }}
+          resources: {{ toYaml .Values.deployment.resources | nindent 12 }}
+          ports:
+            - containerPort: {{ .Values.deployment.containerPort }}
+              protocol: TCP
+              name: http
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: {{ .Values.deployment.containerPort }}
+            initialDelaySeconds: 90
+            periodSeconds: 10
+          volumeMounts:
+            {{- range $index, $pvc := $pvcmounts }}
+            - name: {{ $pvc.name }}
+              mountPath: {{ $pvc.mountPath }}
+            {{- end }}
+          {{- range $index, $configMount := .Values.configMounts }}
+            - name: config
+              mountPath: "{{ $configMount.mountPath }}"
+              subPath: "{{ $configMount.subPath }}"
+          {{- end }}
+          {{- range $index, $secretMount := $secretMounts }}
+            - name: secrets
+              mountPath: {{ $secretMount.mountPath }}
+              subPath: {{ $secretMount.subPath }}
+          {{- end }}
+          env:
+            {{- range $key, $value := .Values.deployment.env }}
+            - name: {{ $key }}
+              value: {{ if (contains "{{" $value ) }}{{ tpl $value $root }}{{ else }}"{{ $value }}"{{ end }}
+            {{- end }}
+            {{- range $idx, $secret := .Values.secretEnv }}
+            - name: {{ $secret.name }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "generator.name" $root }}
+                  key: {{ $secret.name }}
+            {{- end }}
+          lifecycle:
+            preStop:
+              exec:
+                # Make sure the underlying process receives SIGTERM. Kubernetes sends SIGKILL after grace period ends
+                # Sleep is necessary to complete any ongoing operations before starting actual termination
+                # (while pod is being deregistered from endpoints list)
+                command: [ "/bin/bash","-c","sleep 10; kill -SIGTERM $(pgrep -f java);" ]
+

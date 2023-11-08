@@ -1,0 +1,4 @@
+values.secrets*yaml
+../secrets/*
+!secrets/*.secret
+!../secrets/kubeconfig.yaml

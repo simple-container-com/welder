@@ -1,0 +1,12 @@
+{{- $root := . }}
+{{- $pvcs := $.Values.pvcs | default list }}
+{{- range $index, $pvc := $pvcs }}
+{{- $storageClass := $pvc.storageClass | default dict }}
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ $pvc.name }}
+  labels: {{- include "generator.labels" $root | nindent 4 }}
+spec: {{- tpl (toYaml $pvc.spec) $root | nindent 4 -}}
+{{- end }}

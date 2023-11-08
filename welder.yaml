@@ -15,14 +15,13 @@ default:
       build-image: golang:1.22
     env:
       VERSION: ${project:version}
-      GOPRIVATE: "stash.atlassian.com,bitbucket.org"
       BUILD_GOALS: ${arg:build-goals}
       BUILD_VIA_WELDER: ${arg:build-via-welder}
       GOMODCACHE: ${container:home}/go/pkg/mod
       INSIDE_WELDER: "true"
   deploy:
     env:
-      STATLAS_URL: https://statlas.prod.simple-container.com
+      PROFILE: simple-container
     environments:
       dev:
         autoDeploy: true
@@ -35,33 +34,6 @@ profiles:
       env:
         PLATFORMS: "linux-amd64"
         TEST_TARGET: "./pkg/atlasbuild/... -run TestBuildWithCustomImage"
-  pipelines:
-    activation:
-      pipelines: true
-    build:
-      env:
-        PARALLEL: "false"
-    deploy:
-      env:
-        bamboo_JWT_TOKEN: ${env:PIPELINES_JWT_TOKEN}
-  sox:
-    activation:
-      sox: true
-    build:
-      args:
-        namespace: sox
-  bamboo:
-    activation:
-      bamboo: true
-    build:
-      args:
-        build-via-welder: "true"
-        build-goals: build:build build:bundles
-      env:
-        VERBOSE: "true"
-    deploy:
-      env:
-        bamboo_JWT_TOKEN: ${env:bamboo_JWT_TOKEN}
   skip-tests:
     activation:
       skip-tests: true
@@ -75,7 +47,6 @@ profiles:
         build-goals: build:all
       env: &alpha-env
         RELEASE_CHANNEL: alpha
-        STATLAS_URL: https://statlas.prod.simple-container.com/dev
   local: # profile to activate locally and for publishing to alpha channel
     activation:
       if: "!${mode:ci}"
@@ -83,7 +54,6 @@ profiles:
       <<: *alpha-build
       env:
         <<: *alpha-env
-        SLAUTH_TOKEN: "${task:slauthtoken.trim}"
   macosx:
     activation:
       if: ${os:type.darwin} && ${mode:on-host}
@@ -94,18 +64,26 @@ modules:
   - name: docs
     path: docs
     build:
-      volumes:
-        - "~/.npm:${container:home}/.npm"
-        - "~/.npmrc:${container:home}/.npmrc:ro"
-        - "~/.ssh:${container:home}/.ssh:ro"
       steps:
         - task: build-docs
-    deploy:
-      environments:
-        dev:
-          autoDeploy: true
-      steps:
-        - task: deploy-docs
+    dockerImages:
+      - name: build-docs
+        dockerFile: ${project:root}/docs/Dockerfile
+        tags:
+          - docker.simple-container.com/${arg:namespace}/welder/welder-docs:latest
+          - docker.simple-container.com/${arg:namespace}/welder/welder-docs:${project:version}
+        build:
+          contextPath: ${project:root}/docs
+          args:
+            - name: version
+              value: ${project:version}
+        runAfterPush:
+          image: dtzar/helm-kubectl:3.13
+          script:
+            - |-
+              export VALUES="--set image.image=${docker:tags[0].image} --set image.tag=${docker:tags[0].tag}"
+              export PROFILE=simple-container
+              ${project:root}/charts/welder/deploy.sh welder welder
   - name: welder
     build:
       steps:
@@ -143,7 +121,7 @@ tasks:
       # this is used in some tests (e.g. the ones that use mutagen)
       inlineDockerFile: |-
         FROM ${arg:build-image}
-        ENV DOCKERVERSION=20.10.12
+        ENV DOCKERVERSION=24.0.7
         RUN curl -fsSLO https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKERVERSION}.tgz \
           && tar xzvf docker-${DOCKERVERSION}.tgz --strip 1 \
                          -C /usr/local/bin docker/docker \
@@ -158,11 +136,6 @@ tasks:
     description: Compiles code and builds bundles
     script:
       - go run build.go ${BUILD_GOALS}
-  publish:
-    customImage: *build-image
-    description: Publish binaries to statlas
-    script:
-      - go run build.go publish:all
   gomodcache:
     runOn: host
     description: Returns directory of go mod cache
@@ -176,23 +149,16 @@ tasks:
     script:
       - atlas plugin installed | grep statlas > /dev/null || atlas plugin install -n statlas
       - |-
-        atlas statlas put --auth-group delivery-engineering-dl-statlas --namespace=dev \
-          -s platform/json-schemas/welder.schema.json \
-          -f ${project:root}/bin/welder.schema.json
-  build-docs:
-    customImage: &docsImage
-      inlineDockerFile: |-
-        FROM node:alpine
-        RUN apk add git
-    workDir: ${project:root}/docs
-    script:
-      - yarn && yarn validate && yarn spellcheck && yarn link-check
+        s3 put --namespace=dev -s platform/json-schemas/welder.schema.json -f ${project:root}/bin/welder.schema.json
   deploy-docs:
-    customImage: *docsImage
+    image: dtzar/helm-kubectl:3.13
+    env:
+      PROFILE: simple-container
+    script:
+      - ${project:root}/charts/welder/deploy.sh welder welder
+  build-docs:
+    image: python:3.9.18
     workDir: ${project:root}/docs
     script:
-      - git config --global user.email "build-agent@atlassian.com"
-      - git config --global user.name "Build Agent"
-      - yarn
-      - yarn version --new-version "${project:version}" -m "[npm] Release version %s"
-      - yarn publish
+      - pip install -r requirements.txt
+      - PATH=${PATH}:~/.local/bin mkdocs build

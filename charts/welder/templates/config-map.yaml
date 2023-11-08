@@ -1,0 +1,14 @@
+{{ $root := . }}
+{{- $configFiles := .Values.configFiles | default dict }}
+{{- if not (eq (len $configFiles) 0) }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "generator.name" . }}-config
+  labels: {{- include "generator.labels" . | nindent 4 }}
+data:
+{{- range $key, $data := $configFiles }}
+  {{ $key }}: |- {{ include "generator.tplValue" ( dict "value" $data "context" $root) | nindent 4 }}
+{{- end }}
+{{- end }}

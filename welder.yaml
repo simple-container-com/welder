@@ -114,12 +114,6 @@ tasks:
       - |-
         GOCACHEDIR="$( go env 2>/dev/null | grep GOMODCACHE | awk -F '=' '{print $2}' | sed 's/"//g' )"
         if [ -z "$GOCACHEDIR" ]; then echo "/tmp/welder-modcache"; else echo "$GOCACHEDIR" ; fi
-  deploy-welder-schema:
-    runOn: host
-    description: Deploys the Welder Schema
-    script:
-      - |-
-        s3 put --namespace=dev -s platform/json-schemas/welder.schema.json -f ${project:root}/bin/welder.schema.json
   build-docs:
     image: python:3.9.18
     workDir: ${project:root}/docs

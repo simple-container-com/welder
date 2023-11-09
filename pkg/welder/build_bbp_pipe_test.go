@@ -11,6 +11,9 @@ import (
 
 func TestRunBitbucketPipelinesPipe(t *testing.T) {
 	RegisterTestingT(t)
+	if os.Getenv("INSIDE_WELDER") == "true" {
+		t.Skip("skipping test because it should only be run on host env")
+	}
 
 	_, projectDir := setupTempExampleProject(t, "testdata/runs-bitbucket-pipes")
 	defer func(path string) {

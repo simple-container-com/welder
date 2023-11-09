@@ -5,7 +5,6 @@ import (
 	"github.com/smecsia/welder/pkg/git/mock"
 	"github.com/smecsia/welder/pkg/util"
 	. "github.com/smecsia/welder/pkg/welder/types"
-	"io/ioutil"
 	"os"
 	"path"
 	"strings"
@@ -121,12 +120,12 @@ func TestTaskOutputCapture(t *testing.T) {
 	outputFile := path.Join(tmpProjectDir, "output")
 	_, err = os.Stat(outputFile)
 	Expect(os.IsNotExist(err)).To(Equal(false), "file "+outputFile+" must exist")
-	outputFileBytes, _ := ioutil.ReadFile(outputFile)
+	outputFileBytes, _ := os.ReadFile(outputFile)
 	Expect(strings.TrimSpace(string(outputFileBytes))).To(Equal("" +
 		"Output from alpine: Linux"))
 
 	err = buildCtx.Run("", 0, "recursion")
-	outputFileBytes, _ = ioutil.ReadFile(outputFile)
+	outputFileBytes, _ = os.ReadFile(outputFile)
 	Expect(strings.TrimSpace(string(outputFileBytes))).To(Equal("output of recursion is \"true\""))
 	Expect(err).To(BeNil())
 }

@@ -55,31 +55,3 @@ go run -mod=mod build.go build:all
 ```
 welder make
 ```
-
-#### Publishing
-
-Some of this code in this repo is used by Atlas CLI Plugins (and possibly other projects).
-To use the newest version of Welder as a dependency elsewhere, you must add a new version tag manually.
-The version that you use should match the one generated in `welder.yaml`.
-
-Publishing a version:
-1. Determine the version. You can figure it out manually or grab it from the BB Pipeline execution:
-   1. Locate the BB Pipeline execution of the `master` branch that ran when you merged your change
-   2. Search for any part of the version that you know.
-   You should be able to locate a line that contains it, such as:
-   ```
-   Executing '/bin/bash "-c" "go build -ldflags "-X main.Version=1.7.864-ea1a419"  -tags=osusergo ...
-   ```
-2. Copy the version (e.g. `1.7.864-ea1a419` for the example above)
-3. Tag the version:
-   ```
-   git checkout master
-   git pull
-   git log # verify that the version you're tagging corresponds to the most recent commit
-   git tag <version-you-copied>
-   git push origin <version-you-copied>
-   ```
-
-You should now see your version in the list of git tags for Welder in the Bitbucket UI.
-
-Use `go get -u github.com/simple-container-com/welder` in Atlas CLI Plugins (or elsewhere) to use this new version.

@@ -95,6 +95,10 @@ func TestReadPipelinesFileWithDefinitions(t *testing.T) {
 
 func TestRunDefaultPipeline(t *testing.T) {
 	RegisterTestingT(t)
+	if os.Getenv("INSIDE_WELDER") == "true" {
+		t.Skip("skipping test because it should only be run on host env")
+	}
+
 	pipelines, dir, callback := preparePipelinesProject(t, "with-branch", "feature/test")
 	defer callback()
 	Expect(pipelines.Run(nil)).To(BeNil())
@@ -105,6 +109,10 @@ func TestRunDefaultPipeline(t *testing.T) {
 
 func TestRunPipelineForBranch(t *testing.T) {
 	RegisterTestingT(t)
+	if os.Getenv("INSIDE_WELDER") == "true" {
+		t.Skip("skipping test because it should only be run on host env")
+	}
+
 	pipelines, dir, callback := preparePipelinesProject(t, "with-branch", "master")
 	defer callback()
 	Expect(pipelines.Run(nil)).To(BeNil())
@@ -136,7 +144,7 @@ func preparePipelinesProject(t *testing.T, exampleName string, branch string) (*
 
 func createTempPipelinesProject(t *testing.T, pathToExample string) string {
 	RegisterTestingT(t)
-	depDir, err := ioutil.TempDir(os.TempDir(), "bbp")
+	depDir, err := os.MkdirTemp(os.TempDir(), "bbp")
 	Expect(err).To(BeNil())
 	err = copy.Copy(pathToExample, depDir)
 	Expect(err).To(BeNil())

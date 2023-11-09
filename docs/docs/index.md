@@ -23,6 +23,9 @@ service, trying to make the following operations easier and more streamlined:
 
 Please read [Motivation](/motivation/) to understand where Welder fits in the development process.
 
+## Getting started
+
+Read [howto install Welder](/howto/install/) and [main use-cases](/howto/) to get started.
 
 ## Questions/Issues?
 

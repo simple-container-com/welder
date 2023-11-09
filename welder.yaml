@@ -112,7 +112,7 @@ tasks:
     description: Returns directory of go mod cache
     script:
       - |-
-        GOCACHEDIR="$( go env 2>/dev/null | grep GOMODCACHE | awk -F '=' '{print $2}' | sed 's/"//g' )"
+        GOCACHEDIR="$( go env 2>/dev/null | grep GOMODCACHE | awk -F '=' '{print $2}' | sed "s/['\"]//g" )"
         if [ -z "$GOCACHEDIR" ]; then echo "/tmp/welder-modcache"; else echo "$GOCACHEDIR" ; fi
   build-docs:
     image: python:3.9.18

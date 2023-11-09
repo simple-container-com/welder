@@ -334,13 +334,13 @@ func (run *Run) createContainer(runCtx RunContext) (string, error) {
 	runCtx.Debugf("creating container with configuration %s, CMD@%s: %q", config, config.User, config.Cmd)
 	createResp, err := run.dockerAPI.ContainerCreate(ctx, config, hostConfig, networkConfig, nil, cname)
 	if err != nil {
-		return "", errors.Wrapf(err, "failed to create container")
+		return "", errors.Wrapf(err, "failed to create container: %s", err.Error())
 	}
 
 	runCtx.Debugf("starting container %q", createResp.ID)
 	// Start the background long-running sleep process in container
 	if err := run.dockerAPI.ContainerStart(ctx, createResp.ID, types.ContainerStartOptions{}); err != nil {
-		return "", errors.Wrapf(err, "failed to start container")
+		return "", errors.Wrapf(err, "failed to start container: %s", err.Error())
 	}
 
 	// if running in "detached" mode, streaming everything to the provided Stdout/Stderr (if provided)

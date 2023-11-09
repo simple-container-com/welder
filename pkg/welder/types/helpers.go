@@ -75,6 +75,7 @@ func (volumes VolumesDefinition) ToDockerVolumes(commonCtx *CommonCtx) ([]docker
 			mode = parts[2]
 		}
 		if _, err := os.Stat(hostPath); os.IsNotExist(err) {
+			commonCtx.Logger().Errf("Volume %q does not exist on host, skipping!", hostPath)
 			continue
 		}
 		volumeMode := docker.VolumeMode(mode)

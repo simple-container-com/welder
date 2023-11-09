@@ -9,7 +9,6 @@ import (
 	"github.com/smecsia/welder/pkg/util"
 	"golang.org/x/sync/errgroup"
 	"io"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"os/signal"
@@ -86,7 +85,7 @@ func (e *Exec) ExecCommandAndLog(subject string, cmd string, opts Opts) (ExecRes
 	res.Env = []string{}
 	_, err := os.Stat(e.resEnvFile)
 	if !os.IsNotExist(err) {
-		if envFileBytes, err := ioutil.ReadFile(e.resEnvFile); err == nil {
+		if envFileBytes, err := os.ReadFile(e.resEnvFile); err == nil {
 			res.Env = strings.Split(string(envFileBytes), "\n")
 		}
 	}

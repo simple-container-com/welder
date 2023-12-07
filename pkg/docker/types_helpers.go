@@ -23,6 +23,11 @@ func (run *Run) SetEnv(env ...string) *Run {
 	return run
 }
 
+func (run *Run) AddEnv(env ...string) *Run {
+	run.envVars = append(run.envVars, env...)
+	return run
+}
+
 func (run *Run) SetEntrypoint(entrypoint ...string) *Run {
 	run.entrypoint = entrypoint
 	return run

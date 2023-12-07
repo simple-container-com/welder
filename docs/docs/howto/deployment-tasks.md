@@ -132,7 +132,7 @@ modules:
         SERVICE_DESCRIPTOR: ${project:root}/myservice.sd.yml
         BEFORE_SCRIPT: ". ${project:root}/.welder-out/docker-pushed-images.sh"
       steps:
-        - pipe: docker://docker.simple-container.com/atlassian/spinnaker-deploy:latest
+        - pipe: docker://docker.simple-container.com/mycompany/deploy:latest
 # ...
 ```
 
@@ -140,7 +140,7 @@ modules:
     When pipe is invoked directly from `welder.yaml`, environment variables are set through `env` within `deploy` 
     section in contrast to `bitbucket-pipelines.yml` file where there is an additional `variables` section added to `pipe`.
 
-To allow running `spinnaker-deploy` pipe locally you will need to provide a valid `SLAUTH_OVERRIDE_TOKEN` environment
+To allow running `mycompany/deploy:latest` pipe locally you will need to provide a valid `TOKEN` environment
 variable, so that the pipe actually works from your local machine. This can be done using a `local` profile and a task
 that generates the token:
 
@@ -152,13 +152,13 @@ profiles:
       if: "!${mode:pipelines} && !${mode:bamboo}"
     build:
       env:
-        SLAUTH_OVERRIDE_TOKEN: ${task:slauth-token.trim:-}
+        TOKEN: ${task:generate-token.trim:-}
 # ...
 tasks:
-  slauth-token:
+  generate-token:
     runOn: host
     script:
-      - atlas slauth token --aud config-registry --aud spinnaker -g micros-sv--myservice-dl-admins -o jwt
+      - mycompany-token --aud deploy -g mycompany-admin-group -o jwt # some command to output proper token on your laptop
 ```
 
-Make sure you've replaced `myservice` with the correct service name everywhere (including `micros-sv--myservice-dl-admins`).
+Make sure you've replaced the command with the actual command that generates the deploy token. 

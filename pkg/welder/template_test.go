@@ -1,15 +1,18 @@
 package welder
 
 import (
+	"fmt"
+	"github.com/lithammer/shortuuid/v3"
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/types"
 	"github.com/otiai10/copy"
 	"github.com/smecsia/welder/pkg/git/mock"
 	"github.com/smecsia/welder/pkg/util"
+	"github.com/smecsia/welder/pkg/welder/runner"
 	. "github.com/smecsia/welder/pkg/welder/types"
 	"github.com/stretchr/testify/require"
-	"io/ioutil"
 	"os"
+	"path"
 	"testing"
 )
 
@@ -313,12 +316,13 @@ func TestActualDockerDefinition(t *testing.T) {
 	Expect(thirdDockerImages[0].Build.Args[0]).To(Equal(DockerBuildArg{Name: "module", Value: "third"}))
 }
 
-func createTempExampleProject(t *testing.T, pathToExample string) string {
-	depDir, err := ioutil.TempDir(os.TempDir(), "service")
+func createTempExampleProject(t *testing.T, pathToExample string) (string, func()) {
+	depDir := path.Join(runner.WelderTempDir(), fmt.Sprintf("example-%s", shortuuid.New()[:5]))
+	err := copy.Copy(pathToExample, depDir)
 	require.NoError(t, err)
-	err = copy.Copy(pathToExample, depDir)
-	require.NoError(t, err)
-	return depDir
+	return depDir, func() {
+		_ = os.RemoveAll(depDir)
+	}
 }
 
 func HaveKeyWithStringValue(key interface{}, value string) types.GomegaMatcher {

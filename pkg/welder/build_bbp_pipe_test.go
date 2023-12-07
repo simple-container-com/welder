@@ -15,10 +15,8 @@ func TestRunBitbucketPipelinesPipe(t *testing.T) {
 		t.Skip("skipping test because it should only be run on host env")
 	}
 
-	_, projectDir := setupTempExampleProject(t, "testdata/runs-bitbucket-pipes")
-	defer func(path string) {
-		_ = os.RemoveAll(path)
-	}(projectDir)
+	_, projectDir, cleanup := setupTempExampleProject(t, "testdata/runs-bitbucket-pipes")
+	defer cleanup()
 
 	reader, stdout := io.Pipe()
 	logger := util.NewStdoutLogger(stdout, stdout)

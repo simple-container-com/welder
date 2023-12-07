@@ -1,6 +1,7 @@
 package welder
 
 import (
+	"fmt"
 	. "github.com/onsi/gomega"
 	"github.com/smecsia/welder/pkg/git/mock"
 	"github.com/smecsia/welder/pkg/util"
@@ -13,8 +14,8 @@ import (
 
 func TestModuleVersionBumpPatch(t *testing.T) {
 	RegisterTestingT(t)
-	tmpProjectDir := createTempExampleProject(t, "testdata/example")
-	defer os.RemoveAll(tmpProjectDir)
+	tmpProjectDir, cleanup := createTempExampleProject(t, "testdata/example")
+	defer cleanup()
 
 	versionCtx := readVersionContext(tmpProjectDir, "third")
 
@@ -33,8 +34,8 @@ func TestModuleVersionBumpPatch(t *testing.T) {
 
 func TestModuleVersionBumpMinor(t *testing.T) {
 	RegisterTestingT(t)
-	tmpProjectDir := createTempExampleProject(t, "testdata/example")
-	defer os.RemoveAll(tmpProjectDir)
+	tmpProjectDir, cleanup := createTempExampleProject(t, "testdata/example")
+	defer cleanup()
 
 	versionCtx := readVersionContext(tmpProjectDir, "armory")
 
@@ -53,8 +54,8 @@ func TestModuleVersionBumpMinor(t *testing.T) {
 
 func TestRootVersionBumpMajor(t *testing.T) {
 	RegisterTestingT(t)
-	tmpProjectDir := createTempExampleProject(t, "testdata/example")
-	defer os.RemoveAll(tmpProjectDir)
+	tmpProjectDir, cleanup := createTempExampleProject(t, "testdata/example")
+	defer cleanup()
 
 	versionCtx := readVersionContext(tmpProjectDir)
 
@@ -73,8 +74,8 @@ func TestRootVersionBumpMajor(t *testing.T) {
 
 func TestVersionFromArgs(t *testing.T) {
 	RegisterTestingT(t)
-	tmpProjectDir := createTempExampleProject(t, "testdata/version-from-args")
-	defer os.RemoveAll(tmpProjectDir)
+	tmpProjectDir, cleanup := createTempExampleProject(t, "testdata/version-from-args")
+	defer cleanup()
 
 	rootDef, err := ReadBuildRootDefinition(tmpProjectDir)
 	Expect(err).To(BeNil())
@@ -102,13 +103,13 @@ func TestVersionFromArgs(t *testing.T) {
 
 func TestTaskOutputCapture(t *testing.T) {
 	RegisterTestingT(t)
-	tmpProjectDir := createTempExampleProject(t, "testdata/task-output-capture")
-	defer os.RemoveAll(tmpProjectDir)
+	tmpProjectDir, cleanup := createTempExampleProject(t, "testdata/task-output-capture")
+	defer cleanup()
 
 	rootDef, err := ReadBuildRootDefinition(tmpProjectDir)
 	Expect(err).To(BeNil())
 
-	buildCtx := NewBuildContext(&BuildContext{CommonCtx: &CommonCtx{}}, util.NewStdoutLogger(os.Stdout, os.Stderr))
+	buildCtx := NewBuildContext(&BuildContext{CommonCtx: &CommonCtx{Verbose: true}}, util.NewStdoutLogger(os.Stdout, os.Stderr))
 	buildCtx.SetRootDir(tmpProjectDir)
 	versionCtx, err := NewVersionCtx(buildCtx, &rootDef, nil)
 	Expect(err).To(BeNil())
@@ -118,6 +119,8 @@ func TestTaskOutputCapture(t *testing.T) {
 
 	Expect(buildCtx.Run("", 0, "test-capture-output")).To(BeNil())
 	outputFile := path.Join(tmpProjectDir, "output")
+
+	fmt.Println(outputFile)
 	_, err = os.Stat(outputFile)
 	Expect(os.IsNotExist(err)).To(Equal(false), "file "+outputFile+" must exist")
 	outputFileBytes, _ := os.ReadFile(outputFile)
@@ -132,8 +135,8 @@ func TestTaskOutputCapture(t *testing.T) {
 
 func TestResolveEnvInVersion(t *testing.T) {
 	RegisterTestingT(t)
-	tmpProjectDir := createTempExampleProject(t, "testdata/version-from-args")
-	defer os.RemoveAll(tmpProjectDir)
+	tmpProjectDir, cleanup := createTempExampleProject(t, "testdata/version-from-args")
+	defer cleanup()
 
 	rootDef, err := ReadBuildRootDefinition(tmpProjectDir)
 	Expect(err).To(BeNil())

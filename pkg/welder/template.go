@@ -104,10 +104,15 @@ func (tpl *Tpl) extTask(noSubstitution, path string, defaultValue *string) (stri
 	if len(pathParts) == 1 {
 		return strings.TrimSpace(ctx.LastExecOutput()), taskErr
 	}
+	taskErrMsg := ""
+	if taskErr != nil {
+		taskErrMsg = taskErr.Error()
+	}
 	res, err := util.GetValue(path, map[string]interface{}{
 		taskName: map[string]interface{}{
 			"trim":    strings.TrimSpace(ctx.LastExecOutput()),
 			"raw":     ctx.LastExecOutput(),
+			"error":   fmt.Sprintf("%s", taskErrMsg),
 			"success": fmt.Sprintf("%t", taskErr == nil),
 			"failed":  fmt.Sprintf("%t", taskErr != nil),
 		},

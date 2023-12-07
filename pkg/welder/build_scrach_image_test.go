@@ -14,8 +14,8 @@ import (
 func TestBuildWithScratchImage(t *testing.T) {
 	RegisterTestingT(t)
 
-	_, projectDir := setupTempExampleProject(t, "testdata/use-scratch-images")
-	defer os.RemoveAll(projectDir)
+	_, projectDir, cleanup := setupTempExampleProject(t, "testdata/use-scratch-images")
+	defer cleanup()
 
 	logger := util.NewPrefixLogger("[build]", false)
 	buildCtx := NewBuildContext(&BuildContext{CommonCtx: &types.CommonCtx{Verbose: true}}, logger)

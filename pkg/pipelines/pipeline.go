@@ -10,7 +10,7 @@ import (
 	"golang.org/x/sync/errgroup"
 	"gopkg.in/yaml.v3"
 	"io"
-	"io/ioutil"
+	"os"
 	"path/filepath"
 	"strings"
 	"time"
@@ -49,7 +49,7 @@ func NewBitbucketPipelines(bbpFile string, commonCtx *types.CommonCtx) (*Bitbuck
 // ReadBitbucketPipelinesSchemaFile initializes a new Pipelines object
 func ReadBitbucketPipelinesSchemaFile(bbpFile string) (schema.BitbucketPipelinesSchemaJson, error) {
 	res := schema.BitbucketPipelinesSchemaJson{}
-	fileBytes, err := ioutil.ReadFile(bbpFile)
+	fileBytes, err := os.ReadFile(bbpFile)
 
 	if err != nil {
 		return res, errors.Wrapf(err, "failed to read %s", bbpFile)

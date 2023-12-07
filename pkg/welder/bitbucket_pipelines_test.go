@@ -11,12 +11,12 @@ import (
 func IgnoreTestInitBitbucketPipelines(t *testing.T) {
 	RegisterTestingT(t)
 
-	rootDir := createTempExampleProject(t, "testdata/example")
+	rootDir, cleanup := createTempExampleProject(t, "testdata/example")
+	defer cleanup()
 	bbp := BitbucketPipelines{
 		CommonCIGenerator: CommonCIGenerator{RootPath: rootDir},
 		MainBranch:        "master",
 	}
-	defer os.RemoveAll(rootDir)
 
 	err := bbp.Generate()
 	Expect(err).To(BeNil())

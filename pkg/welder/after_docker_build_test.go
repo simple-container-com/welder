@@ -14,8 +14,8 @@ import (
 func TestRunCommandAfterDockerBuild(t *testing.T) {
 	RegisterTestingT(t)
 
-	_, projectDir := setupTempExampleProject(t, "testdata/after-docker-build")
-	defer os.RemoveAll(projectDir)
+	_, projectDir, cleanup := setupTempExampleProject(t, "testdata/after-docker-build")
+	defer cleanup()
 
 	buildLogger := util.NewPrefixLogger("[build]", false)
 	buildCtx := NewBuildContext(&BuildContext{CommonCtx: &CommonCtx{}}, buildLogger)

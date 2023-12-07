@@ -88,7 +88,7 @@ tasks:
     description: Returns directory of go mod cache on host
     script:
       - |-
-        GOCACHEDIR="$( go env 2>/dev/null | grep GOMODCACHE | awk -F '=' '{print $2}' | sed 's/"//g' )"
+        GOCACHEDIR="$( go env 2>/dev/null | grep GOMODCACHE | awk -F '=' '{print $2}' | sed "s/['\"]//g" )"
         if [ -z "$GOCACHEDIR" ]; then echo "/tmp/modcache"; else echo "$GOCACHEDIR" ; fi
 ```
 

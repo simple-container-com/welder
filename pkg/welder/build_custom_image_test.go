@@ -37,8 +37,8 @@ func TestBuildWithCustomImage(t *testing.T) {
 		tc := testCase // for proper closures
 		t.Run(tc.name, func(t *testing.T) {
 
-			_, projectDir := setupTempExampleProject(t, "testdata/custom-image")
-			defer os.RemoveAll(projectDir)
+			_, projectDir, cleanup := setupTempExampleProject(t, "testdata/custom-image")
+			defer cleanup()
 
 			logger := util.NewPrefixLogger("[build]", false)
 			buildCtx := NewBuildContext(&BuildContext{CommonCtx: &CommonCtx{NoCache: true, Modules: []string{tc.module}}}, logger)

@@ -1,6 +1,6 @@
 ---
 title: 'Build and test services'
-description: 'Description of how to use Welder for building servies'
+description: 'Description of how to use Welder for building services'
 platform: platform
 product: welder
 category: devguide
@@ -12,7 +12,7 @@ date: '2022-08-22'
 # Build and test services
 
 One of the goals of Welder was to provide a way of executing one simple command to build a service. Given the
-variety of SDKs Atlassians are operating with, it is sometimes hard to know how exactly to build a service.
+variety of SDKs developers are operating with, it is sometimes hard to know how exactly to build a service.
 Welder introduces one simple command that should run a build no matter which SDK is used: `welder make`.
 
 ## Simple build

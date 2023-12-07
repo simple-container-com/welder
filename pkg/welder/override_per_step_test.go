@@ -13,8 +13,8 @@ import (
 func TestOverridePerStep(t *testing.T) {
 	RegisterTestingT(t)
 
-	_, projectDir := setupTempExampleProject(t, "testdata/env-in-step-override")
-	defer os.RemoveAll(projectDir)
+	_, projectDir, cleanup := setupTempExampleProject(t, "testdata/env-in-step-override")
+	defer cleanup()
 
 	logger := util.NewPrefixLogger("[build]", false)
 	buildCtx := NewBuildContext(&BuildContext{CommonCtx: &CommonCtx{}}, logger)
@@ -36,8 +36,8 @@ func TestOverridePerStep(t *testing.T) {
 func TestSyncWithMutagen(t *testing.T) {
 	RegisterTestingT(t)
 
-	_, projectDir := setupTempExampleProject(t, "testdata/sync-with-mutagen")
-	defer os.RemoveAll(projectDir)
+	_, projectDir, cleanup := setupTempExampleProject(t, "testdata/sync-with-mutagen")
+	defer cleanup()
 
 	logger := util.NewPrefixLogger("[build]", false)
 	buildCtx := NewBuildContext(&BuildContext{CommonCtx: &CommonCtx{SyncMode: SyncModeExternal}}, logger)

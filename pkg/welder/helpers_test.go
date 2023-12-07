@@ -38,8 +38,8 @@ func TestDockerVolumes(t *testing.T) {
 
 func TestActualBuildOverridesDefaultEnvVariables(t *testing.T) {
 	RegisterTestingT(t)
-	_, projectDir := setupTempExampleProject(t, "testdata/default-env-override")
-	defer os.RemoveAll(projectDir)
+	_, projectDir, cleanup := setupTempExampleProject(t, "testdata/default-env-override")
+	defer cleanup()
 	rootDef, err := ReadBuildRootDefinition(projectDir)
 
 	Expect(err).To(BeNil())

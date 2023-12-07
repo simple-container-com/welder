@@ -72,8 +72,8 @@ func TestOverrideArgsInTasksWorksAsExpected(t *testing.T) {
 	for _, testCase := range testCases {
 		tc := testCase // for proper closures
 		t.Run(tc.name, func(t *testing.T) {
-			_, projectDir := setupTempExampleProject(t, "testdata/task-args-override")
-			defer os.RemoveAll(projectDir)
+			_, projectDir, cleanup := setupTempExampleProject(t, "testdata/task-args-override")
+			defer cleanup()
 
 			logger := util.NewPrefixLogger("[build]", false)
 			buildCtx := NewBuildContext(&BuildContext{CommonCtx: &CommonCtx{BuildArgs: tc.args, Profiles: tc.profiles}}, logger)

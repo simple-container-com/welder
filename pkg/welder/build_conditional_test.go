@@ -76,8 +76,8 @@ func TestRunConditionalTasksOnlyWhenConditionIsTrue(t *testing.T) {
 	for _, testCase := range testCases {
 		tc := testCase // for proper closures
 		t.Run(tc.name, func(t *testing.T) {
-			_, projectDir := setupTempExampleProject(t, "testdata/conditional")
-			defer os.RemoveAll(projectDir)
+			_, projectDir, cleanup := setupTempExampleProject(t, "testdata/conditional")
+			defer cleanup()
 
 			logger := util.NewPrefixLogger("[build]", false)
 			buildCtx := NewBuildContext(&BuildContext{CommonCtx: &CommonCtx{BuildArgs: tc.args, Profiles: tc.profiles}}, logger)
@@ -107,8 +107,8 @@ func TestRunConditionalTasksOnlyWhenConditionIsTrue(t *testing.T) {
 func TestTasksWithProjectPlaceholders(t *testing.T) {
 	RegisterTestingT(t)
 
-	_, projectDir := setupTempExampleProject(t, "testdata/placeholders")
-	defer os.RemoveAll(projectDir)
+	_, projectDir, cleanup := setupTempExampleProject(t, "testdata/placeholders")
+	defer cleanup()
 
 	logger := util.NewPrefixLogger("[run]", false)
 	buildCtx := NewBuildContext(&BuildContext{CommonCtx: &CommonCtx{Profiles: []string{"bamboo"}, Strict: true}}, logger)
@@ -215,8 +215,8 @@ func TestRunPlaceholders(t *testing.T) {
 	for _, testCase := range testCases {
 		tc := testCase // for proper closures
 		t.Run(tc.name, func(t *testing.T) {
-			_, projectDir := setupTempExampleProject(t, "testdata/placeholders")
-			defer os.RemoveAll(projectDir)
+			_, projectDir, cleanup := setupTempExampleProject(t, "testdata/placeholders")
+			defer cleanup()
 
 			logger := util.NewPrefixLogger("[build]", false)
 			buildCtx := NewBuildContext(&BuildContext{

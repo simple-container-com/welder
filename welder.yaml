@@ -1,7 +1,7 @@
 schemaVersion: "1.5.0"
 projectName: welder
 projectRoot: .
-version: 2.0.${env:BITBUCKET_BUILD_NUMBER:0}-${git:commit.short}${arg:release-suffix:}
+version: 2.1.${env:BITBUCKET_BUILD_NUMBER:0}-${git:commit.short}${arg:release-suffix:}
 default:
   build:
     volumes:
@@ -33,7 +33,7 @@ profiles:
         build-goals: build:build
       env:
         PLATFORMS: "linux-amd64"
-        TEST_TARGET: "./pkg/welder/... -run TestBuildWithCustomImage"
+        TEST_TARGET: "./pkg/welder/... -run TestTaskOutputCapture -run TestBuildWithCustomImage"
   skip-tests:
     activation:
       skip-tests: true

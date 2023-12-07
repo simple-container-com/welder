@@ -14,8 +14,8 @@ import (
 func TestBuildPreservesEnvVariables(t *testing.T) {
 	RegisterTestingT(t)
 
-	_, projectDir := setupTempExampleProject(t, "testdata/preserve-env-variables")
-	defer os.RemoveAll(projectDir)
+	_, projectDir, cleanup := setupTempExampleProject(t, "testdata/preserve-env-variables")
+	defer cleanup()
 
 	logger := util.NewPrefixLogger("[build]", false)
 	buildCtx := NewBuildContext(&BuildContext{CommonCtx: &types.CommonCtx{}}, logger)

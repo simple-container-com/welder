@@ -25,8 +25,8 @@ import (
 func TestDockerBuild(t *testing.T) {
 	RegisterTestingT(t)
 
-	_, projectDir := setupTempExampleProject(t, "testdata/example")
-	defer os.RemoveAll(projectDir)
+	_, projectDir, cleanup := setupTempExampleProject(t, "testdata/example")
+	defer cleanup()
 
 	logger := util.NewPipeLogger()
 
@@ -77,8 +77,8 @@ func TestDockerBuild(t *testing.T) {
 func TestRunTasks(t *testing.T) {
 	RegisterTestingT(t)
 
-	curUser, projectDir := setupTempExampleProject(t, "testdata/example")
-	defer os.RemoveAll(projectDir)
+	curUser, projectDir, cleanup := setupTempExampleProject(t, "testdata/example")
+	defer cleanup()
 
 	logger := util.NewPipeLogger()
 
@@ -118,10 +118,8 @@ func TestRunTasks(t *testing.T) {
 func TestModuleBuild(t *testing.T) {
 	RegisterTestingT(t)
 
-	curUser, projectDir := setupTempExampleProject(t, "testdata/example")
-	defer func(path string) {
-		_ = os.RemoveAll(path)
-	}(projectDir)
+	curUser, projectDir, cleanup := setupTempExampleProject(t, "testdata/example")
+	defer cleanup()
 
 	logger := util.NewPipeLogger()
 	var eg errgroup.Group
@@ -187,8 +185,8 @@ func TestModuleBuild(t *testing.T) {
 func TestModuleDeployDdev(t *testing.T) {
 	RegisterTestingT(t)
 
-	curUser, projectDir := setupTempExampleProject(t, "testdata/example")
-	defer os.RemoveAll(projectDir)
+	curUser, projectDir, cleanup := setupTempExampleProject(t, "testdata/example")
+	defer cleanup()
 
 	deployContext := NewDeployContext(NewBuildContext(&BuildContext{
 		CommonCtx: &CommonCtx{
@@ -225,8 +223,8 @@ func TestModuleDeployDdev(t *testing.T) {
 func TestModuleDeployStg(t *testing.T) {
 	RegisterTestingT(t)
 
-	curUser, projectDir := setupTempExampleProject(t, "testdata/example")
-	defer os.RemoveAll(projectDir)
+	curUser, projectDir, cleanup := setupTempExampleProject(t, "testdata/example")
+	defer cleanup()
 	deployContext := NewDeployContext(NewBuildContext(&BuildContext{
 		CommonCtx: &CommonCtx{
 			Modules: []string{"third"}, SoxEnabled: true,
@@ -246,8 +244,9 @@ func TestModuleDeployStg(t *testing.T) {
 func TestWritingDockerOutputFile(t *testing.T) {
 	RegisterTestingT(t)
 
-	_, projectDir := setupTempExampleProject(t, "testdata/example")
-	defer os.RemoveAll(projectDir)
+	_, projectDir, cleanup := setupTempExampleProject(t, "testdata/example")
+	defer cleanup()
+
 	dockerDefs := OutDockerDefinition{
 		Modules: []OutDockerModuleDefinition{
 			{
@@ -310,10 +309,11 @@ func ensureMavenEnvExists() (string, string, string) {
 	return settingsXmlPath, settingsSecurityXmlPath, mavenRepoPath
 }
 
-func setupTempExampleProject(t *testing.T, pathToExample string) (*user.User, string) {
+func setupTempExampleProject(t *testing.T, pathToExample string) (*user.User, string, func()) {
 	curUser, err := user.Current()
 	require.NoError(t, err)
-	return curUser, createTempExampleProject(t, pathToExample)
+	dir, cleanup := createTempExampleProject(t, pathToExample)
+	return curUser, dir, cleanup
 }
 
 func createFileIfNotExists(path string, content string) error {

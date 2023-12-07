@@ -16,7 +16,7 @@ CI config is the first choice for anyone to run their CI/CD pipelines. While it 
 your CI pipeline that is executed in the cloud using variety of containerized SDKs, it lacks the possibility of
 running individual steps locally. In addition, sometimes it is hard to figure out what is actually going on in the
 container running in the pipeline. And it becomes a little tricky to debug the pipeline itself.
-While most of the services use Bitbucket Pipelines as their CI/CD pipeline, Atlassians are also using scripts to
+While most of the services use Bitbucket Pipelines as their CI/CD pipeline, developers also use scripts to
 run builds locally. In fact the majority of services would simply invoke the script from their BBP configuration
 file, so that the script can also be debugged and executed locally. The typical simplified `bitbucket-pipelines.yml` file
 looks like this:

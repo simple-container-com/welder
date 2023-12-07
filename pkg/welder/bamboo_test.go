@@ -47,7 +47,8 @@ func cleanup(t *testing.T, bambooSpecs BambooSpecs) {
 }
 
 func setup(t *testing.T) BambooSpecs {
-	depDir := createTempExampleProject(t, "testdata/example")
+	depDir, cleanup := createTempExampleProject(t, "testdata/example")
+	defer cleanup()
 	return BambooSpecs{
 		DirectoryName:     "bamboo-specs",
 		CommonCIGenerator: CommonCIGenerator{RootPath: depDir},

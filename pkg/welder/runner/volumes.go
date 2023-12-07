@@ -20,11 +20,13 @@ type SyncOpts struct {
 }
 
 const (
-	AtlasBuildVolumeSrc    = "AtlasBuildVolumeSrc"
-	AtlasBuildVolumeTarget = "AtlasBuildVolumeTarget"
+	WelderVolumeSrc    = "WelderVolumeSrc"
+	WelderVolumeTarget = "WelderVolumeTarget"
 )
 
 func (ctx *Run) ConfigureVolumes(dockerRun *docker.Run, runParams *RunParams) error {
+	attachWelderTempDir(dockerRun, runParams)
+
 	if ctx.SyncMode == "" {
 		ctx.SyncMode = types.SyncModeBind // default is bind
 	}
@@ -87,7 +89,6 @@ func (ctx *Run) ConfigureVolumes(dockerRun *docker.Run, runParams *RunParams) er
 	}
 
 	return errors.Errorf("unknown sync mode specified: %s", ctx.SyncMode)
-
 }
 
 // SyncVolumesViaExternalTool sync volumes to container using external tool (e.g. mutagen)
@@ -243,7 +244,7 @@ func (ctx *Run) SyncVolume(projectName string, volume docker.Volume, opts SyncOp
 			}
 		}
 		if err = run.Util().CreateVolume(volumeName,
-			map[string]string{AtlasBuildVolumeSrc: volume.HostPath, AtlasBuildVolumeTarget: volume.ContPath}); err != nil {
+			map[string]string{WelderVolumeSrc: volume.HostPath, WelderVolumeTarget: volume.ContPath}); err != nil {
 			return errors.Wrapf(err, "failed to create volume")
 		}
 	}

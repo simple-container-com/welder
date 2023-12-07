@@ -17,7 +17,6 @@ default:
       VERSION: ${project:version}
       BUILD_GOALS: ${arg:build-goals}
       BUILD_VIA_WELDER: ${arg:build-via-welder}
-      GOMODCACHE: ${container:home}/go/pkg/mod
       INSIDE_WELDER: "true"
   deploy:
     env:

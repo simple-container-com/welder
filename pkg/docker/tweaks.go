@@ -130,7 +130,7 @@ func (run *Run) extraIntegrationsExistingContainer(runCtx RunContext, containerI
 // and list of extra volumes
 // and list of init commands needed to be executed prior the main commands are started
 // and list of build commands needed to be executed when building Docker image
-// and list of extra actions needed to be don upon Docker container
+// and list of extra actions needed to be executed upon Docker container
 // this method should be safe to call and must never fail
 // it must explicitly ignore errors and should log every error into the debug output
 func (run *Run) extraSystemIntegrations(runCtx RunContext) *extraTweak {

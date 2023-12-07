@@ -25,7 +25,7 @@ func WelderTempDir() string {
 	if globalTempHostVolume == "" {
 		tmpDir, err := os.MkdirTemp(os.TempDir(), "welder")
 		if err != nil {
-			fmt.Println("Failed to create temp dir", err)
+			fmt.Println("WARN: Failed to create temp dir", err)
 		}
 		globalTempHostVolume = tmpDir
 		_ = os.Setenv(globalTempHostVolumeEnv, globalTempHostVolume)

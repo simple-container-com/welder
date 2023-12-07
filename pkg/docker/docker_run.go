@@ -524,7 +524,7 @@ func (run *Run) prepareBuildImage(runCtx RunContext, tweak *extraTweak) (string,
 		dockerFileContents.WriteString(`[ -L "` + v.ContPath + `" ] && [ -e "` + v.ContPath + `" ] && rm -f ` + v.ContPath + " || true; \\ \n")
 		srcInfo, _ := os.Stat(v.HostPath)
 		// pre-create parent directory for files for external sync tool
-		if !srcInfo.IsDir() && run.volumeApproach == VolumeApproachExternal {
+		if srcInfo != nil && !srcInfo.IsDir() && run.volumeApproach == VolumeApproachExternal {
 			dir := path.Dir(v.ContPath)
 			dockerFileContents.WriteString(`mkdir -p "` + dir + `" || true; \\ \n`)
 		}

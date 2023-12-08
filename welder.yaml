@@ -1,4 +1,4 @@
-schemaVersion: "1.5.0"
+schemaVersion: "1.8.1"
 projectName: welder
 projectRoot: .
 version: 2.1.${env:BITBUCKET_BUILD_NUMBER:0}-${git:commit.short}${arg:release-suffix:}
@@ -78,14 +78,9 @@ modules:
             - name: version
               value: ${project:version}
         runAfterPush:
-          image: dtzar/helm-kubectl:3.13
-          script:
-            - |-
-              export VALUES="--set image.image=${docker:tags[0].image} --set image.tag=${docker:tags[0].tag}"
-              export PROFILE=simple-container
-              ${project:root}/charts/welder/deploy.sh welder welder
-              git tag -f ${project:version}
-              git push origin -f ${project:version}
+          tasks:
+            - deploy-release
+            - tag-release
 tasks:
   tools:
     customImage: &build-image
@@ -121,3 +116,17 @@ tasks:
     script:
       - pip install -r requirements.txt
       - PATH=${PATH}:~/.local/bin mkdocs build
+  deploy-release:
+    image: dtzar/helm-kubectl:3.13
+    script:
+      - |-
+        export VALUES="--set image.image=${docker:tags[0].image} --set image.tag=${docker:tags[0].tag}"
+        export PROFILE=simple-container
+        ${project:root}/charts/welder/deploy.sh welder welder
+  tag-release:
+    runOn: host
+    description: Tags release in git
+    script:
+      - |-
+        git tag -f ${project:version}
+        git push origin -f ${project:version}

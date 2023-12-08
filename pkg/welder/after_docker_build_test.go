@@ -4,7 +4,6 @@ import (
 	. "github.com/onsi/gomega"
 	"github.com/smecsia/welder/pkg/util"
 	. "github.com/smecsia/welder/pkg/welder/types"
-	"io/ioutil"
 	"os"
 	"path"
 	"strings"
@@ -25,11 +24,13 @@ func TestRunCommandAfterDockerBuild(t *testing.T) {
 	outputFile := path.Join(projectDir, "output")
 	_, err := os.Stat(outputFile)
 	Expect(os.IsNotExist(err)).To(Equal(false), "file "+outputFile+" must exist")
-	outputFileBytes, _ := ioutil.ReadFile(outputFile)
+	outputFileBytes, _ := os.ReadFile(outputFile)
 	Expect(strings.Split(string(outputFileBytes), "\n")).To(ContainElements(
+		// first
 		"build image=first",
 		"build tags[0].image=docker.simple-container.com/deng/test/after-docker-build-first",
 		"build tags[0].tag=latest",
+		// second
 		"build image=second",
 		"build tags[0].tag=latest",
 		"build tags[0].image=docker.simple-container.com/deng/test/after-docker-build",
@@ -37,6 +38,14 @@ func TestRunCommandAfterDockerBuild(t *testing.T) {
 		"build tags[1].tag=latest-extra-tag",
 		"build tags[1].image=docker.simple-container.com/deng/test/after-docker-build-extra",
 		"build tags[1].digest=",
+		// third
+		"task-build image=third",
+		"task-build tags[0].tag=third1",
+		"task-build tags[0].image=docker.simple-container.com/deng/test/after-docker-build-task",
+		"task-build tags[0].digest=",
+		"task-build tags[1].tag=third2",
+		"task-build tags[1].image=docker.simple-container.com/deng/test/after-docker-build-task",
+		"task-build tags[1].digest=",
 	))
 
 	pushLogger := util.NewPrefixLogger("[push]", false)
@@ -44,8 +53,9 @@ func TestRunCommandAfterDockerBuild(t *testing.T) {
 	pushCtx.SetRootDir(projectDir)
 	Expect(pushCtx.PushDocker([]string{})).To(BeNil())
 
-	outputFileBytes, _ = ioutil.ReadFile(outputFile)
+	outputFileBytes, _ = os.ReadFile(outputFile)
 	Expect(strings.Split(string(outputFileBytes), "\n")).To(ContainElements(
+		// second
 		"push image=second",
 		"push tags[0].tag=latest",
 		"push tags[0].image=docker.simple-container.com/deng/test/after-docker-build",
@@ -53,12 +63,20 @@ func TestRunCommandAfterDockerBuild(t *testing.T) {
 		"push tags[1].tag=latest-extra-tag",
 		"push tags[1].image=docker.simple-container.com/deng/test/after-docker-build-extra",
 		MatchRegexp(`push tags\[1\].digest=sha256:[a-f0-9]+`),
+		// third
+		"task-push image=third",
+		"task-push tags[0].tag=third1",
+		"task-push tags[0].image=docker.simple-container.com/deng/test/after-docker-build-task",
+		MatchRegexp(`task-push tags\[0\]\.digest=sha256:[a-f0-9]+`),
+		"task-push tags[1].tag=third2",
+		"task-push tags[1].image=docker.simple-container.com/deng/test/after-docker-build-task",
+		MatchRegexp(`task-push tags\[1\].digest=sha256:[a-f0-9]+`),
 	))
 
 	def, err := ReadOutDockerDefinition(path.Join(projectDir, BuildOutputDir, OutDockerFileName))
 	Expect(err).To(BeNil())
 
 	Expect(def.Modules).To(HaveLen(1))
-	Expect(def.Modules[0].DockerImages).To(HaveLen(2))
+	Expect(def.Modules[0].DockerImages).To(HaveLen(3))
 
 }

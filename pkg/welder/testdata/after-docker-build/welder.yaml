@@ -42,3 +42,45 @@ modules:
             - echo "push tags[1].tag=${docker:tags[1].tag}" >> output
             - echo "push tags[1].image=${docker:tags[1].image}" >> output
             - echo "push tags[1].digest=${docker:tags[1].digest}" >> output
+      - name: third
+        inlineDockerFile: |-
+          FROM scratch
+          LABEL scratch=true
+        tags:
+          - docker.simple-container.com/deng/test/after-docker-build-task:third1
+          - docker.simple-container.com/deng/test/after-docker-build-task:third2
+        runAfterBuild:
+          tasks:
+            - run-after-build1
+            - run-after-build2
+        runAfterPush:
+          tasks:
+            - run-after-push1
+            - run-after-push2
+tasks:
+  run-after-build1:
+    runOn: host
+    script:
+      - echo "task-build image=${docker:image}" >> output
+      - echo "task-build tags[0].tag=${docker:tags[0].tag}" >> output
+      - echo "task-build tags[0].image=${docker:tags[0].image}" >> output
+      - echo "task-build tags[0].digest=${docker:tags[0].digest}" >> output
+  run-after-build2:
+    runOn: host
+    script:
+      - echo "task-build tags[1].tag=${docker:tags[1].tag}" >> output
+      - echo "task-build tags[1].image=${docker:tags[1].image}" >> output
+      - echo "task-build tags[1].digest=${docker:tags[1].digest}" >> output
+  run-after-push1:
+    runOn: host
+    script:
+      - echo "task-push image=${docker:image}" >> output
+      - echo "task-push tags[0].tag=${docker:tags[0].tag}" >> output
+      - echo "task-push tags[0].image=${docker:tags[0].image}" >> output
+      - echo "task-push tags[0].digest=${docker:tags[0].digest}" >> output
+  run-after-push2:
+    runOn: host
+    script:
+      - echo "task-push tags[1].tag=${docker:tags[1].tag}" >> output
+      - echo "task-push tags[1].image=${docker:tags[1].image}" >> output
+      - echo "task-push tags[1].digest=${docker:tags[1].digest}" >> output

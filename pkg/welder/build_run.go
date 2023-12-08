@@ -148,7 +148,7 @@ func (buildCtx *BuildContext) Run(envTask string, envStepIdx int, commandOrTask 
 		Run(runCtx, commandOrTask)
 }
 
-func (buildCtx *BuildContext) RunScriptsOfSimpleStep(name string, rawStep SimpleStepDefinition, root *RootBuildDefinition, module string) error {
+func (buildCtx *BuildContext) RunScriptsOfSimpleStep(name string, rawStep RunAfterStepDefinition, root *RootBuildDefinition, module string) error {
 	runID := root.ProjectNameOrDefault()
 	if len(root.Modules) > 1 {
 		runID = fmt.Sprintf("%s-%s", root.ProjectNameOrDefault(), module)
@@ -159,7 +159,7 @@ func (buildCtx *BuildContext) RunScriptsOfSimpleStep(name string, rawStep Simple
 		return err
 	}
 	var run *RunSpec
-	step, err := ActualSimpleStepsDefinitionFor(root, buildRunCtx.buildCtx, buildRunCtx.module, &rawStep)
+	step, err := ActualSimpleStepsDefinitionFor(root, buildRunCtx.buildCtx, buildRunCtx.module, &rawStep.SimpleStepDefinition)
 	if err != nil {
 		return err
 	}

@@ -23,7 +23,7 @@ const (
 
 func readYaml(pathToYaml string) []byte {
 	filename, err := filepath.Abs(pathToYaml)
-	yamlFile, err := ioutil.ReadFile(filename)
+	yamlFile, err := os.ReadFile(filename)
 	if err != nil {
 		handleErr(errors.Wrapf(err, "failed to unmarshal file %s", pathToYaml))
 	}
@@ -95,24 +95,38 @@ func ReadBuildModuleDefinition(rootDir string) (*ModuleDefinition, RootBuildDefi
 	return nil, rootDef, nil
 }
 
+func checkSupportedSchemaVersion(yamlFilePath string, yamlContent []byte) error {
+	var vd VersionedDefinition
+	err := yaml.Unmarshal(yamlContent, &vd)
+	if err != nil {
+		return err
+	}
+
+	if loadingVersion, err := semver.NewVersion(vd.SchemaVersion); err != nil {
+		return errors.Wrapf(err, "failed to parse schema version: %q", vd.SchemaVersion)
+	} else if currentVersion, err := semver.NewVersion(RootBuildDefinitionSchemaVersion); err != nil {
+		return errors.Wrapf(err, "failed to parse roob build schema version: %q", currentVersion)
+	} else if loadingVersion.GreaterThan(currentVersion) {
+		return errors.Errorf("your file %s is made for more recent version of "+
+			"welder (%s), current version: %s", yamlFilePath, vd.SchemaVersion, RootBuildDefinitionSchemaVersion)
+	}
+
+	return nil
+}
+
 // ReadBuildRootDefinition reads root definition from specified directory
 func ReadBuildRootDefinition(basePath string) (RootBuildDefinition, error) {
 	yamlFilePath := filepath.Join(basePath, BuildConfigFileName)
 	yamlFile := readYaml(yamlFilePath)
 
+	if err := checkSupportedSchemaVersion(yamlFilePath, yamlFile); err != nil {
+		return RootBuildDefinition{}, err
+	}
+
 	var rb RootBuildDefinition
 	err := yaml.UnmarshalStrict(yamlFile, &rb)
 	if err != nil {
 		return rb, err
-	}
-
-	if loadingVersion, err := semver.NewVersion(rb.SchemaVersion); err != nil {
-		return rb, errors.Wrapf(err, "failed to parse schema version: %q", rb.SchemaVersion)
-	} else if currentVersion, err := semver.NewVersion(RootBuildDefinitionSchemaVersion); err != nil {
-		return rb, errors.Wrapf(err, "failed to parse roob build schema version: %q", currentVersion)
-	} else if loadingVersion.GreaterThan(currentVersion) {
-		return rb, errors.Errorf("your file %s is made for more recent version of "+
-			"welder (%s), current version: %s", yamlFilePath, rb.SchemaVersion, RootBuildDefinitionSchemaVersion)
 	}
 
 	rb.rootDir = basePath

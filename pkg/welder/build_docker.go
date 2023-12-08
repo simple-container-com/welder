@@ -170,13 +170,13 @@ func (buildCtx *BuildContext) buildDockerImage(root *RootBuildDefinition, module
 		if err != nil {
 			return []string{}, errors.Wrapf(err, "failed to create temp directory")
 		}
-		defer os.RemoveAll(tmpDir)
-		tmpFile, err := ioutil.TempFile(tmpDir, "Dockerfile")
+		defer func() { _ = os.RemoveAll(tmpDir) }()
+		tmpFile, err := os.CreateTemp(tmpDir, "Dockerfile")
 		if err != nil {
 			return []string{}, errors.Wrapf(err, "failed to create temp file in %s", tmpDir)
 		}
 		dockerFilePath = tmpFile.Name()
-		if err := ioutil.WriteFile(dockerFilePath, []byte(buildParams.dockerImage.InlineDockerfile), os.ModePerm); err != nil {
+		if err := os.WriteFile(dockerFilePath, []byte(buildParams.dockerImage.InlineDockerfile), os.ModePerm); err != nil {
 			return tags, errors.Wrapf(err, "failed to write Dockerfile to path %s", dockerFilePath)
 		}
 	}
@@ -194,35 +194,62 @@ func (buildCtx *BuildContext) buildDockerImage(root *RootBuildDefinition, module
 }
 
 func (buildCtx *BuildContext) runAfterPushScripts(root *RootBuildDefinition, module string, dockerDef DockerImageDefinition, pushedDockerImage OutDockerImageDefinition) error {
+	pushSubCtx := NewBuildContext(buildCtx, buildCtx.Logger().SubLogger("after-push"))
+	pushSubCtx.SetCurrentDockerImage(&pushedDockerImage)
+	runId := fmt.Sprintf("after-push-%s", dockerDef.Name)
+	tasks := dockerDef.RunAfterPush.Tasks
 	if len(dockerDef.RunAfterPush.Scripts) > 0 {
 		buildCtx.Logger().Logf(" - Running after Docker push step...")
-		pushSubCtx := NewBuildContext(buildCtx, buildCtx.Logger().SubLogger("after-push"))
-		pushSubCtx.SetCurrentDockerImage(&pushedDockerImage)
-		if err := pushSubCtx.RunScriptsOfSimpleStep(fmt.Sprintf("after-push-%s", dockerDef.Name), dockerDef.RunAfterPush, root, module); err != nil {
+		if err := pushSubCtx.RunScriptsOfSimpleStep(runId, dockerDef.RunAfterPush, root, module); err != nil {
 			return errors.Wrapf(err, "failed to run after push script for %q", dockerDef.Name)
 		}
+	} else if len(tasks) > 0 {
+		return pushSubCtx.runAfterTasks(runId, root, module, tasks)
+	}
+	return nil
+}
+
+func (buildCtx *BuildContext) runAfterTasks(runId string, root *RootBuildDefinition, module string, tasks []string) error {
+	for _, task := range tasks {
+		action, err := buildCtx.ActualTaskDefinitionFor(root, task, module, nil)
+		if err != nil {
+			return errors.Wrapf(err, "failed to calcualate task definition for task %s of module %s", task, module)
+		}
+		runId = fmt.Sprintf("%s-%s", runId, task)
+		convRun := action.ToRunSpec(task)
+		buildCtx.ExecutingTask(task)
+		if err := buildCtx.RunScripts(fmt.Sprintf("%s step %q of module %s", action, task, module), runId, root, module, convRun); err != nil {
+			buildCtx.ExecutedTask(task)
+			return err
+		}
+		buildCtx.ExecutedTask(task)
 	}
 	return nil
 }
 
 func (buildCtx *BuildContext) runAfterBuildScripts(root *RootBuildDefinition, moduleName string, buildParams dockerBuildParams, tags []string) error {
-	if len(buildParams.dockerImage.RunAfterBuild.Scripts) > 0 {
-		digests := make([]OutDockerDigestDefinition, 0)
-		for _, tag := range tags {
-			image, tag, err := docker.ImageAndTagFromFullReference(tag)
-			if err != nil {
-				return err
-			}
-			digests = append(digests, OutDockerDigestDefinition{Tag: tag, Image: image})
+	afterDockerBuildCtx := NewBuildContext(buildCtx, buildCtx.Logger().SubLogger("after-build"))
+	digests := make([]OutDockerDigestDefinition, 0)
+	for _, tag := range tags {
+		image, tag, err := docker.ImageAndTagFromFullReference(tag)
+		if err != nil {
+			return err
 		}
+		digests = append(digests, OutDockerDigestDefinition{Tag: tag, Image: image})
+	}
+	afterDockerBuildCtx.SetCurrentDockerImage(&OutDockerImageDefinition{Name: buildParams.dockerImage.Name, Digests: digests})
+	runId := fmt.Sprintf("after-build-%s", buildParams.dockerImage.Name)
+	runAfterBuild := buildParams.dockerImage.RunAfterBuild
+	tasks := runAfterBuild.Tasks
+	if len(runAfterBuild.Scripts) > 0 {
 		buildCtx.Logger().Logf(" - Running after Docker build step...")
-		afterDockerBuildCtx := NewBuildContext(buildCtx, buildCtx.Logger().SubLogger("after-build"))
-		afterDockerBuildCtx.SetCurrentDockerImage(&OutDockerImageDefinition{Name: buildParams.dockerImage.Name, Digests: digests})
 		if err := afterDockerBuildCtx.RunScriptsOfSimpleStep(
-			fmt.Sprintf("after-build-%s", buildParams.dockerImage.Name),
-			buildParams.dockerImage.RunAfterBuild, root, moduleName); err != nil {
+			runId,
+			runAfterBuild, root, moduleName); err != nil {
 			return errors.Wrapf(err, "failed to invoke after build script ")
 		}
+	} else if len(tasks) > 0 {
+		return afterDockerBuildCtx.runAfterTasks(runId, root, moduleName, tasks)
 	}
 	return nil
 }

@@ -239,17 +239,21 @@ func (commonCtx *CommonCtx) CalcHash() (string, error) {
 	return base64.StdEncoding.EncodeToString(b.Bytes()), err
 }
 
-const RootBuildDefinitionSchemaVersion = "1.8.0"
+const RootBuildDefinitionSchemaVersion = "1.8.1"
+
+type VersionedDefinition struct {
+	SchemaVersion string `yaml:"schemaVersion,omitempty" json:"schemaVersion,omitempty" jsonschema:"title=Schema version,description=Version of the schema,default=1.5.0"`
+}
 
 type RootBuildDefinition struct {
-	SchemaVersion string             `yaml:"schemaVersion,omitempty" json:"schemaVersion,omitempty" jsonschema:"title=Schema version,description=Version of the schema,default=1.5.0"`
-	Version       string             `yaml:"version,omitempty" json:"version,omitempty" jsonschema:"title=Version of the project,example=1.0.0,required=false"`
-	ProjectName   string             `yaml:"projectName,omitempty" json:"projectName,omitempty" jsonschema:"title=Name of the project,example=my-super-project"`
-	ProjectRoot   string             `yaml:"projectRoot,omitempty" json:"projectRoot,omitempty" jsonschema:"title=Root directory for the project ,default=."`
-	Default       DefaultDefinition  `yaml:"default,omitempty" json:"default,omitempty"`
-	Profiles      ProfilesDefinition `yaml:"profiles,omitempty" json:"profiles,omitempty"`
-	Modules       ModulesDefinition  `yaml:"modules,omitempty" json:"modules,omitempty"`
-	Tasks         TasksDefinition    `yaml:"tasks,omitempty" json:"tasks,omitempty"`
+	VersionedDefinition `yaml:",inline"`
+	Version             string             `yaml:"version,omitempty" json:"version,omitempty" jsonschema:"title=Version of the project,example=1.0.0,required=false"`
+	ProjectName         string             `yaml:"projectName,omitempty" json:"projectName,omitempty" jsonschema:"title=Name of the project,example=my-super-project"`
+	ProjectRoot         string             `yaml:"projectRoot,omitempty" json:"projectRoot,omitempty" jsonschema:"title=Root directory for the project ,default=."`
+	Default             DefaultDefinition  `yaml:"default,omitempty" json:"default,omitempty"`
+	Profiles            ProfilesDefinition `yaml:"profiles,omitempty" json:"profiles,omitempty"`
+	Modules             ModulesDefinition  `yaml:"modules,omitempty" json:"modules,omitempty"`
+	Tasks               TasksDefinition    `yaml:"tasks,omitempty" json:"tasks,omitempty"`
 
 	rootDir               string
 	actualBuildDefsCache  sync.Map
@@ -428,6 +432,11 @@ type SimpleStepDefinition struct {
 	RunIf   string    `yaml:"runIf,omitempty" json:"runIf,omitempty" jsonschema:"title=Condition to execute step,example=${mode:bitbucket}"`
 }
 
+type RunAfterStepDefinition struct {
+	SimpleStepDefinition `yaml:",inline"`
+	Tasks                []string `yaml:"tasks,omitempty" json:"tasks,omitempty" jsonschema:"title=Names of the tasks to invoke,oneof_required=tasks"`
+}
+
 type StepsDefinition struct {
 	CommonSimpleRunDefinition `yaml:",inline"`
 	Name                      string         `yaml:"name,omitempty" json:"name,omitempty" jsonschema:"title=Name of the step to execute"`
@@ -539,13 +548,13 @@ type OutDockerDigestDefinition struct {
 }
 
 type DockerImageDefinition struct {
-	Name             string                `yaml:"name,omitempty" json:"name,omitempty" jsonschema:"title=Name of the Docker image to build"`
-	DockerFile       string                `yaml:"dockerFile,omitempty" json:"dockerFile,omitempty" jsonschema:"title=Dockerfile to use with the docker build,oneof_required=dockerfile"`
-	Tags             []string              `yaml:"tags,omitempty" json:"tags,omitempty" jsonschema:"title=Tags to apply to the built Docker image"`
-	Build            DockerBuildDefinition `yaml:"build,omitempty" json:"build,omitempty" jsonschema:"title=Build definition of the Docker image"`
-	InlineDockerfile string                `yaml:"inlineDockerFile,omitempty" json:"inlineDockerFile,omitempty" jsonschema:"title=Inline text of the Dockerfile to build,oneof_required=inlinedockerfile"`
-	RunAfterBuild    SimpleStepDefinition  `yaml:"runAfterBuild,omitempty" json:"runAfterBuild,omitempty" jsonschema:"title=Step to run after Docker image is built"`
-	RunAfterPush     SimpleStepDefinition  `yaml:"runAfterPush,omitempty" json:"runAfterPush,omitempty" jsonschema:"title=Step to run after Docker image is pushed"`
+	Name             string                 `yaml:"name,omitempty" json:"name,omitempty" jsonschema:"title=Name of the Docker image to build"`
+	DockerFile       string                 `yaml:"dockerFile,omitempty" json:"dockerFile,omitempty" jsonschema:"title=Dockerfile to use with the docker build,oneof_required=dockerfile"`
+	Tags             []string               `yaml:"tags,omitempty" json:"tags,omitempty" jsonschema:"title=Tags to apply to the built Docker image"`
+	Build            DockerBuildDefinition  `yaml:"build,omitempty" json:"build,omitempty" jsonschema:"title=Build definition of the Docker image"`
+	InlineDockerfile string                 `yaml:"inlineDockerFile,omitempty" json:"inlineDockerFile,omitempty" jsonschema:"title=Inline text of the Dockerfile to build,oneof_required=inlinedockerfile"`
+	RunAfterBuild    RunAfterStepDefinition `yaml:"runAfterBuild,omitempty" json:"runAfterBuild,omitempty" jsonschema:"title=Step to run after Docker image is built"`
+	RunAfterPush     RunAfterStepDefinition `yaml:"runAfterPush,omitempty" json:"runAfterPush,omitempty" jsonschema:"title=Step to run after Docker image is pushed"`
 }
 
 // IsValid returns true if docker image definition is valid

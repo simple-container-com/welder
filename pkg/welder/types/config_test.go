@@ -31,7 +31,6 @@ func TestReadOutDockerDefinition(t *testing.T) {
 	Expect(def.Modules[1].DockerImages[0].Digests[1].Tag).To(Equal("docker.simple-container.com/test/deng/sox/trebuchet:36502d5b068f0cad6f468a47bc4c2b5fd7003c26"))
 
 }
-
 func TestDetectBuildContextFromModule(t *testing.T) {
 	RegisterTestingT(t)
 

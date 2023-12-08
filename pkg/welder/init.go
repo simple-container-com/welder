@@ -54,7 +54,7 @@ func (i *InitCtx) RunWizard() error {
 		}
 	}
 
-	buildCfgDef := RootBuildDefinition{SchemaVersion: RootBuildDefinitionSchemaVersion}
+	buildCfgDef := RootBuildDefinition{VersionedDefinition: VersionedDefinition{SchemaVersion: RootBuildDefinitionSchemaVersion}}
 
 	if err := i.askProjectName(&buildCfgDef); err != nil {
 		return err

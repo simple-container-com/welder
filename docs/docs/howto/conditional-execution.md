@@ -46,13 +46,13 @@ profiles:
       if: "!${mode:bamboo} && !${mode:pipelines}"
     build: 
       env:
-        SLAUTH_TOKEN: "${task:slauthtoken.trim}" # generate slauthtoken for local testing against micros server
+        TOKEN: "${task:token.trim}" # generate token for local testing against backend
 # ...
 tasks:
-  slauthtoken:
+  token:
     runOn: host
     script:
-      - atlas slauth token --aud micros -g micros-sv--myservice-dl-admins -o jwt
+      - generate-token --aud backend -o jwt
 ```
 As shown above, profiles also can be activated when a certain mode is active. For example, you can activate a profile only when
 your build is running on Bitbucket Pipelines as shown above.

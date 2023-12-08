@@ -49,7 +49,7 @@ type DeployParams struct {
 }
 
 func (o *DeployParams) registerDeployFlags(cmd *kingpin.CmdClause) {
-	cmd.Flag("env", "Environment to use with Micros Service").
+	cmd.Flag("env", "Environment to use with Service").
 		Short('e').
 		Required().
 		StringsVar(&o.EnvNames)

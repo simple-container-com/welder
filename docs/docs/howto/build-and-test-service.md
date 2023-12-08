@@ -58,7 +58,7 @@ tasks:
   build:
     runOn: host
     script:
-      - atlas slauth oauth --audience "bitbucket.org" --scopes account --output header
+      - generate-token --audience "bitbucket.org" --scopes account --output header
 ```
 
 In the above example we are generating OAuth token for Bitbucket. This could be used within other commands to access

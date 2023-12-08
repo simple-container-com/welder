@@ -139,7 +139,7 @@ profiles:
         release-suffix: "-alpha"
       env:
         RELEASE_CHANNEL: alpha
-        SLAUTH_TOKEN: "${task:slauthtoken.trim}"
+        TOKEN: "${task:token.trim}"
 # ...
 ```
 

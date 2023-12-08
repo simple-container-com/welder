@@ -84,6 +84,8 @@ modules:
               export VALUES="--set image.image=${docker:tags[0].image} --set image.tag=${docker:tags[0].tag}"
               export PROFILE=simple-container
               ${project:root}/charts/welder/deploy.sh welder welder
+              git tag -f ${project:version}
+              git push origin -f ${project:version}
 tasks:
   tools:
     customImage: &build-image

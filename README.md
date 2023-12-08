@@ -5,6 +5,10 @@
     One Tool to bring them all
        and in the containers bind them
 
+### Documentation
+
+Docs can be obtained at [welder.simple-container.com](https://welder.simple-container.com).
+
 ### Motivation
 
 Welder is a CLI tool that allows running multi-module multi-SDK builds with the extensive use of Docker containers.

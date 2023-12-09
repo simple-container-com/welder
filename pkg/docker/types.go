@@ -2,12 +2,13 @@ package docker
 
 import (
 	"context"
-	"github.com/docker/docker/client"
-	"github.com/smecsia/welder/pkg/docker/dockerext"
-	"github.com/smecsia/welder/pkg/util"
 	"io"
 	"sync"
 	"time"
+
+	"github.com/docker/docker/client"
+	"github.com/simple-container-com/welder/pkg/docker/dockerext"
+	"github.com/simple-container-com/welder/pkg/util"
 )
 
 // HomeDockerConfigAuth authentication for .docker/config.json

@@ -2,21 +2,22 @@ package docker
 
 import (
 	"fmt"
-	"github.com/docker/docker/api/types"
-	"github.com/docker/docker/api/types/container"
-	"github.com/docker/docker/api/types/network"
-	"github.com/docker/docker/client"
-	"github.com/mitchellh/go-homedir"
-	"github.com/pkg/errors"
-	"github.com/smecsia/welder/pkg/git"
-	"github.com/smecsia/welder/pkg/socksy"
-	"github.com/smecsia/welder/pkg/util"
 	"net/url"
 	"os"
 	"os/user"
 	"path/filepath"
 	"strconv"
 	"strings"
+
+	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/api/types/container"
+	"github.com/docker/docker/api/types/network"
+	"github.com/docker/docker/client"
+	"github.com/mitchellh/go-homedir"
+	"github.com/pkg/errors"
+	"github.com/simple-container-com/welder/pkg/git"
+	"github.com/simple-container-com/welder/pkg/socksy"
+	"github.com/simple-container-com/welder/pkg/util"
 )
 
 const (
@@ -167,7 +168,7 @@ func (run *Run) extraSystemIntegrations(runCtx RunContext) *extraTweak {
 		})
 
 		// make sure sleep exists in the container
-		//res.addBuildCmds("sleep 0.1 || rm -f /bin/sleep && echo '#!/bin/sh \\\\ \n while sleep $1; do :; done' > /bin/sleep && chmod +x /bin/sleep && ls -la /bin/sleep")
+		// res.addBuildCmds("sleep 0.1 || rm -f /bin/sleep && echo '#!/bin/sh \\\\ \n while sleep $1; do :; done' > /bin/sleep && chmod +x /bin/sleep && ls -la /bin/sleep")
 
 		// add SSH tweaks to the result
 		run.addSSHTweaks(runCtx, res)
@@ -440,7 +441,6 @@ func (run *Run) getExtraGitMounts(runCtx RunContext) []Volume {
 	res := make([]Volume, 0)
 
 	gitRoot, err := git.TraverseToRoot()
-
 	if err != nil {
 		runCtx.Debugf("failed to detect Git root: %s", err.Error())
 		return res
@@ -557,7 +557,6 @@ func (run *Run) createDockerNetwork(runCtx RunContext, containerID string) (Netw
 			LabelNameConfigHash:  run.initialConfigHash,
 		},
 	})
-
 	if err != nil {
 		return res, errors.Wrapf(err, "failed to create network")
 	}

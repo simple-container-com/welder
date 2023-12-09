@@ -1,14 +1,16 @@
 package welder
 
 import (
-	. "github.com/onsi/gomega"
-	"github.com/smecsia/welder/pkg/util"
-	. "github.com/smecsia/welder/pkg/welder/types"
 	"io/ioutil"
 	"os"
 	"path"
 	"strings"
 	"testing"
+
+	. "github.com/onsi/gomega"
+
+	"github.com/simple-container-com/welder/pkg/util"
+	. "github.com/simple-container-com/welder/pkg/welder/types"
 )
 
 func TestBuildWithCustomImage(t *testing.T) {
@@ -36,7 +38,6 @@ func TestBuildWithCustomImage(t *testing.T) {
 	for _, testCase := range testCases {
 		tc := testCase // for proper closures
 		t.Run(tc.name, func(t *testing.T) {
-
 			_, projectDir, cleanup := setupTempExampleProject(t, "testdata/custom-image")
 			defer cleanup()
 

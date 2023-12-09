@@ -2,9 +2,10 @@ package pipelines
 
 import (
 	"fmt"
-	. "github.com/onsi/gomega"
-	"github.com/smecsia/welder/pkg/util"
 	"testing"
+
+	. "github.com/onsi/gomega"
+	"github.com/simple-container-com/welder/pkg/util"
 )
 
 func TestPopulatePipelinesEnvVariables(t *testing.T) {

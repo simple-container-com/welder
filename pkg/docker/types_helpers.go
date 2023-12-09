@@ -7,11 +7,12 @@ import (
 	"encoding/gob"
 	"encoding/hex"
 	"fmt"
-	"github.com/docker/docker/pkg/ioutils"
-	"github.com/fatih/color"
-	"github.com/smecsia/welder/pkg/util"
 	"runtime"
 	"time"
+
+	"github.com/docker/docker/pkg/ioutils"
+	"github.com/fatih/color"
+	"github.com/simple-container-com/welder/pkg/util"
 )
 
 //

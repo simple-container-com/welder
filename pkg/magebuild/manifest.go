@@ -3,8 +3,6 @@ package magebuild
 import (
 	"context"
 	"fmt"
-	"github.com/pelletier/go-toml"
-	"github.com/pkg/errors"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -13,6 +11,9 @@ import (
 	"path"
 	"path/filepath"
 	"time"
+
+	"github.com/pelletier/go-toml"
+	"github.com/pkg/errors"
 )
 
 const (
@@ -113,7 +114,7 @@ func copyToFile(res *http.Response, file string) error {
 	}
 
 	dir := filepath.Dir(file)
-	err := os.MkdirAll(dir, 0755)
+	err := os.MkdirAll(dir, 0o755)
 	if err != nil {
 		return errors.Wrapf(err, "Failed to create directory %q", dir)
 	}
@@ -169,7 +170,6 @@ func (ctx *GoBuildContext) PublishPluginManifest(target Target, manifest *Plugin
 	latestPMBytes, _ := ioutil.ReadFile(manifestFile.Name())
 	fmt.Println(string(latestPMBytes))
 	return ctx.UploadFileToStatlas(ctx.BaseTargetURL(target), "manifest.toml", manifestFile.Name(), checksumFile)
-
 }
 
 // InitManifest uploads manifest file into statlas

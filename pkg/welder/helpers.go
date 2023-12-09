@@ -2,10 +2,11 @@ package welder
 
 import (
 	"fmt"
-	"github.com/pkg/errors"
-	"github.com/smecsia/welder/pkg/util"
-	"github.com/smecsia/welder/pkg/welder/types"
 	"runtime"
+
+	"github.com/pkg/errors"
+	"github.com/simple-container-com/welder/pkg/util"
+	"github.com/simple-container-com/welder/pkg/welder/types"
 )
 
 // ActualDeployDefinitionFor builds effective deploy definition for module
@@ -75,7 +76,8 @@ func (buildCtx *BuildContext) ActualDeployDefinitionFor(root *types.RootBuildDef
 
 // ActualSimpleStepsDefinitionFor builds effective simple Steps
 func ActualSimpleStepsDefinitionFor(root *types.RootBuildDefinition, ctx *BuildContext,
-	module *types.ModuleDefinition, step *types.SimpleStepDefinition) (types.SimpleStepDefinition, error) {
+	module *types.ModuleDefinition, step *types.SimpleStepDefinition,
+) (types.SimpleStepDefinition, error) {
 	tpl := Tpl{buildCtx: ctx, root: root, module: module}
 	res, err := step.Clone()
 	if err != nil {
@@ -116,7 +118,8 @@ func (buildCtx *BuildContext) ActualBuildDefinitionFor(root *types.RootBuildDefi
 
 // ActualTaskDefinitionForRawTask builds effective build definition for a provided raw task definition
 func (buildCtx *BuildContext) ActualTaskDefinitionForRawTask(root *types.RootBuildDefinition, taskName string, task types.TaskDefinition,
-	moduleName string, deployCtx *DeployContext) (types.TaskDefinition, error) {
+	moduleName string, deployCtx *DeployContext,
+) (types.TaskDefinition, error) {
 	// return cached version
 	buildHash, err := buildCtx.CalcHash()
 	if err != nil {
@@ -207,7 +210,6 @@ func (buildCtx *BuildContext) ActualDockerImagesDefinitionFor(root *types.RootBu
 	}
 
 	buildDef, _, err := buildCtx.ActualBuildDefinitionFor(root, moduleName)
-
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to calculate dor images definitions for module %s", moduleName)
 	}

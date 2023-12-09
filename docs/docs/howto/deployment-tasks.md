@@ -34,12 +34,13 @@ modules:
         - step:
             runOn: host
             script:
-              - atlas statlas put --auth-group mygroup --namespace=${project:env} -f ${project:root}/myservice.zip
+              - gcloud storage cp ${project:root}/myservice.zip gs://my-bucket-${project:env}
 # ...
 ```
 In the example above we assume that some zip archive is produced after the build step, and it should be uploaded to
-[statlas](/platform/statlas/). Depending on which environment is provided to `welder deploy` command, the
-`--namespace` argument will be set to `development` or `production`.
+[gcloud storage bucket](https://cloud.google.com/storage/docs/uploading-objects#upload-object-cli). 
+Depending on which environment is provided to `welder deploy` command, the `gs://my-bucket-<env>` argument will be set 
+to `development` or `production`.
 
 !!! note
     `${project:env}` expression gets replaced with the actual value when you invoke a deployment command. For

@@ -1,15 +1,15 @@
 package pipelines_test
 
 import (
-	"github.com/smecsia/welder/pkg/pipelines"
+	"testing"
+
+	"github.com/simple-container-com/welder/pkg/pipelines"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"gopkg.in/yaml.v2"
-	"testing"
 )
 
 func IgnoreTestPipelineUnmarshaling(t *testing.T) {
-
 	pipelineYaml := []byte(`image: node:10.15.0
 pipelines:
   default:

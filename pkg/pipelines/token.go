@@ -3,13 +3,14 @@ package pipelines
 import (
 	"context"
 	"fmt"
-	"github.com/pkg/errors"
-	"github.com/smecsia/welder/pkg/exec"
-	"github.com/smecsia/welder/pkg/util"
 	"os"
 	"os/user"
 	"path"
 	"strings"
+
+	"github.com/pkg/errors"
+	"github.com/simple-container-com/welder/pkg/exec"
+	"github.com/simple-container-com/welder/pkg/util"
 )
 
 var atlasPluginsPath = []string{".local", "share", "atlassian", "atlas", "plugin"}

@@ -5,6 +5,18 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
+	"io/ioutil"
+	"os"
+	"os/signal"
+	"path"
+	"path/filepath"
+	"regexp"
+	"runtime"
+	"strings"
+	"syscall"
+	"time"
+
 	"github.com/containerd/continuity/fs"
 	"github.com/docker/distribution/reference"
 	"github.com/docker/docker/api/types"
@@ -20,20 +32,9 @@ import (
 	"github.com/lithammer/shortuuid/v3"
 	"github.com/pkg/errors"
 	"github.com/segmentio/textio"
-	"github.com/smecsia/welder/pkg/docker/dockerext"
-	"github.com/smecsia/welder/pkg/util"
+	"github.com/simple-container-com/welder/pkg/docker/dockerext"
+	"github.com/simple-container-com/welder/pkg/util"
 	"golang.org/x/sync/errgroup"
-	"io"
-	"io/ioutil"
-	"os"
-	"os/signal"
-	"path"
-	"path/filepath"
-	"regexp"
-	"runtime"
-	"strings"
-	"syscall"
-	"time"
 )
 
 const (
@@ -83,7 +84,6 @@ func NewRun(runID string, ref string) (*Run, error) {
 // Run prepares container and executes commands
 func (run *Run) Run(runCtx RunContext, commands ...string) error {
 	containerID, err := run.PrepareContainer(runCtx)
-
 	if err != nil {
 		return errors.Wrapf(err, "failed to prepare container")
 	}
@@ -115,7 +115,6 @@ func (run *Run) Run(runCtx RunContext, commands ...string) error {
 	if runCtx.RunBeforeExec != nil {
 		runCtx.Debugf("before exec hook is set, executing against container %s", containerID)
 		err := runCtx.RunBeforeExec(containerID)
-
 		if err != nil {
 			return errors.Wrapf(err, "failed to exec before hook")
 		}
@@ -148,7 +147,6 @@ func (run *Run) Run(runCtx RunContext, commands ...string) error {
 		if runCtx.RunAfterExec != nil {
 			runCtx.Debugf("after exec hook is set, executing against container %s", containerID)
 			err := runCtx.RunAfterExec(containerID)
-
 			if err != nil {
 				return errors.Wrapf(err, "failed to exec after hook")
 			}
@@ -228,7 +226,7 @@ func (run *Run) createContainer(runCtx RunContext) (string, error) {
 	// calc extra system integrations
 	tweaks := run.extraSystemIntegrations(runCtx)
 
-	var imageID = run.Reference
+	imageID := run.Reference
 	var err error
 	if run.osDistribution.IsLinuxBased() {
 		// building custom build image on top of provided Docker reference
@@ -825,7 +823,7 @@ func (run *Run) copyToContainer(runCtx RunContext, containerID string, hostPath 
 		return err
 	}
 
-	var containerStatus = "unknown"
+	containerStatus := "unknown"
 	if status, err := run.Util().GetContainerStatus(containerID); err != nil {
 		return errors.Wrapf(err, "failed to get container's status %q", containerID)
 	} else {

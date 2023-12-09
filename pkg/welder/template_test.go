@@ -2,18 +2,20 @@ package welder
 
 import (
 	"fmt"
+	"os"
+	"path"
+	"testing"
+
 	"github.com/lithammer/shortuuid/v3"
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/types"
 	"github.com/otiai10/copy"
-	"github.com/smecsia/welder/pkg/git/mock"
-	"github.com/smecsia/welder/pkg/util"
-	"github.com/smecsia/welder/pkg/welder/runner"
-	. "github.com/smecsia/welder/pkg/welder/types"
 	"github.com/stretchr/testify/require"
-	"os"
-	"path"
-	"testing"
+
+	"github.com/simple-container-com/welder/pkg/git/mock"
+	"github.com/simple-container-com/welder/pkg/util"
+	"github.com/simple-container-com/welder/pkg/welder/runner"
+	. "github.com/simple-container-com/welder/pkg/welder/types"
 )
 
 func TestActiveProfiles(t *testing.T) {
@@ -23,7 +25,8 @@ func TestActiveProfiles(t *testing.T) {
 	Expect(err).To(BeNil())
 
 	activeProfiles := (&BuildContext{
-		CommonCtx: &CommonCtx{SoxEnabled: true, Profiles: []string{"skip-tests"}}}).
+		CommonCtx: &CommonCtx{SoxEnabled: true, Profiles: []string{"skip-tests"}},
+	}).
 		ActiveProfiles(&rootDef, "")
 
 	Expect(activeProfiles).To(ContainElements("skip-tests", "sox"))
@@ -82,8 +85,10 @@ func TestActualDeployDefinitionFor(t *testing.T) {
 	expectedRunDef := (&CommonRunDefinition{Args: BuildArgs{"some-env-var": "dev"}}).Init()
 	Expect(thirdDeploy.Environments).To(HaveKeyWithValue("ddev",
 		DeployEnvDefinition{AutoDeploy: true, CommonRunDefinition: *expectedRunDef}))
-	expectedRunDef = (&CommonRunDefinition{Args: BuildArgs{"some-env-var": "staging"},
-		CommonSimpleRunDefinition: CommonSimpleRunDefinition{Env: BuildEnv{"SOME_DEPLOY_VAR": "staging-value"}}}).Init()
+	expectedRunDef = (&CommonRunDefinition{
+		Args:                      BuildArgs{"some-env-var": "staging"},
+		CommonSimpleRunDefinition: CommonSimpleRunDefinition{Env: BuildEnv{"SOME_DEPLOY_VAR": "staging-value"}},
+	}).Init()
 	Expect(thirdDeploy.Environments).To(HaveKeyWithValue("stg-west",
 		DeployEnvDefinition{AutoDeploy: true, CommonRunDefinition: *expectedRunDef}))
 	Expect(thirdDeploy.Steps[0].Step.Scripts[0]).To(Equal("mkdir -p services/armory/target"))
@@ -137,7 +142,8 @@ func TestActualBuildDefinition(t *testing.T) {
 	Expect(armoryBuildDef.Steps[0].Step.Scripts[4]).To(Equal("echo ${BUILD_ARGS}"))
 
 	buildCtx = &BuildContext{
-		CommonCtx: &CommonCtx{Profiles: []string{},
+		CommonCtx: &CommonCtx{
+			Profiles:  []string{},
 			BuildArgs: BuildArgs{"extra": "hohoho", "maven-version": "1.0"},
 		},
 	}

@@ -14,15 +14,13 @@ import (
 	"github.com/jstemmer/go-junit-report/formatter"
 	"github.com/jstemmer/go-junit-report/parser"
 	"github.com/pkg/errors"
-	"github.com/smecsia/welder/pkg/util"
+	"github.com/simple-container-com/welder/pkg/util"
 	"golang.org/x/sync/errgroup"
 )
 
-var (
-	GoBuildEnv = []string{
-		"GOPATH=" + build.Default.GOPATH,
-	}
-)
+var GoBuildEnv = []string{
+	"GOPATH=" + build.Default.GOPATH,
+}
 
 // CurrentPlatform returns current platform
 func (ctx *GoBuildContext) CurrentPlatform() Platform {
@@ -92,8 +90,9 @@ func (ctx *GoBuildContext) TestAll(extraArgs ...string) error {
 
 // Test runs go test
 func (ctx *GoBuildContext) Test(target string, extraArgs ...string) error {
-	goTestCmd := Cmd{Command: "go test -v " + target + " " + strings.Join(extraArgs, " "),
-		Env: ctx.CurrentPlatform().GoEnv(),
+	goTestCmd := Cmd{
+		Command: "go test -v " + target + " " + strings.Join(extraArgs, " "),
+		Env:     ctx.CurrentPlatform().GoEnv(),
 	}
 	return ctx.TestCommand(goTestCmd)
 }
@@ -177,10 +176,12 @@ func (ctx *GoBuildContext) Build(target Target, platform Platform, extraArgs ...
 	if ctx.ExtraBuildFlags != "-" {
 		extraBuildFlags = " " + ctx.ExtraBuildFlags
 	}
-	if err := ctx.RunCmd(Cmd{Env: platform.GoEnv(),
+	if err := ctx.RunCmd(Cmd{
+		Env: platform.GoEnv(),
 		Command: "go build -ldflags \"-X main.Version=" + ctx.GetVersion() +
 			extraLdFlags + "\" " + extraBuildFlags + " " + strings.Join(extraArgs, " ") +
-			" -o \"" + binaryFile + "\" \"" + ctx.SourceFile(target) + "\""}); err != nil {
+			" -o \"" + binaryFile + "\" \"" + ctx.SourceFile(target) + "\"",
+	}); err != nil {
 		return err
 	}
 	return ctx.WriteFileChecksum(binaryFile, checksumFile)
@@ -239,10 +240,12 @@ func (ctx *GoBuildContext) GenerateSwaggerClient(relPath string, swaggerURL stri
 	if err := ctx.RunCmd(Cmd{Command: generateCmd}); err != nil {
 		return err
 	}
-	return ctx.RunCmd(Cmd{Command: fmt.Sprintf(
-		"go run '%s' generate client -f '%s' --skip-validation -t '%s' -A %s",
-		ctx.VendorPath("github.com/go-swagger/go-swagger/cmd/swagger"), swaggerFile, basePath, appName),
-		Env: ctx.CurrentPlatform().GoEnv()})
+	return ctx.RunCmd(Cmd{
+		Command: fmt.Sprintf(
+			"go run '%s' generate client -f '%s' --skip-validation -t '%s' -A %s",
+			ctx.VendorPath("github.com/go-swagger/go-swagger/cmd/swagger"), swaggerFile, basePath, appName),
+		Env: ctx.CurrentPlatform().GoEnv(),
+	})
 }
 
 // ProjectRoot finds git root traversing from the current directory up to the dir with .git dir
@@ -321,7 +324,8 @@ func (ctx *GoBuildContext) Bundle(target Target, platform Platform) Bundle {
 	checksumName := fmt.Sprintf("%s.sha256", tarName)
 	targetBinaryFile := ctx.OutFile(target, platform)
 	targetChecksumFile := fmt.Sprintf("%s.sha256", targetBinaryFile)
-	return Bundle{Target: target, Platform: platform,
+	return Bundle{
+		Target: target, Platform: platform,
 		TargetBinaryFile: targetBinaryFile, TargetChecksumFile: targetChecksumFile,
 		TarFile: tarName, TarChecksumFile: checksumName,
 	}
@@ -472,7 +476,6 @@ func (ctx GoBuildContext) PlatformsToVariants() []string {
 
 func (ctx GoBuildContext) WriteFileChecksum(inputFile string, outputFile string) error {
 	f, err := os.Open(inputFile)
-
 	if err != nil {
 		return err
 	}
@@ -485,7 +488,6 @@ func (ctx GoBuildContext) WriteFileChecksum(inputFile string, outputFile string)
 	}
 
 	fHash, err := os.Create(outputFile)
-
 	if err != nil {
 		return err
 	}

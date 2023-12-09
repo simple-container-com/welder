@@ -2,11 +2,12 @@ package mutagen_test
 
 import (
 	"context"
-	. "github.com/onsi/gomega"
-	"github.com/smecsia/welder/pkg/mutagen"
-	"github.com/smecsia/welder/pkg/util"
 	"os"
 	"testing"
+
+	. "github.com/onsi/gomega"
+	"github.com/simple-container-com/welder/pkg/mutagen"
+	"github.com/simple-container-com/welder/pkg/util"
 )
 
 func TestListSessions(t *testing.T) {
@@ -87,7 +88,6 @@ Status: Connecting to beta
 	Expect(sessions[0].TargetURL).To(Equal("docker://someuser@sha256:047a479d83031a40e16cbeb99e07d38a594b22f8913ec6a074bd5d0dd1607976/tmp/test"))
 	Expect(sessions[1].TargetURL).To(Equal("docker://someuser@spinnaker-helm-chart-test-helm-hENDX/tmp/test"))
 	Expect(sessions[1].ContainerID).To(Equal("spinnaker-helm-chart-test-helm-hENDX"))
-
 }
 
 func TestParseSessionsOutput(t *testing.T) {
@@ -152,5 +152,4 @@ Status: Watching for changes
 	Expect(sessions[0].TargetURL).To(Equal("docker://someuser@sha256:047a479d83031a40e16cbeb99e07d38a594b22f8913ec6a074bd5d0dd1607976/tmp/test"))
 	Expect(sessions[1].TargetURL).To(Equal("docker://someuser@spinnaker-helm-chart-test-helm-hENDX/tmp/test"))
 	Expect(sessions[1].ContainerID).To(Equal("spinnaker-helm-chart-test-helm-hENDX"))
-
 }

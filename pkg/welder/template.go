@@ -2,15 +2,16 @@ package welder
 
 import (
 	"fmt"
-	"github.com/pkg/errors"
-	"github.com/smecsia/welder/pkg/template"
-	"github.com/smecsia/welder/pkg/util"
-	"github.com/smecsia/welder/pkg/welder/types"
 	"os"
 	"reflect"
 	"runtime"
 	"strconv"
 	"strings"
+
+	"github.com/pkg/errors"
+	"github.com/simple-container-com/welder/pkg/template"
+	"github.com/simple-container-com/welder/pkg/util"
+	"github.com/simple-container-com/welder/pkg/welder/types"
 )
 
 type Tpl struct {
@@ -288,6 +289,7 @@ func (tpl *Tpl) addDockerTemplateVars(data util.Data) util.Data {
 	}
 	return data
 }
+
 func (tpl *Tpl) applyTemplateOnValuesMap(target map[string]types.StringValue) {
 	for k, v := range target {
 		target[k] = types.StringValue(tpl.applyTemplate(string(v)))

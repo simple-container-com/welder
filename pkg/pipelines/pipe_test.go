@@ -1,12 +1,13 @@
 package pipelines
 
 import (
-	. "github.com/onsi/gomega"
-	"github.com/smecsia/welder/pkg/docker"
-	"github.com/smecsia/welder/pkg/util"
 	"os"
 	"runtime"
 	"testing"
+
+	. "github.com/onsi/gomega"
+	"github.com/simple-container-com/welder/pkg/docker"
+	"github.com/simple-container-com/welder/pkg/util"
 )
 
 func TestResolveDockerImageFromPipe(t *testing.T) {
@@ -36,11 +37,10 @@ func TestResolveDockerImageFromPipe(t *testing.T) {
 	for _, testCase := range testCases {
 		tc := testCase // for proper closures
 		t.Run(tc.pipeName, func(t *testing.T) {
-
 			pipe := NewPipe(tc.pipeName, &BitbucketContext{})
-			//token, err := GenerateBitbucketOauthToken(false)
-			//Expect(err).To(BeNil())
-			//pipe.OAuthToken = token
+			// token, err := GenerateBitbucketOauthToken(false)
+			// Expect(err).To(BeNil())
+			// pipe.OAuthToken = token
 			image, err := pipe.DockerImage()
 			Expect(err).To(BeNil())
 			Expect(image, err).To(Equal(tc.expectedImage))
@@ -58,14 +58,13 @@ func TestRunPipe(t *testing.T) {
 	defer callback()
 
 	pipe := NewPipe("atlassian/artifactory-sidekick:v1", pipelines.BitbucketContext)
-	//token, err := GenerateBitbucketOauthToken(false)
-	//Expect(err).To(BeNil())
-	//pipe.OAuthToken = token
+	// token, err := GenerateBitbucketOauthToken(false)
+	// Expect(err).To(BeNil())
+	// pipe.OAuthToken = token
 	env, err := pipe.PipelinesEnv()
 	Expect(err).To(BeNil())
 	Expect(pipe.Run(&docker.RunContext{
 		WorkDir: pipe.RootDir(),
 		Env:     env,
 	})).To(BeNil())
-
 }

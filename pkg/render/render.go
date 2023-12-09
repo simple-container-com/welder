@@ -11,7 +11,7 @@ import (
 	"github.com/Masterminds/sprig/v3"
 	"github.com/alecthomas/kingpin"
 	"github.com/ghodss/yaml"
-	rendered "github.com/smecsia/welder/pkg/render/rendered"
+	rendered "github.com/simple-container-com/welder/pkg/render/rendered"
 )
 
 const (
@@ -21,9 +21,7 @@ const (
 	FormatTable    = "table"
 )
 
-var (
-	Formats = []string{FormatJSON, FormatYAML}
-)
+var Formats = []string{FormatJSON, FormatYAML}
 
 type OutputFlag struct {
 	OutputFormats []string
@@ -49,7 +47,7 @@ func Write(w io.Writer, f string, data interface{}) error {
 		return writeJSON(w, data)
 	case FormatYAML:
 		return writeYAML(w, data)
-	//case FormatTable:
+	// case FormatTable:
 	//	return writeTable(w, data)
 	default:
 		return writeTemplate(w, f, data)
@@ -57,7 +55,6 @@ func Write(w io.Writer, f string, data interface{}) error {
 }
 
 func writeTemplate(w io.Writer, f string, data interface{}) error {
-
 	u, err := url.Parse(f)
 	if err != nil {
 		return fmt.Errorf("bad template URI: %q", f)

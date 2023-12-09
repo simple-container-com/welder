@@ -3,13 +3,14 @@ package socksy
 import (
 	"context"
 	"fmt"
-	"github.com/phayes/freeport"
-	"github.com/pkg/errors"
-	"github.com/smecsia/welder/pkg/util"
-	"inet.af/tcpproxy"
 	"net"
 	"strings"
 	"sync"
+
+	"github.com/phayes/freeport"
+	"github.com/pkg/errors"
+	"github.com/simple-container-com/welder/pkg/util"
+	"inet.af/tcpproxy"
 )
 
 // SocketProxy represents the socket

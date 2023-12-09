@@ -1,10 +1,11 @@
 package welder
 
 import (
-	. "github.com/onsi/gomega"
-	"github.com/smecsia/welder/pkg/util"
-	. "github.com/smecsia/welder/pkg/welder/types"
 	"testing"
+
+	. "github.com/onsi/gomega"
+	"github.com/simple-container-com/welder/pkg/util"
+	. "github.com/simple-container-com/welder/pkg/welder/types"
 )
 
 func TestRunConditionalProfileWhenConditionIsTrue(t *testing.T) {

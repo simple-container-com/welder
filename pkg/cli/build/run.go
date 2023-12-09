@@ -2,8 +2,9 @@ package build
 
 import (
 	"fmt"
+
 	"github.com/alecthomas/kingpin"
-	"github.com/smecsia/welder/pkg/welder/types"
+	"github.com/simple-container-com/welder/pkg/welder/types"
 )
 
 type Run struct {

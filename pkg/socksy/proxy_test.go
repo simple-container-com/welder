@@ -2,13 +2,14 @@ package socksy
 
 import (
 	"fmt"
-	. "github.com/onsi/gomega"
-	"github.com/smecsia/welder/pkg/util"
-	"golang.org/x/sync/errgroup"
 	"net"
 	"os"
 	"testing"
 	"time"
+
+	. "github.com/onsi/gomega"
+	"github.com/simple-container-com/welder/pkg/util"
+	"golang.org/x/sync/errgroup"
 )
 
 func TestToEnvVarName(t *testing.T) {

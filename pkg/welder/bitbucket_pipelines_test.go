@@ -2,10 +2,11 @@ package welder
 
 import (
 	"fmt"
-	. "github.com/onsi/gomega"
 	"os"
 	"path"
 	"testing"
+
+	. "github.com/onsi/gomega"
 )
 
 func IgnoreTestInitBitbucketPipelines(t *testing.T) {

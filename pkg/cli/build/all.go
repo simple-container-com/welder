@@ -27,7 +27,6 @@ func (o *All) All() error {
 	}
 
 	err := makeCmd.Make()
-
 	if err != nil {
 		return err
 	}

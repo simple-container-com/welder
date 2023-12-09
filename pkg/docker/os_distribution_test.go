@@ -1,8 +1,9 @@
 package docker
 
 import (
-	. "github.com/onsi/gomega"
 	"testing"
+
+	. "github.com/onsi/gomega"
 )
 
 func TestDetectOSDistributionByOutput(t *testing.T) {
@@ -69,5 +70,4 @@ HOME_URL="https://alpinelinux.org/"
 BUG_REPORT_URL="https://bugs.alpinelinux.org/"`).Name()).To(Equal(OSDistributionAlpine))
 	Expect(OSReleaseOutputToDistribution(`ID=alpine
 VERSION_ID=3.12.1"`).Name()).To(Equal(OSDistributionAlpine))
-
 }

@@ -2,16 +2,17 @@ package types
 
 import (
 	"fmt"
-	"github.com/Masterminds/semver/v3"
-	ghodss_yaml "github.com/ghodss/yaml"
-	"github.com/pkg/errors"
-	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"os"
 	"path"
 	"path/filepath"
 	"strconv"
 	"strings"
+
+	"github.com/Masterminds/semver/v3"
+	ghodss_yaml "github.com/ghodss/yaml"
+	"github.com/pkg/errors"
+	"gopkg.in/yaml.v2"
 )
 
 const (
@@ -169,7 +170,7 @@ func (build *OutDockerDefinition) WriteToOutputDir(rootDir string) error {
 		}
 	}
 	envFilePath := path.Join(rootDir, BuildOutputDir, OutDockerEnvFileName)
-	return ioutil.WriteFile(envFilePath, []byte(envFileContent.String()), 0644)
+	return ioutil.WriteFile(envFilePath, []byte(envFileContent.String()), 0o644)
 }
 
 func handleErr(err error) {
@@ -180,12 +181,11 @@ func handleErr(err error) {
 
 func WriteYaml(data interface{}, file string) error {
 	yamlFile, err := yaml.Marshal(data)
-
 	if err != nil {
 		return err
 	}
 
-	return ioutil.WriteFile(file, yamlFile, 0644)
+	return ioutil.WriteFile(file, yamlFile, 0o644)
 }
 
 func ReadOutDockerDefinition(pathToFile string) (OutDockerDefinition, error) {

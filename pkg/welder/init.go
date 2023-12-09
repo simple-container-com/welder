@@ -3,18 +3,20 @@ package welder
 import (
 	"context"
 	"fmt"
-	"github.com/karrick/godirwalk"
-	"github.com/pkg/errors"
-	"github.com/smecsia/welder/pkg/docker"
-	"github.com/smecsia/welder/pkg/git"
-	"github.com/smecsia/welder/pkg/util"
-	. "github.com/smecsia/welder/pkg/welder/types"
 	"io/ioutil"
 	"os"
 	"path"
 	"path/filepath"
 	"regexp"
 	"strings"
+
+	"github.com/karrick/godirwalk"
+	"github.com/pkg/errors"
+
+	"github.com/simple-container-com/welder/pkg/docker"
+	"github.com/simple-container-com/welder/pkg/git"
+	"github.com/simple-container-com/welder/pkg/util"
+	. "github.com/simple-container-com/welder/pkg/welder/types"
 )
 
 type InitCtx struct {
@@ -39,7 +41,6 @@ func NewInit(console util.Console, preset string) (*InitCtx, error) {
 }
 
 func (i *InitCtx) RunWizard() error {
-
 	i.console.Writer().Println("Atlas CLI Build Wizard started")
 
 	_, rootPath, _ := DetectBuildContext(i.cwd)
@@ -167,7 +168,6 @@ func (i *InitCtx) modifyGitIgnore(buildRootDef *RootBuildDefinition) error {
 			gitRoot, _ = i.console.AskQuestionWithDefault("Enter Git root for this project", gitRoot)
 
 			_, err := os.Stat(filepath.Join(gitRoot, ".git"))
-
 			if err != nil {
 				i.console.Writer().Println(gitRoot + " is not a valid git path.")
 				continue
@@ -186,8 +186,7 @@ func (i *InitCtx) modifyGitIgnore(buildRootDef *RootBuildDefinition) error {
 			}
 		}
 
-		f, err := os.OpenFile(gitIgnorePath, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0644)
-
+		f, err := os.OpenFile(gitIgnorePath, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0o644)
 		if err != nil {
 			return errors.Wrapf(err, "failed to modify .gitignore")
 		}
@@ -300,5 +299,4 @@ func (i *InitCtx) addEnv(build *BuildDefinition) error {
 		parts := strings.SplitN(argKV, "=", 1)
 		build.Env[parts[0]] = StringValue(parts[1])
 	}
-
 }

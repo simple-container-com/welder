@@ -2,13 +2,15 @@ package types_test
 
 import (
 	"fmt"
-	. "github.com/onsi/gomega"
-	. "github.com/smecsia/welder/pkg/welder/types"
-	"github.com/stretchr/testify/assert"
 	"os"
 	"path"
 	"path/filepath"
 	"testing"
+
+	. "github.com/onsi/gomega"
+	"github.com/stretchr/testify/assert"
+
+	. "github.com/simple-container-com/welder/pkg/welder/types"
 )
 
 func TestReadOutDockerDefinition(t *testing.T) {
@@ -29,8 +31,8 @@ func TestReadOutDockerDefinition(t *testing.T) {
 	Expect(def.Modules[1].DockerImages[0].Name).To(Equal("service"))
 	Expect(def.Modules[1].DockerImages[0].Digests[0].Tag).To(Equal("36502d5"))
 	Expect(def.Modules[1].DockerImages[0].Digests[1].Tag).To(Equal("docker.simple-container.com/test/deng/sox/trebuchet:36502d5b068f0cad6f468a47bc4c2b5fd7003c26"))
-
 }
+
 func TestDetectBuildContextFromModule(t *testing.T) {
 	RegisterTestingT(t)
 

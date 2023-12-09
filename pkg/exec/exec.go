@@ -4,16 +4,17 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"github.com/google/uuid"
-	"github.com/pkg/errors"
-	"github.com/smecsia/welder/pkg/util"
-	"golang.org/x/sync/errgroup"
 	"io"
 	"os"
 	"os/exec"
 	"os/signal"
 	"strings"
 	"syscall"
+
+	"github.com/google/uuid"
+	"github.com/pkg/errors"
+	"github.com/simple-container-com/welder/pkg/util"
+	"golang.org/x/sync/errgroup"
 )
 
 // Exec defines execution on host environment

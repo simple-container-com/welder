@@ -2,10 +2,11 @@ package magebuild
 
 import (
 	"fmt"
-	"github.com/fatih/color"
-	"github.com/smecsia/welder/pkg/git"
 	"io"
 	"strings"
+
+	"github.com/fatih/color"
+	"github.com/simple-container-com/welder/pkg/git"
 )
 
 type Generator func() error
@@ -37,7 +38,7 @@ type GoBuildContext struct {
 	GitAuthor       string `yaml:"-" default:"bambooagent" env:"GIT_AUTHOR"`
 	GitBranch       string `yaml:"-" default:"master" env:"GIT_BRANCH"`
 	GitRemote       string `yaml:"-" default:"origin" env:"GIT_REMOTE"`
-	Parallel        string `yaml:"-" default:"true" env:"PARALLEL"`
+	Parallel        string `yaml:"-" default:"false" env:"PARALLEL"`
 	SkipTests       string `yaml:"-" default:"false" env:"SKIP_TESTS"`
 	ReleaseChannel  string `yaml:"-" default:"stable" env:"RELEASE_CHANNEL"`
 	FilterTargets   string `yaml:"-" default:"-" env:"TARGETS"`

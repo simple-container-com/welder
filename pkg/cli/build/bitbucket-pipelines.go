@@ -2,15 +2,16 @@ package build
 
 import (
 	"fmt"
-	"github.com/alecthomas/kingpin"
-	"github.com/pkg/errors"
-	"github.com/smecsia/welder/pkg/pipelines"
-	"github.com/smecsia/welder/pkg/util"
-	"github.com/smecsia/welder/pkg/welder"
-	"github.com/smecsia/welder/pkg/welder/types"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/alecthomas/kingpin"
+	"github.com/pkg/errors"
+	"github.com/simple-container-com/welder/pkg/pipelines"
+	"github.com/simple-container-com/welder/pkg/util"
+	"github.com/simple-container-com/welder/pkg/welder"
+	"github.com/simple-container-com/welder/pkg/welder/types"
 )
 
 type BitbucketPipelines struct {

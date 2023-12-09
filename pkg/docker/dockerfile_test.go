@@ -2,11 +2,12 @@ package docker
 
 import (
 	"context"
+	"path/filepath"
+	"testing"
+
 	. "github.com/onsi/gomega"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"path/filepath"
-	"testing"
 )
 
 func TestValidDockerfile_Build(t *testing.T) {

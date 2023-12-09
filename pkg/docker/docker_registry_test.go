@@ -2,12 +2,14 @@ package docker_test
 
 import (
 	"encoding/json"
-	. "github.com/onsi/gomega"
-	. "github.com/smecsia/welder/pkg/docker"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 	"io/ioutil"
 	"testing"
+
+	. "github.com/onsi/gomega"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
+	. "github.com/simple-container-com/welder/pkg/docker"
 )
 
 func TestDockerImageFromReference(t *testing.T) {

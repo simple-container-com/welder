@@ -1,10 +1,11 @@
 package config
 
 import (
-	. "github.com/onsi/gomega"
-	"github.com/smecsia/welder/pkg/util/test"
 	"os"
 	"testing"
+
+	. "github.com/onsi/gomega"
+	"github.com/simple-container-com/welder/pkg/util/test"
 )
 
 // Platform defines platform to run build for
@@ -90,6 +91,7 @@ func TestProvidedDefault(t *testing.T) {
 	Expect(config.FloatWithDefault).To(Equal(64.64))
 	Expect(config.BoolWithDefault).To(Equal(true))
 }
+
 func TestNewConfigWithEnvironment(t *testing.T) {
 	RegisterTestingT(t)
 

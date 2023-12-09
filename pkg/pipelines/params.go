@@ -1,8 +1,9 @@
 package pipelines
 
 import (
-	"github.com/smecsia/welder/pkg/pipelines/schema"
 	"strings"
+
+	"github.com/simple-container-com/welder/pkg/pipelines/schema"
 )
 
 type BitbucketPipelinesRunParams struct {

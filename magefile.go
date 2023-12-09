@@ -6,29 +6,32 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"os"
+	"regexp"
+	"strings"
+
 	"github.com/atombender/go-jsonschema/pkg/generator"
 	_ "github.com/go-bindata/go-bindata" // generator
 	"github.com/go-bindata/go-bindata/v3"
 	"github.com/invopop/jsonschema"
 	"github.com/magefile/mage/mg" // mg contains helpful utility functions, like Deps
 	"github.com/pkg/errors"
-	"github.com/smecsia/welder/pkg/magebuild"
-	"github.com/smecsia/welder/pkg/welder/types"
+	"github.com/simple-container-com/welder/pkg/magebuild"
+	"github.com/simple-container-com/welder/pkg/welder/types"
 	"golang.org/x/sync/errgroup"
-	"os"
-	"regexp"
-	"strings"
 	/**/)
 
 // Default target to run when none is specified
 // If not set, running mage will list available targets
 // var Default = Build
 
-type Build mg.Namespace
-type Tests mg.Namespace
-type Generate mg.Namespace
-type Git mg.Namespace
-type Publish mg.Namespace
+type (
+	Build    mg.Namespace
+	Tests    mg.Namespace
+	Generate mg.Namespace
+	Git      mg.Namespace
+	Publish  mg.Namespace
+)
 
 var (
 	Ctx        = magebuild.InitBuild()
@@ -228,7 +231,11 @@ func (Generate) Templates() error {
 // Formatting runs gofmt
 func (Generate) Formatting() error {
 	fmt.Println("Reformat code")
-	return Ctx.RunCmd(magebuild.Cmd{Command: "go fmt $(go list ./... | grep -v render/rendered)", Env: Ctx.CurrentPlatform().GoEnv()})
+	err := Ctx.RunCmd(magebuild.Cmd{Command: "go fmt $(go list ./... | grep -v render/rendered)", Env: Ctx.CurrentPlatform().GoEnv()})
+	if err != nil {
+		return err
+	}
+	return Ctx.RunCmd(magebuild.Cmd{Command: "go run mvdan.cc/gofumpt -l -w .", Env: Ctx.CurrentPlatform().GoEnv()})
 }
 
 // JsonSchema generate JSON schema to use within the IntelliJ IDEA plugin
@@ -242,7 +249,7 @@ func (Generate) JsonSchema() error {
 		return errors.Wrapf(err, "failed to create bin output directory")
 	}
 	path := Ctx.Path("bin/welder.schema.json")
-	f, err := os.OpenFile(path, os.O_CREATE|os.O_WRONLY, 0644)
+	f, err := os.OpenFile(path, os.O_CREATE|os.O_WRONLY, 0o644)
 	if err != nil {
 		return errors.Wrapf(err, "failed to open %s for writing", path)
 	}
@@ -275,7 +282,7 @@ func (Generate) PipelinesSchema() error {
 	}
 	for path, contBytes := range gen.Sources() {
 		fmt.Println(fmt.Sprintf("Generating %s...", path))
-		f, err := os.OpenFile(path, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0644)
+		f, err := os.OpenFile(path, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0o644)
 		if err != nil {
 			return errors.Wrapf(err, "failed to open %s for writing", path)
 		}

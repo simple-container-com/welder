@@ -1,7 +1,7 @@
 package mock
 
 import (
-	"github.com/smecsia/welder/pkg/git"
+	"github.com/simple-container-com/welder/pkg/git"
 	"github.com/stretchr/testify/mock"
 )
 

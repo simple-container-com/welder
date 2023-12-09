@@ -2,15 +2,16 @@ package runner
 
 import (
 	"fmt"
-	"github.com/pkg/errors"
-	"github.com/smecsia/welder/pkg/docker"
-	"github.com/smecsia/welder/pkg/mutagen"
-	"github.com/smecsia/welder/pkg/util"
-	"github.com/smecsia/welder/pkg/welder/types"
-	"golang.org/x/sync/errgroup"
 	"io"
 	"os"
 	"strings"
+
+	"github.com/pkg/errors"
+	"github.com/simple-container-com/welder/pkg/docker"
+	"github.com/simple-container-com/welder/pkg/mutagen"
+	"github.com/simple-container-com/welder/pkg/util"
+	"github.com/simple-container-com/welder/pkg/welder/types"
+	"golang.org/x/sync/errgroup"
 )
 
 type SyncOpts struct {

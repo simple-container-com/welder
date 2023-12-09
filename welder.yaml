@@ -95,6 +95,7 @@ tasks:
           && rm docker-${DOCKERVERSION}.tgz
     description: Installs required tools
     script:
+      - export GOMODCACHE=${container:home}/go/pkg/mod
       - cat tools.go | grep _ | awk -F'"' '{print $2}' | xargs -tI % go get %
       - go mod download
       - go mod tidy
@@ -102,7 +103,8 @@ tasks:
     customImage: *build-image
     description: Compiles code and builds bundles
     script:
-      - GOMODCACHE=${container:home}/go/pkg/mod go run build.go ${BUILD_GOALS}
+      - export GOMODCACHE=${container:home}/go/pkg/mod
+      - go run build.go ${BUILD_GOALS}
   gomodcache:
     runOn: host
     description: Returns directory of go mod cache

@@ -3,11 +3,6 @@ package mutagen
 import (
 	"context"
 	"fmt"
-	"github.com/mholt/archiver/v3"
-	"github.com/pkg/errors"
-	"github.com/smecsia/welder/pkg/exec"
-	"github.com/smecsia/welder/pkg/render"
-	"github.com/smecsia/welder/pkg/util"
 	"io/ioutil"
 	"os"
 	"os/signal"
@@ -18,6 +13,12 @@ import (
 	"strings"
 	"syscall"
 	"time"
+
+	"github.com/mholt/archiver/v3"
+	"github.com/pkg/errors"
+	"github.com/simple-container-com/welder/pkg/exec"
+	"github.com/simple-container-com/welder/pkg/render"
+	"github.com/simple-container-com/welder/pkg/util"
 )
 
 const (
@@ -298,7 +299,6 @@ func (m *Mutagen) unzipMutagenToHomeDir() (string, error) {
 		zipFileName := fmt.Sprintf("mutagen-%s-%s.zip", runtime.GOOS, runtime.GOARCH)
 		mutagenZipPath := fmt.Sprintf("build/binaries/mutagen/%s", zipFileName)
 		zipBytes, err := render.GetFile(mutagenZipPath)
-
 		if err != nil {
 			return "", errors.Wrapf(err, "failed to get zip bytes from asset %s", mutagenZipPath)
 		}
@@ -324,7 +324,6 @@ func (m *Mutagen) unzipMutagenToHomeDir() (string, error) {
 		m.logger.Debugf("mutagen library file not found at %s, extracting...", agentsFilePath)
 
 		agentsBytes, err := render.GetFile(fmt.Sprintf("build/binaries/mutagen/%s", agentsFileName))
-
 		if err != nil {
 			return "", errors.Wrapf(err, "failed to get zip bytes from asset %s", agentsFileName)
 		}

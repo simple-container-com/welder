@@ -11,6 +11,13 @@ import (
 	"crypto/x509"
 	"encoding/pem"
 	"fmt"
+	"io"
+	"net"
+	"net/http"
+	"os"
+	"path/filepath"
+	"time"
+
 	"github.com/docker/cli/cli/command"
 	"github.com/docker/cli/cli/command/image/build"
 	cliconfig "github.com/docker/cli/cli/config"
@@ -28,12 +35,6 @@ import (
 	"github.com/docker/go-connections/tlsconfig"
 	"github.com/moby/term"
 	"github.com/pkg/errors"
-	"io"
-	"net"
-	"net/http"
-	"os"
-	"path/filepath"
-	"time"
 )
 
 type DockerCLIExt interface {

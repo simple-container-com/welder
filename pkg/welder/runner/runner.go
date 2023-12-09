@@ -3,15 +3,16 @@ package runner
 import (
 	"bytes"
 	"fmt"
-	"github.com/pkg/errors"
-	"github.com/smecsia/welder/pkg/docker"
-	"github.com/smecsia/welder/pkg/exec"
-	"github.com/smecsia/welder/pkg/util"
-	"github.com/smecsia/welder/pkg/welder/types"
-	"golang.org/x/sync/errgroup"
 	"io"
 	"path"
 	"path/filepath"
+
+	"github.com/pkg/errors"
+	"github.com/simple-container-com/welder/pkg/docker"
+	"github.com/simple-container-com/welder/pkg/exec"
+	"github.com/simple-container-com/welder/pkg/util"
+	"github.com/simple-container-com/welder/pkg/welder/types"
+	"golang.org/x/sync/errgroup"
 )
 
 type Run struct {
@@ -175,8 +176,10 @@ func (ctx *Run) RunOnHost(action string, runID string, containerRunParams *RunPa
 		ctx.Logger().Logf(" - Executing script: '%s'", script)
 		workDir := containerRunParams.WorkDir
 		env := spec.RunCfg.Env.ToBuildEnv(spec.RunCfg.InjectEnvRegex(ctx.CommonCtx)...)
-		if execRes, err := executor.ExecCommandAndLog(action, script, exec.Opts{Wd: workDir,
-			Env: env}); err != nil {
+		if execRes, err := executor.ExecCommandAndLog(action, script, exec.Opts{
+			Wd:  workDir,
+			Env: env,
+		}); err != nil {
 			return errors.Wrapf(err, "failed to execute %q (%q)", action, script)
 		} else {
 			spec.RunCfg.Env = types.ParseBuildEnv(execRes.Env)

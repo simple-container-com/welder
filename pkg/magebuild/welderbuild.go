@@ -1,13 +1,14 @@
 package magebuild
 
 import (
-	"github.com/pkg/errors"
-	"github.com/smecsia/welder/pkg/config"
-	"github.com/smecsia/welder/pkg/util"
-	"github.com/smecsia/welder/pkg/welder"
-	"github.com/smecsia/welder/pkg/welder/types"
 	"os"
 	"strings"
+
+	"github.com/pkg/errors"
+	"github.com/simple-container-com/welder/pkg/config"
+	"github.com/simple-container-com/welder/pkg/util"
+	"github.com/simple-container-com/welder/pkg/welder"
+	"github.com/simple-container-com/welder/pkg/welder/types"
 )
 
 type WelderMageBuild struct {
@@ -31,7 +32,8 @@ func InitBuild() *WelderMageBuild {
 				"build-via-welder": "false",                                     // make sure there's no recursion
 			},
 			Profiles: strings.Split(os.Getenv("PROFILES"), ","),
-		}}, util.NewStdoutLogger(os.Stdout, os.Stderr))
+		},
+	}, util.NewStdoutLogger(os.Stdout, os.Stderr))
 	version, err := welder.NewVersionCtx(buildCtx, nil, nil)
 	if err != nil {
 		panic(errors.Wrap(err, "unable to init version context"))
@@ -44,5 +46,6 @@ func InitBuild() *WelderMageBuild {
 		atlasBuildCtx: buildCtx,
 		GoBuildContext: GoBuildContext{
 			Version: fullVersion,
-		}}, util.DefaultConsoleReader).(*WelderMageBuild)
+		},
+	}, util.DefaultConsoleReader).(*WelderMageBuild)
 }

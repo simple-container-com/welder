@@ -3,10 +3,11 @@ package dockerext
 import (
 	"context"
 	"fmt"
+	"io"
+
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
 	"golang.org/x/sync/errgroup"
-	"io"
 )
 
 type InteractiveExecCfg struct {

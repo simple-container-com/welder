@@ -3,7 +3,7 @@ package build
 import (
 	"github.com/alecthomas/kingpin"
 	"github.com/fatih/color"
-	"github.com/smecsia/welder/pkg/welder/runner"
+	"github.com/simple-container-com/welder/pkg/welder/runner"
 )
 
 type Volumes struct {

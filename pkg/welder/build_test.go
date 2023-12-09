@@ -4,14 +4,6 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
-	"github.com/mitchellh/go-homedir"
-	. "github.com/onsi/gomega"
-	"github.com/pkg/errors"
-	"github.com/smecsia/welder/pkg/git/mock"
-	"github.com/smecsia/welder/pkg/util"
-	. "github.com/smecsia/welder/pkg/welder/types"
-	"github.com/stretchr/testify/require"
-	"golang.org/x/sync/errgroup"
 	"io"
 	"io/ioutil"
 	"os"
@@ -20,6 +12,16 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/mitchellh/go-homedir"
+	. "github.com/onsi/gomega"
+	"github.com/pkg/errors"
+	"github.com/stretchr/testify/require"
+	"golang.org/x/sync/errgroup"
+
+	"github.com/simple-container-com/welder/pkg/git/mock"
+	"github.com/simple-container-com/welder/pkg/util"
+	. "github.com/simple-container-com/welder/pkg/welder/types"
 )
 
 func TestDockerBuild(t *testing.T) {

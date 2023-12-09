@@ -1,15 +1,14 @@
 package main
 
 import (
-	"github.com/alecthomas/kingpin"
-	"github.com/smecsia/welder/pkg/cli/build"
 	"os"
+
+	"github.com/alecthomas/kingpin"
+	"github.com/simple-container-com/welder/pkg/cli/build"
 )
 
-var (
-	// Version is set during build (see Makefile).
-	Version string
-)
+// Version is set during build (see Makefile).
+var Version string
 
 func main() {
 	os.Exit(run(os.Args))

@@ -1,12 +1,13 @@
 package types_test
 
 import (
+	"testing"
+
 	. "github.com/onsi/gomega"
-	"github.com/smecsia/welder/pkg/util"
-	dsl "github.com/smecsia/welder/pkg/welder/types"
+	"github.com/simple-container-com/welder/pkg/util"
+	dsl "github.com/simple-container-com/welder/pkg/welder/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestArgsToMap(t *testing.T) {

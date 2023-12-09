@@ -2,13 +2,14 @@ package welder
 
 import (
 	"fmt"
-	"github.com/Masterminds/semver/v3"
-	"github.com/pkg/errors"
-	"github.com/smecsia/welder/pkg/util"
-	"github.com/smecsia/welder/pkg/util/yamledit"
-	"github.com/smecsia/welder/pkg/welder/types"
 	"path"
 	"regexp"
+
+	"github.com/Masterminds/semver/v3"
+	"github.com/pkg/errors"
+	"github.com/simple-container-com/welder/pkg/util"
+	"github.com/simple-container-com/welder/pkg/util/yamledit"
+	"github.com/simple-container-com/welder/pkg/welder/types"
 )
 
 type VersionCtx struct {
@@ -24,9 +25,7 @@ const (
 	semverRegex = `(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:-((?:0|[1-9][0-9]*|[0-9]*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9][0-9]*|[0-9]*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?`
 )
 
-var (
-	fullVerRegex = regexp.MustCompile(fmt.Sprintf("(?P<pre>(^([0-9]+))*)(?P<version>%s)(?P<post>.*)", semverRegex))
-)
+var fullVerRegex = regexp.MustCompile(fmt.Sprintf("(?P<pre>(^([0-9]+))*)(?P<version>%s)(?P<post>.*)", semverRegex))
 
 type versionInfo struct {
 	preString     string
@@ -225,7 +224,7 @@ func (ctx *VersionCtx) BumpPatch() error {
 }
 
 func (ctx *VersionCtx) SetVersionInConfig(version string) error {
-	var moduleIdx = -1
+	moduleIdx := -1
 	if ctx.activeModule != nil {
 		for idx, module := range ctx.root.ModuleNames() {
 			if module == ctx.activeModule.Name {

@@ -2,14 +2,16 @@ package welder
 
 import (
 	"fmt"
-	. "github.com/onsi/gomega"
-	"github.com/smecsia/welder/pkg/git/mock"
-	"github.com/smecsia/welder/pkg/util"
-	. "github.com/smecsia/welder/pkg/welder/types"
 	"os"
 	"path"
 	"strings"
 	"testing"
+
+	. "github.com/onsi/gomega"
+
+	"github.com/simple-container-com/welder/pkg/git/mock"
+	"github.com/simple-container-com/welder/pkg/util"
+	. "github.com/simple-container-com/welder/pkg/welder/types"
 )
 
 func TestModuleVersionBumpPatch(t *testing.T) {
@@ -146,7 +148,6 @@ func TestResolveEnvInVersion(t *testing.T) {
 	depDef, _, err := buildCtx.ActualDeployDefinitionFor(&rootDef, "test", deployCtx)
 	Expect(err).To(BeNil())
 	Expect(depDef.Steps[0].Step.Scripts[0]).To(Equal("echo ddev-0.5.0"))
-
 }
 
 func readVersionContext(tmpProjectDir string, modules ...string) *VersionCtx {

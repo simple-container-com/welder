@@ -3,14 +3,6 @@ package types
 import (
 	"context"
 	"fmt"
-	"github.com/mitchellh/go-homedir"
-	"github.com/pkg/errors"
-	"github.com/smecsia/welder/pkg/docker"
-	"github.com/smecsia/welder/pkg/git"
-	"github.com/smecsia/welder/pkg/util"
-	"go.uber.org/atomic"
-	"golang.org/x/sync/errgroup"
-	"golang.org/x/sync/semaphore"
 	"io/ioutil"
 	"os"
 	"path"
@@ -18,6 +10,15 @@ import (
 	"regexp"
 	"strings"
 	"sync"
+
+	"github.com/mitchellh/go-homedir"
+	"github.com/pkg/errors"
+	"github.com/simple-container-com/welder/pkg/docker"
+	"github.com/simple-container-com/welder/pkg/git"
+	"github.com/simple-container-com/welder/pkg/util"
+	"go.uber.org/atomic"
+	"golang.org/x/sync/errgroup"
+	"golang.org/x/sync/semaphore"
 )
 
 const (
@@ -308,9 +309,9 @@ func (rd CommonRunDefinition) InjectEnvRegex(commonCtx *CommonCtx) []*regexp.Reg
 
 // NewCommonContext initializes new common context (a copy of the one provided)
 func NewCommonContext(ctx *CommonCtx, logger util.Logger) *CommonCtx {
-	var goCtx = ctx.context
-	var parallelEg = ctx.parallelEg
-	var cancelFunc = ctx.cancelFunc
+	goCtx := ctx.context
+	parallelEg := ctx.parallelEg
+	cancelFunc := ctx.cancelFunc
 	if ctx.parallelEg == nil || ctx.cancelFunc == nil || ctx.context == nil {
 		parallelEg, goCtx = errgroup.WithContext(context.Background())
 		goCtx, cancelFunc = context.WithCancel(goCtx)
@@ -477,7 +478,6 @@ func MergeSimpleRunDefinitions(from CommonSimpleRunDefinition, to *CommonSimpleR
 		to.Env = make(BuildEnv)
 	}
 	MergeMapIfEmpty(from.Env, to.Env)
-
 }
 
 // ActualStepsDefinitionFor builds effective steps definition for a step of a build

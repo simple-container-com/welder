@@ -4,10 +4,11 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
-	"github.com/howeyc/gopass"
 	"io"
 	"os"
 	"strings"
+
+	"github.com/howeyc/gopass"
 )
 
 var (
@@ -25,11 +26,9 @@ type ConsoleWriter interface {
 	Println(args ...interface{})
 }
 
-type StdinConsoleReader struct {
-}
+type StdinConsoleReader struct{}
 
-type StdoutConsoleWriter struct {
-}
+type StdoutConsoleWriter struct{}
 
 type ConsoleImpl struct {
 	reader        ConsoleReader

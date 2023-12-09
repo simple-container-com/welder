@@ -1,14 +1,16 @@
 package welder
 
 import (
-	"github.com/pkg/errors"
-	"github.com/smecsia/welder/pkg/docker"
-	"github.com/smecsia/welder/pkg/util"
-	"github.com/smecsia/welder/pkg/welder/types"
 	"os"
 	"path"
 	"strings"
 	"time"
+
+	"github.com/pkg/errors"
+
+	"github.com/simple-container-com/welder/pkg/docker"
+	"github.com/simple-container-com/welder/pkg/util"
+	"github.com/simple-container-com/welder/pkg/welder/types"
 )
 
 // Deploy runs deploy steps of the project defined by the build context

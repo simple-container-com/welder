@@ -2,16 +2,18 @@ package welder
 
 import (
 	"fmt"
-	"github.com/pkg/errors"
-	"github.com/smecsia/welder/pkg/docker"
-	"github.com/smecsia/welder/pkg/pipelines"
-	"github.com/smecsia/welder/pkg/util"
-	"github.com/smecsia/welder/pkg/welder/runner"
-	. "github.com/smecsia/welder/pkg/welder/types"
 	"os"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/pkg/errors"
+
+	"github.com/simple-container-com/welder/pkg/docker"
+	"github.com/simple-container-com/welder/pkg/pipelines"
+	"github.com/simple-container-com/welder/pkg/util"
+	"github.com/simple-container-com/welder/pkg/welder/runner"
+	. "github.com/simple-container-com/welder/pkg/welder/types"
 )
 
 // Run run command within environment defined by build config

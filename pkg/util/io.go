@@ -4,10 +4,11 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
-	"github.com/pkg/errors"
-	"golang.org/x/sync/errgroup"
 	"io"
 	"strings"
+
+	"github.com/pkg/errors"
+	"golang.org/x/sync/errgroup"
 )
 
 func WaitForOutput(reader *io.PipeReader, onEof func(string)) *errgroup.Group {

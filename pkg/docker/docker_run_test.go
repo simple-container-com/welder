@@ -4,11 +4,6 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
-	. "github.com/onsi/gomega"
-	"github.com/pkg/errors"
-	. "github.com/smecsia/welder/pkg/docker"
-	"github.com/smecsia/welder/pkg/util"
-	"golang.org/x/sync/errgroup"
 	"io"
 	"io/ioutil"
 	"os"
@@ -16,6 +11,13 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+
+	. "github.com/onsi/gomega"
+	"github.com/pkg/errors"
+	"golang.org/x/sync/errgroup"
+
+	. "github.com/simple-container-com/welder/pkg/docker"
+	"github.com/simple-container-com/welder/pkg/util"
 )
 
 func createTempDir(prefix string) (string, error) {
@@ -117,8 +119,10 @@ func TestDockerRun(t *testing.T) {
 	})
 
 	var out io.WriteCloser = stdout
-	err = dockerRun.MountDockerSocket().Run(RunContext{Prefix: " \t [docker / test123] > ",
-		Stdout: out, Stderr: out, User: username, Debug: true},
+	err = dockerRun.MountDockerSocket().Run(RunContext{
+		Prefix: " \t [docker / test123] > ",
+		Stdout: out, Stderr: out, User: username, Debug: true,
+	},
 		"whoami", "sh -c 'docker images && sleep 3 && ps -a && sleep 0.5 && ls -la /test'",
 		"sh -c 'ls -la /some/valid/dockerfile && echo OK'",
 		"echo 'BLAH' > /tmp/tempdir/somefile",

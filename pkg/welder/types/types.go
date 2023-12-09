@@ -5,34 +5,39 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/gob"
-	"github.com/fatih/color"
-	"github.com/smecsia/welder/pkg/docker"
-	"github.com/smecsia/welder/pkg/git"
-	"github.com/smecsia/welder/pkg/util"
-	"go.uber.org/atomic"
-	"golang.org/x/sync/errgroup"
-	"golang.org/x/sync/semaphore"
-	"gopkg.in/yaml.v2"
 	"os"
 	"os/signal"
 	"path"
 	"runtime"
 	"sync"
 	"syscall"
+
+	"github.com/fatih/color"
+	"github.com/simple-container-com/welder/pkg/docker"
+	"github.com/simple-container-com/welder/pkg/git"
+	"github.com/simple-container-com/welder/pkg/util"
+	"go.uber.org/atomic"
+	"golang.org/x/sync/errgroup"
+	"golang.org/x/sync/semaphore"
+	"gopkg.in/yaml.v2"
 )
 
 const DefaultProjectName = "welder-project"
 
-type StringValue string
-type BuildArgs map[string]StringValue
-type BuildEnv map[string]StringValue
+type (
+	StringValue string
+	BuildArgs   map[string]StringValue
+	BuildEnv    map[string]StringValue
+)
 
-type VolumesDefinition []string
-type ProfilesDefinition map[string]ProfileDefinition
-type ModulesDefinition []ModuleDefinition
-type TasksDefinition map[string]TaskDefinition
-type BuildMode string
-type DeployEnvsDefinition map[string]DeployEnvDefinition
+type (
+	VolumesDefinition    []string
+	ProfilesDefinition   map[string]ProfileDefinition
+	ModulesDefinition    []ModuleDefinition
+	TasksDefinition      map[string]TaskDefinition
+	BuildMode            string
+	DeployEnvsDefinition map[string]DeployEnvDefinition
+)
 
 func (environments *DeployEnvsDefinition) AddIfNotExist(envName string, env DeployEnvDefinition) {
 	if _, ok := (*environments)[envName]; !ok {
@@ -263,10 +268,10 @@ type RootBuildDefinition struct {
 }
 
 func (root *RootBuildDefinition) initCaches() {
-	//root.actualTaskDefsCache = make(map[string]TaskDefinition)
-	//root.actualDockerDefsCache = make(map[string][]DockerImageDefinition)
-	//root.actualDeployDefsCache = make(map[string]DeployDefinition)
-	//root.actualBuildDefsCache = make(map[string]BuildDefinition)
+	// root.actualTaskDefsCache = make(map[string]TaskDefinition)
+	// root.actualDockerDefsCache = make(map[string][]DockerImageDefinition)
+	// root.actualDeployDefsCache = make(map[string]DeployDefinition)
+	// root.actualBuildDefsCache = make(map[string]BuildDefinition)
 }
 
 func (root *RootBuildDefinition) CacheDockerDef(cacheKey string, images []DockerImageDefinition) {

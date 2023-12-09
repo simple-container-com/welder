@@ -2,12 +2,13 @@ package config
 
 import (
 	"fmt"
-	"github.com/smecsia/welder/pkg/util"
 	"io/ioutil"
 	"os"
 	"reflect"
 	"strconv"
 	"strings"
+
+	"github.com/simple-container-com/welder/pkg/util"
 
 	"gopkg.in/yaml.v2"
 )
@@ -168,7 +169,6 @@ func setFieldValue(field reflect.Value, valueString string) {
 	} else if isBoolType(field) {
 		field.Set(reflect.ValueOf(valueString == "true"))
 	}
-
 }
 
 // ReadConfigFile Reads config file from yaml file
@@ -231,6 +231,7 @@ func isFloatType(field reflect.Value) bool {
 	return field.Kind() == reflect.Float32 ||
 		field.Kind() == reflect.Float64
 }
+
 func isBoolType(field reflect.Value) bool {
 	return field.Kind() == reflect.Bool
 }

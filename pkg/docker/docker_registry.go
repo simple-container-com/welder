@@ -4,6 +4,13 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"net/url"
+	"os"
+	"path"
+	"regexp"
+	"strings"
+
 	"github.com/docker/cli/cli/command"
 	cliflags "github.com/docker/cli/cli/flags"
 	"github.com/docker/docker/api/types"
@@ -12,12 +19,6 @@ import (
 	"github.com/google/go-containerregistry/pkg/v1/remote"
 	"github.com/mitchellh/go-homedir"
 	"github.com/pkg/errors"
-	"io/ioutil"
-	"net/url"
-	"os"
-	"path"
-	"regexp"
-	"strings"
 )
 
 type Image struct {

@@ -3,16 +3,17 @@ package welder
 import (
 	"bytes"
 	"fmt"
-	"github.com/pkg/errors"
-	"github.com/smecsia/welder/pkg/git"
-	"github.com/smecsia/welder/pkg/render/rendered"
-	"github.com/smecsia/welder/pkg/util"
-	. "github.com/smecsia/welder/pkg/welder/types"
-	"io/ioutil"
 	"os"
 	"path"
 	"sort"
 	"text/template"
+
+	"github.com/pkg/errors"
+
+	"github.com/simple-container-com/welder/pkg/git"
+	"github.com/simple-container-com/welder/pkg/render/rendered"
+	"github.com/simple-container-com/welder/pkg/util"
+	. "github.com/simple-container-com/welder/pkg/welder/types"
 )
 
 // CIModule describes a module for CI generator
@@ -60,7 +61,6 @@ type CommonCIGenerator struct {
 
 func (o *CommonCIGenerator) Init() (RootBuildDefinition, error) {
 	_, rootDef, err := ReadBuildModuleDefinition(o.RootPath)
-
 	if err != nil {
 		return RootBuildDefinition{}, errors.Wrap(err, "could not find project configuration in the root path defined")
 	}
@@ -89,19 +89,17 @@ func (o *CommonCIGenerator) Init() (RootBuildDefinition, error) {
 		buildCtx := NewBuildContext(&BuildContext{CommonCtx: commonCtx}, &util.NoopLogger{})
 
 		deploy, _, err := buildCtx.ActualDeployDefinitionFor(&rootDef, module.Name, nil)
-
 		if err != nil {
 			return rootDef, errors.Wrapf(err, "failed to calculate deploy definition for module %s", module.Name)
 		}
 
 		dockerImages, err := buildCtx.ActualDockerImagesDefinitionFor(&rootDef, module.Name)
-
 		if err != nil {
 			return rootDef, errors.Wrapf(err, "failed to calculate docker definition for module %s", module.Name)
 		}
 
 		moduleLocations := make([]CILocation, 0)
-		var environments = make(DeployEnvsDefinition, 0)
+		environments := make(DeployEnvsDefinition, 0)
 		if len(deploy.Environments) > 0 {
 			environments = deploy.Environments
 			o.Modules[i].DoDeploy = true
@@ -186,7 +184,7 @@ func (o *CommonCIGenerator) Generate(context interface{}) error {
 			return errors.Wrapf(err, "failed to execute template for '%s'", sourceFile)
 		} else if err := os.MkdirAll(path.Dir(targetFilePath), os.ModePerm); err != nil {
 			return errors.Wrapf(err, "failed to create directory '%s'", o.TargetDirPath)
-		} else if err := ioutil.WriteFile(targetFilePath, processedTmpl.Bytes(), os.ModePerm); err != nil {
+		} else if err := os.WriteFile(targetFilePath, processedTmpl.Bytes(), os.ModePerm); err != nil {
 			return errors.Wrapf(err, "failed to write file '%s'", targetFilePath)
 		}
 		fmt.Println("DONE")

@@ -1,8 +1,6 @@
-module github.com/smecsia/welder
+module github.com/simple-container-com/welder
 
 go 1.21
-
-toolchain go1.21.4
 
 require (
 	github.com/Masterminds/semver/v3 v3.2.0
@@ -52,6 +50,8 @@ require (
 	gopkg.in/yaml.v3 v3.0.1
 	inet.af/tcpproxy v0.0.0-20221017015627-91f861402626
 )
+
+require mvdan.cc/gofumpt v0.5.0
 
 require (
 	github.com/Azure/go-ansiterm v0.0.0-20210617225240-d185dfc1b5a1 // indirect

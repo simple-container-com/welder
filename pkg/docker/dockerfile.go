@@ -8,18 +8,19 @@ import (
 	"encoding/gob"
 	"encoding/hex"
 	"encoding/json"
-	"github.com/docker/distribution/reference"
-	"github.com/docker/docker/api/types"
-	"github.com/docker/docker/pkg/jsonmessage"
-	controlapi "github.com/moby/buildkit/api/services/control"
-	"github.com/pkg/errors"
-	"github.com/smecsia/welder/pkg/docker/dockerext"
-	"github.com/smecsia/welder/pkg/util"
 	"io/ioutil"
 	"path/filepath"
 	"regexp"
 	"strings"
 	"sync"
+
+	"github.com/docker/distribution/reference"
+	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/pkg/jsonmessage"
+	controlapi "github.com/moby/buildkit/api/services/control"
+	"github.com/pkg/errors"
+	"github.com/simple-container-com/welder/pkg/docker/dockerext"
+	"github.com/simple-container-com/welder/pkg/util"
 )
 
 // important to run on V2 build engine to enable buildkit extensions
@@ -54,7 +55,6 @@ func (dockerFile *Dockerfile) IsValid() (bool, error) {
 
 // Build builds Docker image from the specified Dockerfile with the specified tags
 func (dockerFile *Dockerfile) Build() (MsgReader, error) {
-
 	configHash, err := dockerFile.calcConfigHash()
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to calc hash")
@@ -278,7 +278,7 @@ func (dockerFile *Dockerfile) tryReadBuildkitTraceResponse(line string) ([]Respo
 		}
 		switch buildRes.ID {
 		case "moby.buildkit.trace":
-			var msg2 = jsonmessage.JSONMessage{}
+			msg2 := jsonmessage.JSONMessage{}
 			var resp controlapi.StatusResponse
 			if err := json.Unmarshal([]byte(line), &msg2); err != nil {
 				return res, errors.Wrapf(err, "failed to unmarshal buildkit.trace line: %s", line)

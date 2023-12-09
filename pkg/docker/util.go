@@ -5,6 +5,13 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"io"
+	"io/ioutil"
+	"os"
+	"regexp"
+	"strings"
+	"time"
+
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
 	networktypes "github.com/docker/docker/api/types/network"
@@ -15,12 +22,6 @@ import (
 	"github.com/docker/go-connections/nat"
 	"github.com/lithammer/shortuuid/v3"
 	"github.com/pkg/errors"
-	"io"
-	"io/ioutil"
-	"os"
-	"regexp"
-	"strings"
-	"time"
 )
 
 const (
@@ -218,7 +219,6 @@ func (u *DockerUtil) currentContainerID() (string, error) {
 // ReadFileFromContainer reads file from container
 func (u *DockerUtil) ReadFileFromContainer(containerName string, filePath string) (string, error) {
 	tmpFile, err := ioutil.TempFile("", containerName)
-
 	if err != nil {
 		return "", err
 	}
@@ -238,7 +238,6 @@ func (u *DockerUtil) ReadFileFromContainer(containerName string, filePath string
 	}
 
 	content, _, err := u.docker.CopyFromContainer(u.GoContext(), containerName, filePath)
-
 	if err != nil {
 		return "", err
 	}
@@ -389,7 +388,6 @@ func (u *DockerUtil) CreateVolume(name string, labels map[string]string) error {
 
 func (u *DockerUtil) CopyToContainer(hostPath string, containerID string, dstDirPath string) error {
 	tar, err := archive.TarWithOptions(hostPath, &archive.TarOptions{})
-
 	if err != nil {
 		return errors.Wrapf(err, "failed to create tar archive out of the path: %s", hostPath)
 	}
@@ -407,12 +405,12 @@ func (u *DockerUtil) VolumeRemove(name string) error {
 
 // IsRunningInDocker returns true if currently running inside Docker container
 func (u *DockerUtil) IsRunningInDocker() bool {
-	//fmt.Println("check if running in Docker...")
+	// fmt.Println("check if running in Docker...")
 	if b, err := ioutil.ReadFile("/proc/1/cgroup"); err != nil {
-		//fmt.Println("read /proc/1/cgroup unsuccessful: ", err)
+		// fmt.Println("read /proc/1/cgroup unsuccessful: ", err)
 		return false
 	} else {
-		//fmt.Println("read /proc/1/cgroup successful, result: ", string(bytes))
+		// fmt.Println("read /proc/1/cgroup successful, result: ", string(bytes))
 		return strings.Contains(string(b), "docker") ||
 			strings.Contains(string(b), "kubepods")
 	}
@@ -531,7 +529,6 @@ func ParsePortsSpecs(portSpecs []string) (map[nat.Port]struct{}, map[nat.Port][]
 	var ports map[nat.Port]struct{}
 	var portBindings map[nat.Port][]nat.PortBinding
 	ports, portBindings, err := nat.ParsePortSpecs(portSpecs)
-
 	// If simple port parsing fails try to parse as long format
 	if err != nil {
 		portSpecs, err = parsePortOpts(portSpecs)
@@ -545,7 +542,6 @@ func ParsePortsSpecs(portSpecs []string) (map[nat.Port]struct{}, map[nat.Port][]
 		}
 	}
 	return ports, portBindings, nil
-
 }
 
 func parsePortOpts(publishOpts []string) ([]string, error) {

@@ -2,17 +2,18 @@ package pipelines
 
 import (
 	"fmt"
-	. "github.com/onsi/gomega"
-	"github.com/otiai10/copy"
-	"github.com/smecsia/welder/pkg/git"
-	"github.com/smecsia/welder/pkg/git/mock"
-	"github.com/smecsia/welder/pkg/util"
-	"github.com/smecsia/welder/pkg/welder/types"
 	"io/ioutil"
 	"os"
 	"path"
 	"path/filepath"
 	"testing"
+
+	. "github.com/onsi/gomega"
+	"github.com/otiai10/copy"
+	"github.com/simple-container-com/welder/pkg/git"
+	"github.com/simple-container-com/welder/pkg/git/mock"
+	"github.com/simple-container-com/welder/pkg/util"
+	"github.com/simple-container-com/welder/pkg/welder/types"
 )
 
 func TestReadSimplePipelinesFile(t *testing.T) {

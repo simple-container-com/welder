@@ -2,12 +2,13 @@ package template
 
 import (
 	"fmt"
-	"github.com/pkg/errors"
-	"github.com/smecsia/welder/pkg/util"
 	"os"
 	"os/user"
 	"strings"
 	"time"
+
+	"github.com/pkg/errors"
+	"github.com/simple-container-com/welder/pkg/util"
 )
 
 func (tpl *Template) extGit(noSubstitution, path string, defaultValue *string) (string, error) {

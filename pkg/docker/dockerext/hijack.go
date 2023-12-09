@@ -8,12 +8,12 @@ package dockerext
 import (
 	"fmt"
 	"io"
+	"os"
 	"runtime"
 	"sync"
-
-	"os"
-	gosignal "os/signal"
 	"time"
+
+	gosignal "os/signal"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"

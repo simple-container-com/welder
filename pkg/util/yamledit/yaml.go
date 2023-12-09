@@ -2,13 +2,14 @@ package yamledit
 
 import (
 	"bufio"
-	"github.com/pkg/errors"
-	"gopkg.in/mikefarah/yaml.v2"
 	"io"
 	"io/ioutil"
 	"os"
 	"reflect"
 	"strconv"
+
+	"github.com/pkg/errors"
+	"gopkg.in/mikefarah/yaml.v2"
 )
 
 type YamlEdit struct {
@@ -40,7 +41,7 @@ func (y *YamlEdit) updatedChildValue(child dataBucketType, remainingPaths []stri
 
 func (y *YamlEdit) entryInSlice(context yaml.MapSlice, key interface{}) *yaml.MapItem {
 	for idx := range context {
-		var entry = &context[idx]
+		entry := &context[idx]
 		if entry.Key == key {
 			return entry
 		}
@@ -157,12 +158,12 @@ func (y *YamlEdit) readAndUpdate(stdOut io.Writer, inputFile string, updateData 
 			y.safelyRenameFile(tempFile.Name(), inputFile)
 		}()
 	} else {
-		var writer = bufio.NewWriter(stdOut)
+		writer := bufio.NewWriter(stdOut)
 		destination = writer
 		destinationName = "Stdout"
 		defer y.safelyFlush(writer)
 	}
-	var encoder = yaml.NewEncoder(destination)
+	encoder := yaml.NewEncoder(destination)
 	return y.readStream(inputFile, y.mapYamlDecoder(updateData, encoder))
 }
 
@@ -170,8 +171,8 @@ func (y *YamlEdit) safelyFlush(writer *bufio.Writer) {
 	if err := writer.Flush(); err != nil {
 		panic(err)
 	}
-
 }
+
 func (y *YamlEdit) safelyCloseFile(file *os.File) {
 	err := file.Close()
 	if err != nil {
@@ -240,9 +241,9 @@ func (y *YamlEdit) nextYamlPath(path string) (pathElement string, remaining stri
 
 func (y *YamlEdit) search(path string, matchingChars []uint8, skipNext bool) (pathElement string, remaining string) {
 	for i := 0; i < len(path); i++ {
-		var char = path[i]
+		char := path[i]
 		if y.contains(matchingChars, char) {
-			var remainingStart = i + 1
+			remainingStart := i + 1
 			if skipNext {
 				remainingStart = remainingStart + 1
 			} else if !skipNext && char != '.' {
@@ -266,8 +267,10 @@ func (y *YamlEdit) contains(matchingChars []uint8, candidate uint8) bool {
 	return false
 }
 
-type dataBucketType interface{}
-type updateDataFn func(dataBucket dataBucketType, currentIndex int) (dataBucketType, error)
+type (
+	dataBucketType interface{}
+	updateDataFn   func(dataBucket dataBucketType, currentIndex int) (dataBucketType, error)
+)
 
 func (y *YamlEdit) mapYamlDecoder(updateData updateDataFn, encoder *yaml.Encoder) yamlDecoderFn {
 	return func(decoder *yaml.Decoder) error {
@@ -275,7 +278,7 @@ func (y *YamlEdit) mapYamlDecoder(updateData updateDataFn, encoder *yaml.Encoder
 		var errorReading error
 		var errorWriting error
 		var errorUpdating error
-		var currentIndex = 0
+		currentIndex := 0
 
 		for {
 			errorReading = decoder.Decode(&dataBucket)

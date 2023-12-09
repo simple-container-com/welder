@@ -2,11 +2,12 @@ package template
 
 import (
 	"fmt"
-	"github.com/smecsia/welder/pkg/git"
-	"github.com/smecsia/welder/pkg/util"
-	"github.com/valyala/fasttemplate"
 	"io"
 	"strings"
+
+	"github.com/simple-container-com/welder/pkg/git"
+	"github.com/simple-container-com/welder/pkg/util"
+	"github.com/valyala/fasttemplate"
 )
 
 // Extension allows to extend template engine

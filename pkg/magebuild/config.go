@@ -1,8 +1,8 @@
 package magebuild
 
 import (
-	"github.com/smecsia/welder/pkg/config"
-	"github.com/smecsia/welder/pkg/util"
+	"github.com/simple-container-com/welder/pkg/config"
+	"github.com/simple-container-com/welder/pkg/util"
 )
 
 // Reads config file from yaml safely and adds defaults from env or default tags

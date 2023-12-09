@@ -2,11 +2,12 @@ package pipelines
 
 import (
 	"fmt"
-	"github.com/pkg/errors"
-	"github.com/smecsia/welder/pkg/docker"
-	"github.com/smecsia/welder/pkg/util"
-	"gopkg.in/yaml.v2"
 	"regexp"
+
+	"github.com/pkg/errors"
+	"github.com/simple-container-com/welder/pkg/docker"
+	"github.com/simple-container-com/welder/pkg/util"
+	"gopkg.in/yaml.v2"
 )
 
 // BitbucketPipeVariable represents a Bitbucket pipe variable

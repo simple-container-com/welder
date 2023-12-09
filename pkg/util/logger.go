@@ -3,12 +3,13 @@ package util
 import (
 	"bytes"
 	"fmt"
-	"github.com/fatih/color"
-	"github.com/pkg/errors"
 	"io"
 	"os"
 	"strings"
 	"time"
+
+	"github.com/fatih/color"
+	"github.com/pkg/errors"
 )
 
 type Logger interface {
@@ -25,8 +26,7 @@ type Logger interface {
 	SubLogger(name string) Logger
 }
 
-type NoopLogger struct {
-}
+type NoopLogger struct{}
 
 type StdoutLogger struct {
 	stdout io.WriteCloser

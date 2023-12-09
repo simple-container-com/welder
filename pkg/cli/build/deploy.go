@@ -2,7 +2,7 @@ package build
 
 import (
 	"github.com/alecthomas/kingpin"
-	"github.com/smecsia/welder/pkg/welder"
+	"github.com/simple-container-com/welder/pkg/welder"
 )
 
 type Deploy struct {

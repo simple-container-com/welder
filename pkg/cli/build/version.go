@@ -2,9 +2,10 @@ package build
 
 import (
 	"fmt"
+
 	"github.com/alecthomas/kingpin"
 	"github.com/pkg/errors"
-	"github.com/smecsia/welder/pkg/welder"
+	"github.com/simple-container-com/welder/pkg/welder"
 )
 
 type Version struct {

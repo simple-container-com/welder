@@ -2,16 +2,16 @@ package build
 
 import (
 	"context"
-	"github.com/alecthomas/kingpin"
-	"github.com/pkg/errors"
-	"github.com/smecsia/welder/pkg/mutagen"
-	"github.com/smecsia/welder/pkg/util"
 	"os"
 	"strings"
+
+	"github.com/alecthomas/kingpin"
+	"github.com/pkg/errors"
+	"github.com/simple-container-com/welder/pkg/mutagen"
+	"github.com/simple-container-com/welder/pkg/util"
 )
 
-type Mutagen struct {
-}
+type Mutagen struct{}
 
 func (o *Mutagen) Mount(a *kingpin.Application) *kingpin.CmdClause {
 	cmd := a.Command("mutagen", "Run mutagen commands (delegate to mutagen.io)")

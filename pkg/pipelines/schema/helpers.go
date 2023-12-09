@@ -2,6 +2,7 @@ package schema
 
 import (
 	"fmt"
+
 	"github.com/pkg/errors"
 	"gopkg.in/yaml.v2"
 )
@@ -148,7 +149,6 @@ func bbImageToDockerImage(imgObj interface{}) (string, error) {
 	}
 
 	return "", errors.Errorf("failed to convert image to Docker image %s", imgObj)
-
 }
 
 func (v *PipeVariables) ToEnv() []string {

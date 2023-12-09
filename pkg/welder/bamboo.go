@@ -2,12 +2,14 @@ package welder
 
 import (
 	"fmt"
-	"github.com/pkg/errors"
-	. "github.com/smecsia/welder/pkg/welder/types"
 	"os"
 	"os/user"
 	"path"
 	"strings"
+
+	"github.com/pkg/errors"
+
+	. "github.com/simple-container-com/welder/pkg/welder/types"
 )
 
 type BambooSpecs struct {
@@ -32,7 +34,6 @@ func (o *BambooSpecs) Init() error {
 
 func (o *BambooSpecs) Generate() error {
 	rootDef, err := o.CommonCIGenerator.Init()
-
 	if err != nil {
 		return errors.Wrapf(err, "failed to init template")
 	}

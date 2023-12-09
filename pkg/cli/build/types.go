@@ -1,12 +1,13 @@
 package build
 
 import (
-	"github.com/alecthomas/kingpin"
-	"github.com/smecsia/welder/pkg/util"
-	"github.com/smecsia/welder/pkg/welder"
-	"github.com/smecsia/welder/pkg/welder/types"
 	"os/user"
 	"strings"
+
+	"github.com/alecthomas/kingpin"
+	"github.com/simple-container-com/welder/pkg/util"
+	"github.com/simple-container-com/welder/pkg/welder"
+	"github.com/simple-container-com/welder/pkg/welder/types"
 )
 
 var appVersion string
@@ -54,6 +55,7 @@ func (o *DeployParams) registerDeployFlags(cmd *kingpin.CmdClause) {
 		Required().
 		StringsVar(&o.EnvNames)
 }
+
 func (o *RunParams) registerRunFlags(cmd *kingpin.CmdClause) {
 	cmd.Flag("username", "Run builds under this username").
 		Short('u').

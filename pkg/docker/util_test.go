@@ -2,10 +2,11 @@ package docker
 
 import (
 	"context"
-	. "github.com/onsi/gomega"
 	"os"
 	"testing"
 	"time"
+
+	. "github.com/onsi/gomega"
 )
 
 func TestDockerExecCopyAndRemoveContainer(t *testing.T) {

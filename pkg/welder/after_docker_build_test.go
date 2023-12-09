@@ -1,13 +1,15 @@
 package welder
 
 import (
-	. "github.com/onsi/gomega"
-	"github.com/smecsia/welder/pkg/util"
-	. "github.com/smecsia/welder/pkg/welder/types"
 	"os"
 	"path"
 	"strings"
 	"testing"
+
+	. "github.com/onsi/gomega"
+
+	"github.com/simple-container-com/welder/pkg/util"
+	. "github.com/simple-container-com/welder/pkg/welder/types"
 )
 
 func TestRunCommandAfterDockerBuild(t *testing.T) {
@@ -78,5 +80,4 @@ func TestRunCommandAfterDockerBuild(t *testing.T) {
 
 	Expect(def.Modules).To(HaveLen(1))
 	Expect(def.Modules[0].DockerImages).To(HaveLen(3))
-
 }

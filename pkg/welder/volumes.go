@@ -1,11 +1,13 @@
 package welder
 
 import (
-	"github.com/pkg/errors"
-	"github.com/smecsia/welder/pkg/docker"
-	"github.com/smecsia/welder/pkg/welder/runner"
-	. "github.com/smecsia/welder/pkg/welder/types"
 	"os"
+
+	"github.com/pkg/errors"
+
+	"github.com/simple-container-com/welder/pkg/docker"
+	"github.com/simple-container-com/welder/pkg/welder/runner"
+	. "github.com/simple-container-com/welder/pkg/welder/types"
 )
 
 // VolumesSync syncs all volumes to Docker volumes

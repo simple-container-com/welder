@@ -1,13 +1,15 @@
 package welder
 
 import (
-	. "github.com/onsi/gomega"
-	"github.com/smecsia/welder/pkg/util"
-	. "github.com/smecsia/welder/pkg/welder/types"
 	"os"
 	"path"
 	"strings"
 	"testing"
+
+	. "github.com/onsi/gomega"
+
+	"github.com/simple-container-com/welder/pkg/util"
+	. "github.com/simple-container-com/welder/pkg/welder/types"
 )
 
 func TestOverridePerStep(t *testing.T) {

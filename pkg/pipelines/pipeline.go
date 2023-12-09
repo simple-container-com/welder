@@ -2,18 +2,19 @@ package pipelines
 
 import (
 	"fmt"
-	"github.com/pkg/errors"
-	"github.com/smecsia/welder/pkg/docker"
-	"github.com/smecsia/welder/pkg/pipelines/schema"
-	"github.com/smecsia/welder/pkg/util"
-	"github.com/smecsia/welder/pkg/welder/types"
-	"golang.org/x/sync/errgroup"
-	"gopkg.in/yaml.v3"
 	"io"
 	"os"
 	"path/filepath"
 	"strings"
 	"time"
+
+	"github.com/pkg/errors"
+	"github.com/simple-container-com/welder/pkg/docker"
+	"github.com/simple-container-com/welder/pkg/pipelines/schema"
+	"github.com/simple-container-com/welder/pkg/util"
+	"github.com/simple-container-com/welder/pkg/welder/types"
+	"golang.org/x/sync/errgroup"
+	"gopkg.in/yaml.v3"
 )
 
 type BitbucketPipelines struct {
@@ -23,7 +24,6 @@ type BitbucketPipelines struct {
 // NewBitbucketPipelines initializes a new Pipelines object
 func NewBitbucketPipelines(bbpFile string, commonCtx *types.CommonCtx) (*BitbucketPipelines, error) {
 	config, err := ReadBitbucketPipelinesSchemaFile(bbpFile)
-
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to read %s", bbpFile)
 	}
@@ -38,11 +38,12 @@ func NewBitbucketPipelines(bbpFile string, commonCtx *types.CommonCtx) (*Bitbuck
 		commonCtx = &types.CommonCtx{}
 	}
 	commonCtx.SetRootDir(projectRoot)
-	return &BitbucketPipelines{BitbucketContext: NewBitbucketContext(commonCtx).
-		WithProjectRoot(projectRoot).
-		WithProjectName(projectName).
-		WithConfig(config).
-		WithConfigFile(bbpFile),
+	return &BitbucketPipelines{
+		BitbucketContext: NewBitbucketContext(commonCtx).
+			WithProjectRoot(projectRoot).
+			WithProjectName(projectName).
+			WithConfig(config).
+			WithConfigFile(bbpFile),
 	}, nil
 }
 
@@ -50,7 +51,6 @@ func NewBitbucketPipelines(bbpFile string, commonCtx *types.CommonCtx) (*Bitbuck
 func ReadBitbucketPipelinesSchemaFile(bbpFile string) (schema.BitbucketPipelinesSchemaJson, error) {
 	res := schema.BitbucketPipelinesSchemaJson{}
 	fileBytes, err := os.ReadFile(bbpFile)
-
 	if err != nil {
 		return res, errors.Wrapf(err, "failed to read %s", bbpFile)
 	}
@@ -160,7 +160,6 @@ func (pipelines *BitbucketPipelines) runStep(step schema.Step, runParams *Bitbuc
 	subCtx.Logger().Logf("Images used:\n\tbuild: %s", imageRef.Reference)
 
 	dockerRun, err := pipelines.NewDockerRun(runID, stepName, imageRef.Reference)
-
 	if err != nil {
 		return errors.Wrapf(err, "failed to initialize docker run for step %s", stepName)
 	}

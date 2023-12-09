@@ -3,15 +3,16 @@ package build
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/alecthomas/kingpin"
-	"github.com/pkg/errors"
-	"github.com/smecsia/welder/pkg/docker"
-	"github.com/smecsia/welder/pkg/util"
-	"github.com/smecsia/welder/pkg/welder"
-	"github.com/smecsia/welder/pkg/welder/types"
 	"io/ioutil"
 	"os"
 	"strings"
+
+	"github.com/alecthomas/kingpin"
+	"github.com/pkg/errors"
+	"github.com/simple-container-com/welder/pkg/docker"
+	"github.com/simple-container-com/welder/pkg/util"
+	"github.com/simple-container-com/welder/pkg/welder"
+	"github.com/simple-container-com/welder/pkg/welder/types"
 )
 
 type Docker struct {

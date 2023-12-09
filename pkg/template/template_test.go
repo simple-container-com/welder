@@ -1,13 +1,15 @@
 package template_test
 
 import (
-	. "github.com/onsi/gomega"
-	"github.com/pkg/errors"
-	"github.com/smecsia/welder/pkg/git/mock"
-	. "github.com/smecsia/welder/pkg/template"
-	"github.com/smecsia/welder/pkg/util"
 	"os"
 	"testing"
+
+	. "github.com/onsi/gomega"
+	"github.com/pkg/errors"
+
+	"github.com/simple-container-com/welder/pkg/git/mock"
+	. "github.com/simple-container-com/welder/pkg/template"
+	"github.com/simple-container-com/welder/pkg/util"
 )
 
 func TestSafeWhenNoMatch(t *testing.T) {

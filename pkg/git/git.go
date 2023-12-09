@@ -3,7 +3,6 @@ package git
 import (
 	"bufio"
 	"fmt"
-	"gopkg.in/src-d/go-git.v4/plumbing/format/gitignore"
 	"io/ioutil"
 	"os"
 	"os/user"
@@ -14,8 +13,10 @@ import (
 	"syscall"
 	"time"
 
+	"gopkg.in/src-d/go-git.v4/plumbing/format/gitignore"
+
 	"github.com/pkg/errors"
-	"github.com/smecsia/welder/pkg/util"
+	"github.com/simple-container-com/welder/pkg/util"
 	"gopkg.in/src-d/go-billy.v4/osfs"
 	"gopkg.in/src-d/go-git.v4"
 	"gopkg.in/src-d/go-git.v4/config"
@@ -25,9 +26,7 @@ import (
 	"gopkg.in/src-d/go-git.v4/storage/filesystem/dotgit"
 )
 
-var (
-	gitWorkTreeRefRegexp = regexp.MustCompile(`gitdir: (?P<root>.+)/.git/worktrees/(?P<name>.+)`)
-)
+var gitWorkTreeRefRegexp = regexp.MustCompile(`gitdir: (?P<root>.+)/.git/worktrees/(?P<name>.+)`)
 
 const (
 	refspecTag              = "+refs/tags/%s:refs/tags/%[1]s"
@@ -177,7 +176,7 @@ func (ctx *GitImpl) Branch() (string, error) {
 		return "", err
 	}
 
-	var name = ""
+	name := ""
 	err = branches.ForEach(func(branchRef *plumbing.Reference) error {
 		if branchRef.Hash() == head.Hash() {
 			name = strings.Replace(branchRef.Name().String(), "refs/heads/", "", 1)
@@ -190,7 +189,6 @@ func (ctx *GitImpl) Branch() (string, error) {
 	}
 
 	return name, nil
-
 }
 
 func (ctx *GitImpl) Remotes() ([]Remote, error) {

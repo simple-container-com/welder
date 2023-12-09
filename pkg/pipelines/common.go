@@ -3,14 +3,15 @@ package pipelines
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/pkg/errors"
-	"github.com/smecsia/welder/pkg/docker"
-	"github.com/smecsia/welder/pkg/pipelines/schema"
-	"github.com/smecsia/welder/pkg/welder/runner"
-	"github.com/smecsia/welder/pkg/welder/types"
 	"io/ioutil"
 	"net/http"
 	"regexp"
+
+	"github.com/pkg/errors"
+	"github.com/simple-container-com/welder/pkg/docker"
+	"github.com/simple-container-com/welder/pkg/pipelines/schema"
+	"github.com/simple-container-com/welder/pkg/welder/runner"
+	"github.com/simple-container-com/welder/pkg/welder/types"
 )
 
 const (

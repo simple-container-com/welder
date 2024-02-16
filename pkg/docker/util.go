@@ -22,6 +22,8 @@ import (
 	"github.com/docker/go-connections/nat"
 	"github.com/lithammer/shortuuid/v3"
 	"github.com/pkg/errors"
+
+	"github.com/simple-container-com/welder/pkg/util"
 )
 
 const (
@@ -64,7 +66,7 @@ func NewDockerUtil(dockerClient client.APIClient, context context.Context) (*Doc
 		dockerClient = docker
 	}
 	res := DockerUtil{docker: dockerClient, context: context}
-	if cgroupContentBytes, err := ioutil.ReadFile("/proc/1/cgroup"); err != nil && !os.IsNotExist(err) {
+	if cgroupContentBytes, err := os.ReadFile("/proc/1/cgroup"); err != nil && !os.IsNotExist(err) {
 		return nil, errors.Wrapf(err, "failed to read cgroups file")
 	} else if err != nil {
 		res.cgroupContent = ""
@@ -218,7 +220,7 @@ func (u *DockerUtil) currentContainerID() (string, error) {
 
 // ReadFileFromContainer reads file from container
 func (u *DockerUtil) ReadFileFromContainer(containerName string, filePath string) (string, error) {
-	tmpFile, err := ioutil.TempFile("", containerName)
+	tmpFile, err := os.CreateTemp("", containerName)
 	if err != nil {
 		return "", err
 	}
@@ -500,7 +502,17 @@ func (u *DockerUtil) DetectOSDistributionFromContainer(containerID string) OSDis
 func (u *DockerUtil) DetectOSDistributionFromImage(image string) OSDistribution {
 	createResp, err := u.docker.ContainerCreate(u.GoContext(), &container.Config{Image: image}, nil, nil, nil, shortuuid.New()[:5])
 	if err != nil {
-		return UnknownOSDistribution
+		// if we couldn't create the image, trying out creating it with the default shell
+		// potentially we don't have a command specified for the image, so it cannot start by itself
+		// the chance that /bin/sh is there is very high, so we can use it to detect the OS
+		createResp, err = u.docker.ContainerCreate(u.GoContext(), &container.Config{
+			Image: image,
+			Cmd:   []string{"sh"},
+		}, nil, nil, nil, shortuuid.New()[:5])
+		if err != nil {
+			util.NewStdoutLogger(os.Stdout, os.Stderr).Debugf("Failed to detect OS distribution from the image: %s: %q", image, err)
+			return UnknownOSDistribution
+		}
 	}
 	containerID := createResp.ID
 	err = u.docker.ContainerStart(u.GoContext(), containerID, types.ContainerStartOptions{})

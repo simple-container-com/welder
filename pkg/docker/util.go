@@ -254,7 +254,6 @@ func (u *DockerUtil) ReadFileFromContainer(containerName string, filePath string
 	}
 
 	err = archive.CopyTo(content, srcInfo, tmpFile.Name())
-
 	if err != nil {
 		return "", err
 	}
@@ -548,7 +547,6 @@ func ParsePortsSpecs(portSpecs []string) (map[nat.Port]struct{}, map[nat.Port][]
 			return nil, nil, err
 		}
 		ports, portBindings, err = nat.ParsePortSpecs(portSpecs)
-
 		if err != nil {
 			return nil, nil, err
 		}

@@ -36,7 +36,6 @@ func (o *All) All() error {
 	}
 
 	err = dockerCmd.Build()
-
 	if err != nil {
 		return err
 	}

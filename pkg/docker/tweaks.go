@@ -562,7 +562,6 @@ func (run *Run) createDockerNetwork(runCtx RunContext, containerID string) (Netw
 	}
 	networkID := netResp.ID
 	err = run.dockerAPI.NetworkConnect(ctx, networkID, containerID, &network.EndpointSettings{})
-
 	if err != nil {
 		return res, errors.Wrapf(err, "failed to connect container %s to network %s", containerID, networkID)
 	}

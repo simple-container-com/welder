@@ -292,7 +292,6 @@ func (Generate) PipelinesSchema() error {
 		}
 
 		_, err = f.WriteString(string(contBytes))
-
 		if err != nil {
 			return errors.Wrapf(err, "failed to write to file %s", path)
 		}

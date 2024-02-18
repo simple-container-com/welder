@@ -56,7 +56,6 @@ func ReadBitbucketPipelinesSchemaFile(bbpFile string) (schema.BitbucketPipelines
 	}
 
 	err = yaml.Unmarshal(fileBytes, &res)
-
 	if err != nil {
 		return res, errors.Wrapf(err, "failed to unmarshal %s", bbpFile)
 	}
@@ -193,7 +192,6 @@ func (pipelines *BitbucketPipelines) runStep(step schema.Step, runParams *Bitbuc
 	}
 
 	_, err = dockerRun.PrepareContainer(runCtx)
-
 	if err != nil {
 		return errors.Wrapf(err, "failed to initialize docker container for step %s", stepName)
 	}

@@ -306,7 +306,6 @@ func (m *Mutagen) unzipMutagenToHomeDir() (string, error) {
 		zipFilePath := path.Join(outputDir, zipFileName)
 		m.logger.Debugf("writing mutagen to file %s", zipFilePath)
 		err = ioutil.WriteFile(zipFilePath, zipBytes, os.ModePerm)
-
 		if err != nil {
 			return "", errors.Wrapf(err, "failed to write zip bytes from asset to file %s", zipFilePath)
 		}

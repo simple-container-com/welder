@@ -151,7 +151,6 @@ func (ctx *Run) RunInContainer(action string, runID string, containerRunParams *
 	}
 
 	err = dockerRun.Run(runCfg, scripts...)
-
 	if err != nil {
 		return errors.Wrapf(err, "failed to run %s in Docker", action)
 	}

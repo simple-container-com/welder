@@ -26,7 +26,7 @@ import (
 // important to run on V2 build engine to enable buildkit extensions
 const DefaultBuilderVersion = types.BuilderV1
 
-const LabelNameBuildConfigHash = "AtlasBuildBuildConfigHash"
+const LabelNameBuildConfigHash = "WelderBuildBuildConfigHash"
 
 // NewDockerfile creates new Dockerfile instance with the default client
 func NewDockerfile(ctx context.Context, filePath string, tags ...string) (*Dockerfile, error) {

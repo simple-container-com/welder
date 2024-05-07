@@ -13,7 +13,7 @@ date: '2022-10-10'
 
 ## Installation
 
-Download the plugin from [here](https://statlas.prod.simple-container.com/dev/platform/vscode-plugin.vsix).
+Download the plugin from [here](https://dist.simple-container.com/welder/vscode-plugin.vsix).
 [index.md](index.md)
 To install from the terminal, run `code --install-extension vscode-plugin.vsix`
 

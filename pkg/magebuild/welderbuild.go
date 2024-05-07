@@ -16,11 +16,11 @@ type WelderMageBuild struct {
 	BuildViaWelder bool   `yaml:"-" default:"false" env:"BUILD_VIA_WELDER"`
 	TestTarget     string `yaml:"-" default:"./..." env:"TEST_TARGET"`
 	TestTags       string `yaml:"-" default:"osusergo" env:"TEST_TAGS"`
-	atlasBuildCtx  *welder.BuildContext
+	welderBuildCtx *welder.BuildContext
 }
 
 func (mage *WelderMageBuild) Welder() *welder.BuildContext {
-	return mage.atlasBuildCtx
+	return mage.welderBuildCtx
 }
 
 func InitBuild() *WelderMageBuild {
@@ -43,7 +43,7 @@ func InitBuild() *WelderMageBuild {
 		panic(errors.Wrap(err, "unable to calculate version"))
 	}
 	return config.Init("./build-targets.yaml", &WelderMageBuild{
-		atlasBuildCtx: buildCtx,
+		welderBuildCtx: buildCtx,
 		GoBuildContext: GoBuildContext{
 			Version: fullVersion,
 		},

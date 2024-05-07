@@ -154,19 +154,7 @@ func (pub Publish) All() error {
 	if err := pub.Manifest(); err != nil {
 		return err
 	}
-	return Ctx.ForAllTargets(func(target magebuild.Target) error {
-		return pub.Script(target)
-	})
-}
-
-// Script publishes build.sh script
-func (pub Publish) Script(target magebuild.Target) error {
-	buildShFile := Ctx.Path("build.sh")
-	checksumFile := Ctx.OutPath("build.sh.sha256")
-	if err := Ctx.WriteFileChecksum(buildShFile, checksumFile); err != nil {
-		return err
-	}
-	return Ctx.UploadFileToStatlas(Ctx.BaseTargetURL(target), "build.sh", buildShFile, checksumFile)
+	return nil
 }
 
 func (Publish) publishTarget(target magebuild.Target, platform magebuild.Platform) error {

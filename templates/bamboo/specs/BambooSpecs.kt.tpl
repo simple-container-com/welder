@@ -2,10 +2,10 @@
 package {{.PackageName}}
 
 import com.atlassian.bamboo.specs.api.BambooSpec
-import com.atlassian.platform.atlasbuild.AtlasBuildModule
-import com.atlassian.platform.atlasbuild.AtlasBuildSpecs
-import com.atlassian.platform.atlasbuild.ConfiguredBambooServer
-import com.atlassian.platform.atlasbuild.Location
+import com.atlassian.platform.welder.WelderModule
+import com.atlassian.platform.welder.WelderSpecs
+import com.atlassian.platform.welder.ConfiguredBambooServer
+import com.atlassian.platform.welder.Location
 
 @BambooSpec
 object BambooSpecs {
@@ -13,7 +13,7 @@ object BambooSpecs {
     @JvmStatic
     fun main(args: Array<String>) {
 
-        AtlasBuildSpecs(
+        WelderSpecs(
                 owner = "{{.Owner}}",
                 projectKey = "{{.ProjectKey}}",
                 buildPbcImage = "{{.BuildPbcImage}}",
@@ -34,12 +34,12 @@ object BambooSpecs {
                 ),
                 modules = listOf(
 {{$mn := len $.Modules}}{{range $i, $module := $.Modules}}
-                        AtlasBuildModule(
+                        WelderModule(
                                 name = "{{ $module.Name }}",
                                 doDocker = {{ $module.DoDocker }},
                                 doDeploy = {{ $module.DoDeploy }},
                                 doMicrosDeploy = {{ $module.DoMicrosDeploy }},
-                                artifacts = listOf(AtlasBuildSpecs.WELDER_OUT)
+                                artifacts = listOf(WelderSpecs.WELDER_OUT)
                         ){{ if lt (plus1 $i) $mn }},{{ end }}
 {{end}}
                 ),

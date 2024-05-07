@@ -26,13 +26,9 @@ type CommonBuildContext struct {
 }
 
 type GoBuildContext struct {
-	OutDir         string     `yaml:"outDir,omitempty" env:"OUT_DIR" default:"bin"`
-	Platforms      []Platform `yaml:"platforms,omitempty"`
-	Targets        []Target   `yaml:"targets,omitempty"`
-	StatlasURL     string     `yaml:"statlasURL,omitempty" env:"STATLAS_URL" default:"-"`
-	StatlasToken   string     `yaml:"statlasToken,omitempty" env:"STATLAS_TOKEN" default:"-"`
-	SlauthToken    string     `yaml:"slauthToken,omitempty" env:"SLAUTH_TOKEN" default:"-"`
-	BambooJWTToken string     `yaml:"bambooJWTToken,omitempty" env:"bamboo_JWT_TOKEN" default:"-"`
+	OutDir    string     `yaml:"outDir,omitempty" env:"OUT_DIR" default:"bin"`
+	Platforms []Platform `yaml:"platforms,omitempty"`
+	Targets   []Target   `yaml:"targets,omitempty"`
 
 	// env-only fields
 	GitAuthor       string `yaml:"-" default:"bambooagent" env:"GIT_AUTHOR"`

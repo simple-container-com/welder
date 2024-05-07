@@ -331,49 +331,6 @@ func (ctx *GoBuildContext) Bundle(target Target, platform Platform) Bundle {
 	}
 }
 
-// Publish uploads bundle to Statlas
-func (ctx *GoBuildContext) Publish(bundle Bundle, version string) error {
-	targetUploadPath := ctx.BaseTargetURL(bundle.Target)
-	return ctx.UploadFileToStatlas(fmt.Sprintf("%s/releases/%s", targetUploadPath, version),
-		fmt.Sprintf("%s-%s.tar.gz", bundle.Platform.GOOS, bundle.Platform.GOARCH),
-		bundle.TarFile, bundle.TarChecksumFile)
-}
-
-// UploadFileToStatlas uploads file along with hashsum file to statlas at given base url
-func (ctx *GoBuildContext) UploadFileToStatlas(
-	baseURL string, baseFileName string, file string, checksumFile string,
-) error {
-	statlasTokenHeader := fmt.Sprintf("authorization: Token %s", ctx.StatlasToken)
-	if ctx.SlauthToken != "-" {
-		statlasTokenHeader = fmt.Sprintf("authorization: Slauth %s", ctx.SlauthToken)
-	} else if ctx.BambooJWTToken != "-" {
-		statlasTokenHeader = fmt.Sprintf("authorization: Bearer %s", ctx.BambooJWTToken)
-	}
-	filesToUpload := map[string]string{
-		file:         fmt.Sprintf("%s/%s", baseURL, baseFileName),
-		checksumFile: fmt.Sprintf("%s/%s.sha256", baseURL, baseFileName),
-	}
-	for source, target := range filesToUpload {
-		fmt.Println("\tUploading ", target, "...")
-
-		if err := ctx.RunCmd(Cmd{Command: "curl -f -sS -X PUT -H '" + statlasTokenHeader + "' -T " + source + " " + target}); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-// ManifestTargetURL return base URL where to publish manifest file
-func (ctx *GoBuildContext) ManifestTargetURL(target Target) string {
-	fmt.Println(ctx.StatlasURL)
-	return fmt.Sprintf("%s/%s", ctx.BaseTargetURL(target), "manifest.toml")
-}
-
-// BaseTargetURL return base URL where to publish target plugin
-func (ctx *GoBuildContext) BaseTargetURL(target Target) string {
-	return fmt.Sprintf("%s/atlas-cli-plugin-%s", ctx.StatlasURL, target.Name)
-}
-
 // BundleFile built file path for target
 func (ctx *GoBuildContext) BundleFile(target Target, platform Platform) string {
 	return filepath.Join(ctx.OutFileDir(target, platform), fmt.Sprintf("%s-%s-%s.tar.gz", target.Name, platform.GOOS, platform.GOARCH))

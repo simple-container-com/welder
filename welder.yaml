@@ -76,7 +76,7 @@ tasks:
     runOn: host
     script:
       - mkdir -p ${project:root}/bin
-      - rm -fR ${project:root}/bin/*
+      - rm -fR ${project:root}/bin/*.tar.gz*
       - mkdir -p ${project:root}/docs/site
       - rm -fR ${project:root}/docs/site/*
   tools:

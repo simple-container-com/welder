@@ -128,6 +128,7 @@ tasks:
       - bash -c 'bash <(curl -Ls "https://dist.simple-container.com/sc.sh") secrets reveal'
       - mkdir -p ${project:root}/docs/site/releases/latest
       - cp ${project:root}/bin/*.tar.gz* ${project:root}/docs/site/releases/latest
+      - cp ${project:root}/welder.sh ${project:root}/docs/site/welder.sh
       - sc secrets reveal
       - sc deploy -s welder -e prod
   tag-release:

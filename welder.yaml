@@ -63,6 +63,7 @@ modules:
   - name: welder
     build:
       steps:
+        - task: clean
         - task: tools
         - task: build
         - task: build-docs
@@ -71,6 +72,13 @@ modules:
         - task: publish
         - task: tag-release
 tasks:
+  clean:
+    runOn: host
+    script:
+      - mkdir -p ${project:root}/bin
+      - rm -fR ${project:root}/bin/*
+      - mkdir -p ${project:root}/docs/site
+      - rm -fR ${project:root}/docs/site/*
   tools:
     customImage: &build-image
       # the following is because build image requires docker CLI to be present
@@ -117,8 +125,11 @@ tasks:
   publish:
     runOn: host
     script:
-      - ${project:root}/bin/sc secrets reveal
-      - ${project:root}/bin/sc deploy -s welder -e prod
+      - bash -c 'bash <(curl -Ls "https://dist.simple-container.com/sc.sh") secrets reveal'
+      - mkdir -p ${project:root}/docs/site/releases/latest
+      - cp ${project:root}/bin/*.tar.gz* ${project:root}/docs/site/releases/latest
+      - sc secrets reveal
+      - sc deploy -s welder -e prod
   tag-release:
     runOn: host
     script:

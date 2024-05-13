@@ -4,7 +4,7 @@ stacks:
     type: static
     parent: welder
     config:
-      bundleDir: ${project:root}/docs/site
+      bundleDir: ${git:root}/docs/site
       domain: welder.simple-container.com
       indexDocument: index.html
       errorDocument: 404.html

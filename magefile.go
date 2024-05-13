@@ -133,50 +133,6 @@ func (b Build) Bundles() error {
 }
 
 // --------------------------------------
-// Publish
-
-// Manifest Publishes updated manifest to statlas
-func (pub Publish) Manifest() error {
-	return Ctx.ForAllTargets(func(target magebuild.Target) error {
-		return Ctx.PublishNewRelease(target, Ctx.GetVersion())
-	})
-}
-
-// All Publishes tarballs and updated manifest to statlas
-func (pub Publish) All() error {
-	if err := Ctx.ForAllPlatforms(func(platform magebuild.Platform) error {
-		return Ctx.ForAllTargets(func(target magebuild.Target) error {
-			return pub.publishTarget(target, platform)
-		})
-	}); err != nil {
-		return err
-	}
-	if err := pub.Manifest(); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (Publish) publishTarget(target magebuild.Target, platform magebuild.Platform) error {
-	var eg errgroup.Group
-	t := target
-	p := platform
-	bundle := Ctx.Bundle(t, p)
-	publishBundle := func() error {
-		if err := Ctx.Publish(bundle, Ctx.GetVersion()); err != nil {
-			return err
-		}
-		return Ctx.Publish(bundle, "latest")
-	}
-	if Ctx.IsParallel() {
-		eg.Go(publishBundle)
-	} else if err := publishBundle(); err != nil {
-		return err
-	}
-	return eg.Wait()
-}
-
-// --------------------------------------
 // Generators
 
 // Invoke all generators and generate all necessary clients

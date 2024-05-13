@@ -1,0 +1,29 @@
+schemaVersion: 1.0
+provisioner:
+  type: pulumi
+  config:
+    organization: simple-container-com
+    state-storage:
+      type: pulumi-cloud
+      config:
+        credentials: "${auth:pulumi}"
+    secrets-provider:
+      type: pulumi-cloud
+      config:
+        credentials: "${auth:pulumi}"
+templates:
+  static-website:
+    type: gcp-static-website
+    config:
+      projectId: "${auth:gcloud.projectId}"
+      credentials: "${auth:gcloud}"
+resources:
+  registrar:
+    type: cloudflare
+    config:
+      credentials: "${secret:CLOUDFLARE_API_TOKEN}"
+      accountId: e2207ddedc3cfe4e321f72b07e0592b5
+      zoneName: simple-container.com
+  resources:
+    prod:
+      template: static-website

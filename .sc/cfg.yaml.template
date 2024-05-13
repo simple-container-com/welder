@@ -1,0 +1,3 @@
+projectName: welder
+privateKeyPath: ~/.ssh/id_rsa
+publicKeyPath: ~/.ssh/id_rsa.pub

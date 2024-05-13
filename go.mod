@@ -1,19 +1,19 @@
 module github.com/simple-container-com/welder
 
-go 1.21
+go 1.22
 
 require (
 	github.com/Masterminds/semver/v3 v3.2.0
 	github.com/Masterminds/sprig/v3 v3.2.3
 	github.com/alecthomas/kingpin v2.2.6+incompatible
 	github.com/antonmedv/expr v1.9.0
-	github.com/atombender/go-jsonschema v0.15.0
+	github.com/atombender/go-jsonschema v0.16.0
 	github.com/containerd/continuity v0.2.2
 	github.com/docker/cli v20.10.22+incompatible
 	github.com/docker/distribution v2.8.1+incompatible
 	github.com/docker/docker v20.10.22+incompatible
 	github.com/docker/go-connections v0.4.0
-	github.com/fatih/color v1.13.0
+	github.com/fatih/color v1.16.0
 	github.com/ghodss/yaml v1.0.0
 	github.com/go-bindata/go-bindata v3.1.2+incompatible
 	github.com/go-bindata/go-bindata/v3 v3.1.3
@@ -33,7 +33,7 @@ require (
 	github.com/moby/term v0.0.0-20221205130635-1aeaba878587
 	github.com/onsi/gomega v1.24.2
 	github.com/otiai10/copy v1.9.0
-	github.com/pelletier/go-toml v1.9.5
+	github.com/pelletier/go-toml v1.9.5 // indirect
 	github.com/phayes/freeport v0.0.0-20220201140144-74d24b5ae9f5
 	github.com/pkg/errors v0.9.1
 	github.com/segmentio/textio v1.2.0
@@ -41,8 +41,8 @@ require (
 	github.com/theupdateframework/notary v0.6.2-0.20200604104540-c312d8211cfb // indirect
 	github.com/valyala/fasttemplate v1.2.2
 	go.uber.org/atomic v1.10.0
-	golang.org/x/net v0.20.0
-	golang.org/x/sync v0.6.0
+	golang.org/x/net v0.24.0
+	golang.org/x/sync v0.7.0
 	gopkg.in/mikefarah/yaml.v2 v2.4.0
 	gopkg.in/src-d/go-billy.v4 v4.3.2
 	gopkg.in/src-d/go-git.v4 v4.13.1
@@ -73,7 +73,7 @@ require (
 	github.com/dsnet/compress v0.0.2-0.20210315054119-f66993602bf5 // indirect
 	github.com/emirpasic/gods v1.12.0 // indirect
 	github.com/fvbommel/sortorder v1.0.2 // indirect
-	github.com/goccy/go-yaml v1.11.2 // indirect
+	github.com/goccy/go-yaml v1.11.3 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
@@ -89,8 +89,8 @@ require (
 	github.com/kisielk/errcheck v1.5.0 // indirect
 	github.com/klauspost/compress v1.13.0 // indirect
 	github.com/klauspost/pgzip v1.2.5 // indirect
-	github.com/mattn/go-colorable v0.1.12 // indirect
-	github.com/mattn/go-isatty v0.0.14 // indirect
+	github.com/mattn/go-colorable v0.1.13 // indirect
+	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.1 // indirect
 	github.com/miekg/pkcs11 v1.0.3 // indirect
 	github.com/mitchellh/copystructure v1.0.0 // indirect
@@ -123,16 +123,16 @@ require (
 	github.com/xanzy/ssh-agent v0.2.1 // indirect
 	github.com/xi2/xz v0.0.0-20171230120015-48954b6210f8 // indirect
 	go.opencensus.io v0.23.0 // indirect
-	golang.org/x/crypto v0.18.0 // indirect
-	golang.org/x/exp v0.0.0-20240112132812-db7319d0e0e3 // indirect
+	golang.org/x/crypto v0.22.0 // indirect
+	golang.org/x/exp v0.0.0-20240416160154-fe59bbe5cc7f // indirect
 	golang.org/x/lint v0.0.0-20210508222113-6edffad5e616 // indirect
-	golang.org/x/mod v0.14.0 // indirect
-	golang.org/x/sys v0.16.0 // indirect
-	golang.org/x/term v0.16.0 // indirect
+	golang.org/x/mod v0.17.0 // indirect
+	golang.org/x/sys v0.19.0 // indirect
+	golang.org/x/term v0.19.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/time v0.0.0-20200630173020-3af7569d3a1e // indirect
-	golang.org/x/tools v0.17.0 // indirect
-	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
+	golang.org/x/tools v0.20.0 // indirect
+	golang.org/x/xerrors v0.0.0-20231012003039-104605ab7028 // indirect
 	google.golang.org/genproto v0.0.0-20210602131652-f16073e35f0c // indirect
 	google.golang.org/grpc v1.38.0 // indirect
 	google.golang.org/protobuf v1.28.0 // indirect

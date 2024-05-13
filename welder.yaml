@@ -1,7 +1,7 @@
 schemaVersion: "1.8.1"
 projectName: welder
 projectRoot: .
-version: 2.1.${env:BITBUCKET_BUILD_NUMBER:0}-${git:commit.short}${arg:release-suffix:}
+version: ${env:VERSION:0.0.0}
 default:
   build:
     volumes:
@@ -12,7 +12,7 @@ default:
       namespace: dev
       build-goals: build:build
       build-via-welder: "false"
-      build-image: golang:1.21
+      build-image: golang:1.22
     env:
       VERSION: ${project:version}
       BUILD_GOALS: ${arg:build-goals}
@@ -66,21 +66,10 @@ modules:
         - task: tools
         - task: build
         - task: build-docs
-    dockerImages:
-      - name: build-docs
-        dockerFile: ${project:root}/Dockerfile
-        tags:
-          - docker.simple-container.com/${arg:namespace}/welder/welder-docs:latest
-          - docker.simple-container.com/${arg:namespace}/welder/welder-docs:${project:version}
-        build:
-          contextPath: ${project:root}
-          args:
-            - name: version
-              value: ${project:version}
-        runAfterPush:
-          tasks:
-            - deploy-release
-            - tag-release
+    deploy:
+      steps:
+        - task: publish
+        - task: tag-release
 tasks:
   tools:
     customImage: &build-image
@@ -125,10 +114,13 @@ tasks:
         export VALUES="--set image.image=${docker:tags[0].image} --set image.tag=${docker:tags[0].tag}"
         export PROFILE=simple-container
         ${project:root}/charts/welder/deploy.sh welder welder
+  publish:
+    runOn: host
+    script:
+      - ${project:root}/bin/sc secrets reveal
+      - ${project:root}/bin/sc deploy -s welder -e prod
   tag-release:
     runOn: host
-    description: Tags release in git
     script:
-      - |-
-        git tag -f ${project:version}
-        git push origin -f ${project:version}
+      - git tag ${project:version} || echo "Already set tag ${project:version}"
+      - git push -f origin ${project:version} || echo "Tag ${project:version} already exists in origin"

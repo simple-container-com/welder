@@ -16,3 +16,6 @@ coverage.txt
 **/testdata/**/output
 .gitsecret/keys/random_seed
 !*.secret
+
+.sc/cfg.default.yaml
+.sc/stacks/welder/secrets.yaml
